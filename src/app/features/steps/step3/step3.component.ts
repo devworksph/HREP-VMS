@@ -2,54 +2,62 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormWizardService } from '~core/components/form-wizard/form-wizard.service';
 import { FormWizardStepBaseComponent } from '~core/components/form-wizard/form-wizard-step-base.component';
-import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
-import { CheckboxModule } from 'primeng/checkbox';
-import { FileUploadModule } from 'primeng/fileupload';
-import { SelectModule } from 'primeng/select';
+import { DateTime } from 'luxon';
+import { last } from 'rxjs';
 
 @Component({
   selector: 'step3',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    AccordionModule,
     InputTextModule,
-    IftaLabelModule,
-    CheckboxModule,
-    FileUploadModule,
-    SelectModule
+    IftaLabelModule
   ],
   templateUrl: './step3.component.html',
-  styleUrl: './step3.component.scss',
 })
 export class Step3Component extends FormWizardStepBaseComponent {
-  public maritalStatus = [
-    { name: 'Single', value: 'Single'},
-    { name: 'Married', value: 'Married'},
-    { name: 'Separated', value: 'Separated'},
-  ];
-
-  public ageRange = [
-    { name: 'Children', value: 'Children'},
-    { name: 'Teenagers', value: 'Teenagers'},
-    { name: 'Adults', value: 'Adults'},
-    { name: 'Seniors', value: 'Seniors'},
-  ];
+  public step1Data: any;
+  public step2Data: any;
 
   constructor(private wizardService: FormWizardService) {
     const formcontrols = {
-      lastName: new FormControl('', [Validators.required]),
-      firstName: new FormControl('', [Validators.required]),
-      middleName: new FormControl(null, [Validators.required]),
-      status: new FormControl(null, [Validators.required]),
-      ageRange: new FormControl(null, [Validators.required]),
+      email: new FormControl('', [Validators.required]),
+      mobileNo: new FormControl('', [Validators.required]),
+      isPwd: new FormControl(''),
+      isHouseEmployee: new FormControl('')
     };
-    super(2, wizardService.getSteps(), true, formcontrols);
+    super(3, wizardService.getSteps(), true, formcontrols);
   }
 
-  public onBasicUploadAuto() {
+  ngOnInit() {
+    const step1Data = this.wizardService.getStepData(1);
+    const step2Data = this.wizardService.getStepData(2);
 
+    const date = DateTime.fromJSDate(step1Data.date);
+    const formattedDate = date.toFormat('MMMM dd, yyyy');
+    const slotTime = step1Data.timeSlot.split('-')[1];
+    const allStepData = this.wizardService.getAllStepData();
+
+    console.log('all', allStepData);
+    this.step1Data = {
+      location: step1Data.location.split(':')[1],
+      date: `${formattedDate} - ${slotTime}`,
+      visitor_type: step1Data.visitorType,
+      booking_type: step1Data.bookingType,
+      student_type: step1Data.studentType,
+      municipality: step1Data.municipalities,
+      countryOfOrigin: step1Data.countryOfOrigin,
+    }
+
+    this.step2Data = {
+      lastName: step2Data.lastName,
+      firstName: step2Data.firstName,
+      middleName: step2Data.middleName,
+      ageRange: step2Data.ageRange,
+      isPwd: step2Data.isPwd,
+      isHouseEmployee: step2Data.isHouseEmployee
+    }
   }
 }

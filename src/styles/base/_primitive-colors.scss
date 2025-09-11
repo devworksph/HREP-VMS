@@ -15,8 +15,10 @@
   // Base
   --primitive-gray: oklch(0.9284 0.006 273.19);
   --primitive-blue: oklch(0.3963 0.1867 262.49);
+  --primitive-orange: oklch(0.7265 0.1857 49.9); //#ff7c18
   --primitive-red: oklch(0.5415 0.2125 24.9);
-  --primitive-light-blue: oklch(0.6512 0.191 252.78); // #1890FF;
+  --primitive-blue: oklch(0.6512 0.191 252.78); // #1890FF;
+  --primitive-light-blue: oklch(0.5691 0.237371 260.4015 / 8%);
   --primitive-black-1: oklch(0.2178 0 0); // #1A1A1A;
   --primitive-black-2: oklch(0.5452 0 0); // #707070;
   

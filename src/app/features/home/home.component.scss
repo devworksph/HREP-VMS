@@ -124,3 +124,8 @@ $separator-margin: 0 10px 35px 0;
     }
   }
 }
+
+.p-button:not(:disabled):hover {
+  background: var(--primitive-blue);
+  border: 1px solid var(--primitive-blue);
+}
