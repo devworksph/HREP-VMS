@@ -30,6 +30,7 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   @Output() cancelled: EventEmitter<void> = new EventEmitter();
 
   @ViewChild(FormWizardStepDirective, { static: true }) wizardStep!: FormWizardStepDirective;
+  @ViewChild(FormWizardStepBaseComponent, { static: false }) activeStepComponent!: FormWizardStepBaseComponent;
 
   @HostBinding('class.stepper-positioned-right') stepperRight = false;
 
@@ -64,6 +65,10 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
+     if (this.activeStepComponent) {
+      //this.activeStepComponent.saveStepData();
+    }
+
     if (this.activeStep < this.noOfSteps) {
       const nextStep = this.steps[this.activeStep++];
       this.activeStepInfo = nextStep;
@@ -135,6 +140,8 @@ export class FormWizardComponent implements OnInit, OnDestroy {
       const stepConfig = component.getCurrentStepInfo();
       stepConfig.dataValidated = component.form.valid;
       stepConfig.data = data;
+
+      this.wizardService.setStepData(component.stepNo, data);
     }
   }
 

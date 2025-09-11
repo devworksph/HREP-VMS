@@ -4,6 +4,5 @@
 
 export const environment = {
   domain: 'http://localhost:4200',
-  // ApiBaseUrl: 'http://localhost:3000', // For local development with https://github.com/Ismaestro/nestjs-example-app
-  apiBaseUrl: 'http://localhost:3000',
+  apiBaseUrl: 'http://localhost:1337/api',
 };

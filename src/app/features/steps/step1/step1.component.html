@@ -7,61 +7,170 @@
         <p>Welcome!</p>
         <p>Kindly select the place you're visiting to give you available date and time of visit, you may also do multiple bookings later</p>
       </div>
+      <div class="legend">
+        <h4>Legend</h4>
+        <ul>
+          <li>
+            <span class="legend-item available"></span>Available Dates
+          </li>
+          <li><span class="legend-item selected-slot"></span> Selected Slot</li>
+          <li><span class="legend-item low-slot"></span> Low</li>
+          <li><span class="legend-item not-available"></span> Not Available / Fully booked</li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="wizard-content column-two">
     <div class="wizard-details">
       <form [formGroup]="form" class="form">
-        <h4>Select Location</h4>
+        
         <div class="description">
-          <p>What are you visiting? Let us help you filter available dates for your agenda.</p>
-          
-            <div>
-              <input type="radio" value="all" formControlName="location">
-              <label class="label">All - Admission to both museum and library archive</label>
-            </div>
-            <div>
-              <input type="radio" value="Legislative Museum" formControlName="location">
-              <label class="label">Legislative Museum only</label>
-            </div>
-            <div>
-              <input type="radio" value="Library Archives" formControlName="location">
-              <label class="label">Library Archives for Research only</label>
-            </div>
-        </div>
+          <div class="section location">
+            <h4>Select Location</h4>
+            <p>What are you visiting? Let us help you filter available dates for your agenda.</p>
 
-        <h4>Select Date</h4>
-        <div class="calendar">
-          <p-datepicker class="max-w-full" formControlName="date" [inline]="true" [showWeek]="true" />
+            @if (isLocationsLoaded && (locations && locations.length > 0)) {
+              <div *ngFor="let location of locations" class="hor-location">
+                <p-radiobutton 
+                  value="{{ location.id }}:{{ location.name }}" 
+                  formControlName="location" />
+                <label class="label">{{ location.name }}</label>
+              </div>
+            } @else {
+              @if (locations == null) {
+                <div class="alert-msg">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  No locations loaded, please reload the page
+                </div>
+              } @else {
+                <div class="spinner-container">
+                  <p-progressSpinner
+                    ariaLabel="loading"
+                  />
+                </div>
+              }
+            }
+          </div>
         </div>
+        <div class="section calendar">
+          <h4>Select Date</h4>
+          <p-datepicker 
+            class="max-w-full"
+            formControlName="date"
+            [inline]="true"
+            [showWeek]="false"
+            [minDate]="minDate"
+            [disabledDays]="[0, 6]"
+            (onSelect)="onDateSelect($event)"
+          />
+        </div>
+        
       </form>
     </div>
   </div>
   <div class="wizard-content column-threee">
     <div class="wizard-details">
-      <h4>Select Time</h4>
+      
       <form [formGroup]="form" class="form">
-        <div class="time-slots">
+        <div class="section select-time">
+          <h4>Select Time</h4>
+          @if (availableSchedules && availableSchedules.length > 0) {
+            <div class="section time-slots">
+              <div *ngFor="let sched of availableSchedules">
+                <p-radiobutton 
+                  value="{{ sched.id }}-{{ sched.date }}" 
+                  formControlName="timeSlot" />
+                <label class="label">{{ sched.date }} ({{ sched.slots }} slots left)</label>
+              </div>
+            </div>
+          } @else {
+            <div class="alert-msg">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              No available time slot for the selected date
+            </div>
+          }
+        </div>
+        <div class="section booking-details">
+          <h4>Booking Details</h4>
           <div>
-            <input type="radio" value="1" formControlName="timeSlot">
-            <label class="label">01:00 PM</label>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'visitorType'"
+                [options]="visitorTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Select Type of Visitor</label>
+            </p-iftalabel>
           </div>
+          
           <div>
-            <input type="radio" value="2" formControlName="timeSlot">
-            <label class="label">02:00 PM (29 slots left)</label>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'bookingType'"
+                [options]="bookingTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Select Type of Booking</label>
+            </p-iftalabel>
           </div>
+          
+        </div>
+        <div class="section visitor-details">
+          <h4>Visitor Details</h4>
+
+          @if (isStudent) {
           <div>
-            <input type="radio" value="3" formControlName="timeSlot">
-            <label class="label">03:00 PM (6 slots left)</label>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'studentType'"
+                [options]="studentTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Type of Student</label>
+            </p-iftalabel>
           </div>
+          }
+
+          @if (isLGU) {
           <div>
-            <input type="radio" value="4" formControlName="timeSlot">
-            <label class="label">04:00 PM (20 slots left)</label>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'municipalities'"
+                [options]="municipalities"
+                optionLabel="name"
+                optionValue="name"
+                styleClass="w-full"
+                [filter]="true"
+                filterBy="name"
+              />
+              <label>Select Municipality</label>
+            </p-iftalabel>
           </div>
-          <div>
-            <input type="radio" value="5" formControlName="timeSlot">
-            <label class="label">05:00 PM</label>
-          </div>
+          }
+
+          @if (isForeignVisitor) {
+            <div>
+              <p-iftalabel class="w-full">
+                <p-select
+                  [formControlName]="'countryOfOrigin'"
+                  [options]="countries"
+                  optionLabel="name"
+                  optionValue="value"
+                  styleClass="w-full"
+                  [filter]="true"
+                  filterBy="name"
+                />
+                <label>Select Country of Origin</label>
+              </p-iftalabel>
+            </div>
+          }
+          
         </div>
       </form>
     </div>

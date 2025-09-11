@@ -3,43 +3,103 @@
     <div class="wizard-details">
       <h3>House of Representatives</h3>
 
-      <p class="title">Select type of Booking</p>
+      <p class="title">Booking Details</p>
       <div class="description">
         <div class="schedule-selection">
-          <i class="fa-solid fa-location-dot"></i> All - Admission to both museum and library archive
+          <span>Location: </span> {{ step1Data.location }}
         </div>
         <div class="schedule-selection">
-          <i class="fa-regular fa-clock"></i> March 30, 2025 (Tuesday) - 5:30 PM
+          <span>Date Booked: </span>{{ step1Data.date }}
         </div>
+        <div class="schedule-selection">
+          <span>Visitor Type: </span>{{ step1Data.visitor_type }}
+        </div>
+        <div class="schedule-selection">
+          <span>Booking Type: </span>{{ step1Data.booking_type }}
+        </div>
+
+        @if (step1Data.visitor_type === 'Student') {
+          <div class="schedule-selection">
+            <span>Student Type: </span>{{ step1Data.student_type }}
+          </div>
+        }
+
+        @if (step1Data.visitor_type === 'Local Government') {
+          <div class="schedule-selection">
+            <span>Municipality: </span>{{ step1Data.municipality }}
+          </div>
+        }
+
+        @if (step1Data.visitor_type === 'Foreign Visitor') {
+          <div class="schedule-selection">
+            <span>Municipality: </span>{{ step1Data.countryOfOrigin }}
+          </div>
+        }
+        
       </div>
     </div>
   </div>
   <div class="wizard-content column-two">
     <div class="wizard-details">
-      <h4>Booking Details</h4>
       <div class="description">
         <form [formGroup]="form" class="form">
-          <div>
-            <p-iftalabel class="w-full">
-              <p-select
-                [formControlName]="'visitorType'"
-                [options]="visitorType"
-                optionLabel="name"
-                styleClass="w-full"
-              />
-              <label>Select Type of Visitor</label>
-            </p-iftalabel>
-          </div>
-          <div>
-            <p-iftalabel class="w-full">
-              <p-select
-                [formControlName]="'bookingType'"
-                [options]="bookingType"
-                optionLabel="name"
-                styleClass="w-full"
-              />
-              <label>Select Type of Booking</label>
-            </p-iftalabel>
+          <div class="section visitor-details">
+            <h4>Visitors Details</h4>
+
+            <div>
+              <p-iftalabel>
+                <input pInputText formControlName="lastName" autocomplete="off" />
+                <label>Last Name</label>
+              </p-iftalabel>
+            </div>
+            <div>
+              <p-iftalabel>
+                <input pInputText formControlName="firstName" autocomplete="off" />
+                <label>First Name</label>
+              </p-iftalabel>
+            </div>
+            <div>
+              <p-iftalabel>
+                <input pInputText formControlName="middleName" autocomplete="off" />
+                <label>Middle Name</label>
+              </p-iftalabel>
+            </div>
+            
+            <div>
+              <p-iftalabel>
+                <p-select
+                  [formControlName]="'ageRange'"
+                  [options]="ageRange"
+                  optionLabel="name"
+                  optionValue="value"
+                  styleClass="w-full"
+                />
+                <label>Age Range</label>
+              </p-iftalabel>
+            </div>
+            <div>
+              <p-iftalabel>
+                <p-select
+                  [formControlName]="'sex'"
+                  [options]="sex"
+                  optionLabel="sex"
+                  optionValue="value"
+                  styleClass="w-full"
+                />
+                <label>Age Range</label>
+              </p-iftalabel>
+            </div>
+            <div class="checkboxes">
+                <p-checkbox
+                  value="yes" />
+                <label class="label">PWD? (Person with Disability)</label>
+              </div>
+              <div class="checkboxes">
+                <p-checkbox
+                  value="yes"
+                />
+                <label class="label">Are you a House Employee?</label>
+              </div>
           </div>
         </form>
       </div>
@@ -47,23 +107,36 @@
   </div>
   <div class="wizard-content column-threee">
     <div class="wizard-details">
-      <h4>Visitor Details</h4>
+      <h4>Identification</h4>
       <div class="description">
-          <form [formGroup]="form" class="form">
-            <div>
-              <p-iftalabel class="w-full">
-                <p-select
-                  [formControlName]="'studentType'"
-                  [options]="studentType"
-                  optionLabel="name"
-                  styleClass="w-full"
-                />
-                <label>Type of Student</label>
-              </p-iftalabel>
-            </div>
-          </form>
+        <p>Secure your spot and verify your identity--upload a valid ID to proceed with your museum visit registration</p>
+        <div class="id-upload">
+          {{isUploading}}
+          <p-fileupload
+            [auto]="false"
+            [disabled]="isUploading"
+            mode="basic"
+            name="files"
+            url="{{apiUrl}}/upload"
+            accept=".jpg, .jpeg, .png"
+            maxFileSize="maxFileSize * 1024 * 1024"
+            [chooseLabel]="!isUploading ? 'Click to Upload ID' : 'Uploading'"
+            chooseIcon="fa-solid fa-upload"
+            (onSelect)="handleFileSelect($event)"
+          />  
+        </div>
+
+        @if (step1Data.booking_type === 'Group') {
+          <div class="template-upload">
+            <p><a href="">Download the Excel template here</a>, fill out, and upload your group list below</p>
+            <p-fileupload mode="basic" name="demo[]" chooseIcon="pi pi-upload" url="#" accept=".csv" maxFileSize="1000000" (onUpload)="onUpload($event)" [auto]="true" chooseLabel="Click to Upload Template" />
+          </div>
+        }
+        
+        <p class="uploading-consent">
+          By uploading your valid ID, you agree that your information will be used only for identity verification. We handle all data with strict confidentiality and in compliance with the Philippine Data Privacy Act of 2012. For more details, please review our <a href="#">Privacy Policy</a>.
+        </p>
       </div>
     </div>
-    
   </div>
 </div>

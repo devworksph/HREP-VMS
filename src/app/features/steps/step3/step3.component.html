@@ -3,97 +3,92 @@
     <div class="wizard-details">
       <h3>House of Representatives</h3>
 
-      <p class="title">Select type of Booking</p>
+      <p class="title">Booking Details</p>
       <div class="description">
         <div class="schedule-selection">
-          <i class="fa-solid fa-location-dot"></i> All - Admission to both museum and library archive
+          <span>Location: </span> {{ step1Data.location }}
         </div>
         <div class="schedule-selection">
-          <i class="fa-regular fa-clock"></i> March 30, 2025 (Tuesday) - 5:30 PM
+          <span>Date Booked: </span>{{ step1Data.date }}
         </div>
+        <div class="schedule-selection">
+          <span>Visitor Type: </span>{{ step1Data.visitor_type }}
+        </div>
+        <div class="schedule-selection">
+          <span>Booking Type: </span>{{ step1Data.booking_type }}
+        </div>
+
+        @if (step1Data.visitor_type === 'Student') {
+          <div class="schedule-selection">
+            <span>Student Type: </span>{{ step1Data.student_type }}
+          </div>
+        }
+
+        @if (step1Data.visitor_type === 'Local Government') {
+          <div class="schedule-selection">
+            <span>Municipality: </span>{{ step1Data.municipality }}
+          </div>
+        }
+
+        @if (step1Data.visitor_type === 'Foreign Visitor') {
+          <div class="schedule-selection">
+            <span>Municipality: </span>{{ step1Data.countryOfOrigin }}
+          </div>
+        }
+        
       </div>
     </div>
   </div>
   <div class="wizard-content column-two">
     <div class="wizard-details">
-      <div class="description overflow">
-        <form [formGroup]="form" class="form">
-          <p-accordion value="0">
-            <p-accordion-panel value="0">
-              <p-accordion-header>Visitors Details</p-accordion-header>
-              <p-accordion-content>
-                <p-iftalabel>
-                  <input pInputText formControlName="lastName" autocomplete="off" />
-                  <label>Last Name</label>
-                </p-iftalabel>
+      <h4>Visitor Details</h4>
+      <div class="description">
+        <div class="section visitor-details">
+          <p class="detail-field">Last Name</p>
+          <p class="detail-value">{{ step2Data.lastName }}</p>
 
-                <p-iftalabel>
-                  <input pInputText formControlName="firstName" autocomplete="off" />
-                  <label>First Name</label>
-                </p-iftalabel>
+          <p class="detail-field">First Name</p>
+          <p class="detail-value">{{ step2Data.firstName }}</p>
 
-                <p-iftalabel>
-                  <input pInputText formControlName="middleName" autocomplete="off" />
-                  <label>Middle Name</label>
-                </p-iftalabel>
+          <p class="detail-field">Middle Name</p>
+          <p class="detail-value">{{ step2Data.middleName }}</p>
 
-                <p-iftalabel>
-                  <p-select
-                    [formControlName]="'status'"
-                    [options]="maritalStatus"
-                    optionLabel="name"
-                    styleClass="w-full"
-                  />
-                  <label>Status</label>
-                </p-iftalabel>
+          <p class="detail-field">Age Range</p>
+          <p class="detail-value">{{ step2Data.ageRange }}</p>
 
-                <p-iftalabel>
-                  <p-select
-                    [formControlName]="'ageRange'"
-                    [options]="ageRange"
-                    optionLabel="name"
-                    styleClass="w-full"
-                  />
-                  <label>Age Range</label>
-                </p-iftalabel>
+          <p class="detail-field">PWD (Person with Disability)?</p>
+          <p class="detail-value">
+            No
+          </p>
 
-                <div class="checkboxes">
-                  <p-checkbox value="yes" />
-                  <label class="ml-2">PWD? (Person with Disability)</label>
-                </div>
-                <div class="checkboxes">
-                  <p-checkbox value="yes"  />
-                  <label class="ml-2">Are you a House Employee?</label>
-                </div>
-              </p-accordion-content>
-            </p-accordion-panel>
-            <!-- <p-accordion-panel value="1">
-              <p-accordion-header>Other Details</p-accordion-header>
-              <p-accordion-content>
-                  
-              </p-accordion-content>
-            </p-accordion-panel> -->
-          </p-accordion>
-        </form>
-        
+          <p class="detail-field">House Employee?</p>
+          <p class="detail-value">Yes. House Leader</p>
+        </div>
       </div>
     </div>
   </div>
   <div class="wizard-content column-threee">
     <div class="wizard-details">
-      <h4>Identification</h4>
+      <h4>Thank you for booking your visit with us</h4>
       <div class="description">
-        <p>Secure your spot and verify your identity--upload a valid ID to proceed with your museum visit registration</p>
-        <div class="id-upload">
-          <p-fileupload mode="basic" name="demo[]" chooseIcon="pi pi-upload" url="#" accept=".jpg, .jpeg, .png" maxFileSize="1000000" (onUpload)="onBasicUploadAuto()" [auto]="true" chooseLabel="Click to Upload ID" />
-        </div>
-        <p><a href="">Download the Excel template here</a>, fill out, and upload your group list below</p>
-        <div class="template-upload">
-          <p-fileupload mode="basic" name="demo[]" chooseIcon="pi pi-upload" url="#" accept=".csv" maxFileSize="1000000" (onUpload)="onBasicUploadAuto()" [auto]="true" chooseLabel="Click to Upload Template" />
-        </div>
-        <p class="uploading-consent">
-          By uploading your valid ID, you agree that your information will be used only for identity verification. We handle all data with strict confidentiality and in compliance with the Philippine Data Privacy Act of 2012. For more details, please review our <a href="#">Privacy Policy</a>.
+        <p class="consent">
+          By providing your email address or mobile number, you acknowledge and agree that it will be used strictly for confirmation purposes related to your request. Any changes in schedule will also be communicated through the contact details you provide. Rest assured, your information will not be shared with any third parties and will be kept confidential in accordance with our <a href="#">privacy policy</a>.
         </p>
+        <form [formGroup]="form" class="form">
+            <div>
+              <p-iftalabel>
+                <input pInputText formControlName="email" autocomplete="off" />
+                <label>Email address</label>
+              </p-iftalabel>
+            </div>
+            <div>
+              <p-iftalabel>
+                <input pInputText formControlName="mobileNo" autocomplete="off" />
+                <label>Mobile number</label>
+              </p-iftalabel>
+              <p class="small">(Enter your country code + remaining mobile numbers)<br />example: +63</p>
+            </div>
+          </form>
       </div>
     </div>
   </div>
