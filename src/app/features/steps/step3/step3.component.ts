@@ -24,9 +24,7 @@ export class Step3Component extends FormWizardStepBaseComponent {
   constructor(private wizardService: FormWizardService) {
     const formcontrols = {
       email: new FormControl('', [Validators.required]),
-      mobileNo: new FormControl('', [Validators.required]),
-      isPwd: new FormControl(''),
-      isHouseEmployee: new FormControl('')
+      mobileNo: new FormControl('', [Validators.required])
     };
     super(3, wizardService.getSteps(), true, formcontrols);
   }
@@ -42,7 +40,7 @@ export class Step3Component extends FormWizardStepBaseComponent {
 
     console.log('all', allStepData);
     this.step1Data = {
-      location: step1Data.location.split(':')[1],
+      location: step1Data.location.split(':')[0],
       date: `${formattedDate} - ${slotTime}`,
       visitor_type: step1Data.visitorType,
       booking_type: step1Data.bookingType,

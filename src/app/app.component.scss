@@ -15,6 +15,10 @@ $page-max-width: 2560px;
     width: 100%;
     min-height: 100vh;
 
+    @include mq.for-phone-only {
+      width: auto;
+    }
+
     .app__page-container {
       display: grid;
     }

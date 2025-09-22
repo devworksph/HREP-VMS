@@ -58,11 +58,11 @@
 
           <p class="detail-field">PWD (Person with Disability)?</p>
           <p class="detail-value">
-            No
+            {{ step2Data.isPwd ? 'Yes' : 'No'}}
           </p>
 
           <p class="detail-field">House Employee?</p>
-          <p class="detail-value">Yes. House Leader</p>
+          <p class="detail-value">{{ step2Data.isHouseEmployee ? 'Yes' : 'No'}}</p>
         </div>
       </div>
     </div>
