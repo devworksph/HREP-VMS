@@ -28,28 +28,25 @@
           <div class="section location">
             <h4>Select Location</h4>
             <p>What are you visiting? Let us help you filter available dates for your agenda.</p>
-
-            @if (isLocationsLoaded && (locations && locations.length > 0)) {
-              <div *ngFor="let location of locations" class="hor-location">
-                <p-radiobutton 
-                  value="{{ location.id }}:{{ location.name }}" 
-                  formControlName="location" />
-                <label class="label">{{ location.name }}</label>
+            <ng-container *ngIf="locations$ | async as locations; else loading">
+              <div *ngFor="let location of locations$ | async" class="hor-location">
+                <p-radiobutton
+                  name="location"
+                  [value]="location.name + ':' + location.id"
+                  formControlName="location"
+                  (onClick)="onClickLocation($event)"
+                  >
+                </p-radiobutton>
+                <label [for]="'loc' + location.id">{{ location.name }}</label>
               </div>
-            } @else {
-              @if (locations == null) {
-                <div class="alert-msg">
-                  <i class="fa-solid fa-triangle-exclamation"></i>
-                  No locations loaded, please reload the page
-                </div>
-              } @else {
-                <div class="spinner-container">
-                  <p-progressSpinner
-                    ariaLabel="loading"
-                  />
-                </div>
-              }
-            }
+            </ng-container>
+            <ng-template #loading>
+              <div class="spinner-container">
+                <p-progressSpinner
+                  ariaLabel="loading"
+                />
+              </div>
+            </ng-template>
           </div>
         </div>
         <div class="section calendar">
@@ -64,7 +61,6 @@
             (onSelect)="onDateSelect($event)"
           />
         </div>
-        
       </form>
     </div>
   </div>
@@ -74,21 +70,22 @@
       <form [formGroup]="form" class="form">
         <div class="section select-time">
           <h4>Select Time</h4>
-          @if (availableSchedules && availableSchedules.length > 0) {
+          <ng-container *ngIf="schedules$ | async as schedules; else noAvailableSched">
             <div class="section time-slots">
-              <div *ngFor="let sched of availableSchedules">
+              <div *ngFor="let sched of schedules$ | async">
                 <p-radiobutton 
-                  value="{{ sched.id }}-{{ sched.date }}" 
-                  formControlName="timeSlot" />
-                <label class="label">{{ sched.date }} ({{ sched.slots }} slots left)</label>
+                    value="{{ sched.schedule_id }}-{{ sched.time }}" 
+                    formControlName="timeSlot" />
+                  <label class="label">{{ sched.time }}</label>
               </div>
             </div>
-          } @else {
+          </ng-container>
+          <ng-template #noAvailableSched>
             <div class="alert-msg">
               <i class="fa-solid fa-triangle-exclamation"></i>
               No available time slot for the selected date
             </div>
-          }
+          </ng-template>
         </div>
         <div class="section booking-details">
           <h4>Booking Details</h4>

@@ -11,8 +11,9 @@ import { SelectModule } from 'primeng/select';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { StrapiService } from '~core/services/strapi.service';
-import { ILocation, IHorSchedules } from '../model/location.model';
-import { retry, catchError, of } from 'rxjs';
+import { ILocation } from '../model/locations.model';
+import { ISchedule, IScheduleResponse } from '../model/schedules.model';
+import { Observable, finalize, map } from 'rxjs';
 import { VisitorTypes, BookingTypes, StudentTypes } from '../model/visitor-details.model';
 import { Municipalities } from '../model/municipality.model';
 import { Countries } from '../model/countries.model';
@@ -40,12 +41,13 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   public studentTypes = StudentTypes;
   public municipalities = Municipalities;
   public countries = Countries;
-  public locations: ILocation[] | null = [];
-  public horSchedules: IHorSchedules[] = [];
+  public locations$!: Observable<ILocation[]>;
+  public schedules$!: Observable<IScheduleResponse[]>;
   public minDate: Date | null = null;
   public maxDate: Date | null = null;
-  public availableSchedules: IHorSchedules[] = [];
-  public isLocationsLoaded: boolean = true;
+  public availableSchedules: ISchedule[] = [];
+  public isLocationsLoaded = false;
+  public isShedulesLoading = false;
 
   constructor(
     private wizardService: FormWizardService,
@@ -61,6 +63,8 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
       municipalities: new FormControl(''),
       countryOfOrigin: new FormControl('')
     };
+
+    console.log(formcontrols);
     
     super(1, wizardService.getSteps(), true, formcontrols);
   }
@@ -69,62 +73,57 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     const today = DateTime.local();
     this.minDate = today.plus({ days: 5 }).toJSDate();
 
-    this.loadLocations();
-    this.getHorSchedules();
-    Countries.map(municipality => ({
-      ...municipality,
-      value: municipality.name
-    }));
-
-    
+    this.locations$ = this.strapiService.getLocations();
+    this.countriesList();
   }
 
   ngAfterViewInit() {
     const step1Data = this.wizardService.getStepData(1);
 
-    if (step1Data) {
-      this.loadLocations();
-      this.getHorSchedules();
-    }
+    // if (step1Data) {
+    //   this.loadLocations();
+    //   this.getHorSchedules();
+    // }
   }
 
   public saveStepData() {
     console.log('saveStepDataCalled');
   }
 
+  public onClickLocation(event: any) {
+    const date = this.form.get('date')?.value;
+
+    if (date) {
+      const selectedLocation = event.value.split(':')[1];
+      const selectedDate = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');;
+      this.displayTime(
+        selectedLocation, selectedDate
+      );
+    }
+  }
+
   public onDateSelect(event: any) {
+    this.isShedulesLoading = true;
+    const locationId = this.form.get('location')?.value;
+    const selectedLocation = locationId.split(':')[1];
     const selectedDate = DateTime.fromJSDate(event).toFormat('yyyy-MM-dd');
-    const filteredDates = this.horSchedules.filter(item => item.date.startsWith(selectedDate));
-
-    this.availableSchedules = filteredDates.map(item => ({
-      ...item,
-      date: DateTime.fromISO(item.date).toFormat("hh:mm a")
-    }));
+    
+    this.displayTime(
+      selectedLocation, selectedDate
+    );
   }
 
-  private loadLocations() {
-    this.isLocationsLoaded = false;
-    this.strapiService.getLocations()
-      .subscribe(
-        (response) => {
-          this.isLocationsLoaded = true;
-          this.locations = response.data;
-        },
-        (error) => {
-          this.isLocationsLoaded = false;
-          this.locations = null;
-        });
-  }
-
-  private getHorSchedules() {
-    this.strapiService.getSchedules().subscribe(
-      (response) => {
-        this.horSchedules = response.data;
-        console.log(this.horSchedules);
-      },
-      (error) => {
-        console.error('Error loading horSchedules', error);
-      }
+  private displayTime(
+    selectedLocation: number,
+    selectedDate: string
+  ) {
+    this.schedules$ = this.strapiService.getSchedules({
+      location_id: selectedLocation,
+      date: selectedDate
+    }).pipe(
+      finalize(
+        () => this.isShedulesLoading = false
+      )
     );
   }
 
@@ -138,5 +137,12 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
 
   get isForeignVisitor() {
     return this.form.get('visitorType')?.value === 'Foreign Visitor';
+  }
+
+  public countriesList() {
+    return Countries.map(municipality => ({
+      ...municipality,
+      value: municipality.name
+    }));
   }
 }

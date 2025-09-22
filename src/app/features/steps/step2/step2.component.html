@@ -32,7 +32,7 @@
 
         @if (step1Data.visitor_type === 'Foreign Visitor') {
           <div class="schedule-selection">
-            <span>Municipality: </span>{{ step1Data.countryOfOrigin }}
+            <span>Municipality: </span>{{ step1Data.country_of_origin }}
           </div>
         }
         
@@ -82,21 +82,26 @@
                 <p-select
                   [formControlName]="'sex'"
                   [options]="sex"
-                  optionLabel="sex"
+                  optionLabel="name"
                   optionValue="value"
                   styleClass="w-full"
                 />
-                <label>Age Range</label>
+                <label>Sex</label>
               </p-iftalabel>
             </div>
             <div class="checkboxes">
                 <p-checkbox
-                  value="yes" />
+                  formControlName="isPwd"
+                  value="yes"
+                  binary="true"
+                />
                 <label class="label">PWD? (Person with Disability)</label>
               </div>
               <div class="checkboxes">
                 <p-checkbox
+                  formControlName="isHouseEmployee"
                   value="yes"
+                  binary="true"
                 />
                 <label class="label">Are you a House Employee?</label>
               </div>

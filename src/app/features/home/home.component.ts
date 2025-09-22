@@ -65,25 +65,10 @@ export class HomeComponent {
 
   onFinish(): void {
     const allStepData = this.WizardService.getAllStepData();
-    const step1Data = allStepData[1];
-    const step2Data = allStepData[2];
-    const step3Data = allStepData[3];
-
-    const formData = {
-      data: {
-        visitor_type: step1Data.visitorType,
-        booking_type: step1Data.bookingType,
-        municipality: step1Data.municipalities,
-        country_of_origin: step1Data.countryOfOrigin,
-        first_name: step2Data.firstName,
-        middle_name: step2Data.middleName,
-        last_name: step2Data.lastName,
-        age_range: step2Data.ageRange,
-        email: step3Data.email,
-        mobile_no: step3Data.mobileNo,
-        location_id: step1Data.location.split(':')[0],
-      }
-    };
+    const formData = Object.assign(
+      {},
+      ...Object.values(allStepData)
+    );
 
     this.StrapiService.createVisitor(formData).subscribe(
       response => {
@@ -95,7 +80,7 @@ export class HomeComponent {
       },
       error => {
 
-      }
+    }
     );
 
     console.log(allStepData);

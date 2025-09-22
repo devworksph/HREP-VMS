@@ -1,5 +1,5 @@
 {
-  "name": "hor",
+  "name": "hrep-visitors",
   "version": "19.0.0",
   "scripts": {
     "prepare": "npx husky",
@@ -13,10 +13,8 @@
     "e2e": "npm run playwright:install && npm run playwright:test",
     "playwright:install": "npx playwright install && npx playwright install-deps",
     "playwright:test": "npx playwright test",
-    "build": "ng build && mv -v dist/hor/browser/en/* dist/hor/browser/ && rm -Rf dist/hor/browser/en",
-    "bundle-report": "ng build --configuration=production-sourcemaps && source-map-explorer dist/hor/browser/**/*.js",
-    "github-build": "ng build --configuration production --base-href 'https://devworksph.github.io/hor/'",
-    "github-deploy": "npx angular-cli-ghpages --dir=dist/hor/browser/en --no-silent"
+    "build": "ng build && mv -v dist/hrep-visitors/browser/en/* dist/hrep-visitors/browser/ && rm -Rf dist/hrep-visitors/browser/en",
+    "bundle-report": "ng build --configuration=production-sourcemaps && source-map-explorer dist/hrep-visitors/browser/**/*.js"
   },
   "dependencies": {
     "@angular/animations": "19.2.5",
