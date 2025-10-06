@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, HostBinding, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormWizardStepDirective } from './form-wizard-step.directive';
 import { IStepperOptions, IWizardStep, STEPPER_DEFAULTS } from './form-wizard.model';
 import { FormWizardService } from './form-wizard.service';
@@ -14,7 +15,7 @@ import { FormWizardStepBaseComponent } from './form-wizard-step-base.component';
   host: {
     class: 'ngx-form-wizard'
   },
-  imports: [FormWizardStepDirective]
+  imports: [FormWizardStepDirective, CommonModule]
 })
 export class FormWizardComponent implements OnInit, OnDestroy {
 
