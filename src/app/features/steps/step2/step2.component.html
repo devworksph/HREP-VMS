@@ -116,25 +116,51 @@
       <div class="description">
         <p>Secure your spot and verify your identity--upload a valid ID to proceed with your museum visit registration</p>
         <div class="id-upload">
-          {{isUploading}}
           <p-fileupload
-            [auto]="false"
-            [disabled]="isUploading"
             mode="basic"
             name="files"
-            url="{{apiUrl}}/upload"
             accept=".jpg, .jpeg, .png"
-            maxFileSize="maxFileSize * 1024 * 1024"
-            [chooseLabel]="!isUploading ? 'Click to Upload ID' : 'Uploading'"
             chooseIcon="fa-solid fa-upload"
-            (onSelect)="handleFileSelect($event)"
-          />  
+            maxFileSize="maxFileSize * 1024 * 1024"
+            [auto]="true"
+            [url]="vmsCmsUrl + '/upload'"
+            [disabled]="isFileUploading"
+            [chooseLabel]="!isFileUploading ? 'Click to Upload ID' : 'Uploading'"
+            (onBeforeUpload)="onBeforeUpload($event)"
+            (onUpload)="onUploadSuccess($event)"
+            (onError)="onUploadError($event)"
+          />
+          <div *ngIf="isFileUploading" class="mt-2 text-sm text-gray-600">
+            <i class="pi pi-spin pi-spinner"></i> Uploading file, please wait…
+          </div>
+          <div *ngIf="uploadMessage" class="mt-2 text-sm success-message">
+            {{ uploadMessage }}
+          </div>
         </div>
 
         @if (step1Data.booking_type === 'Group') {
           <div class="template-upload">
             <p><a href="">Download the Excel template here</a>, fill out, and upload your group list below</p>
-            <p-fileupload mode="basic" name="demo[]" chooseIcon="pi pi-upload" url="#" accept=".csv" maxFileSize="1000000" (onUpload)="onUpload($event)" [auto]="true" chooseLabel="Click to Upload Template" />
+            <p-fileupload
+              mode="basic"
+              name="files"
+              accept=".csv"
+              chooseIcon="fa-solid fa-upload"
+              maxFileSize="maxFileSize * 1024 * 1024"
+              [auto]="true"
+              [url]="vmsCmsUrl + '/upload-csv'"
+              [disabled]="isCsvFileUploading"
+              [chooseLabel]="!isCsvFileUploading ? 'Click to Upload Template' : 'Uploading'"
+              (onBeforeUpload)="onBeforeUploadCsv($event)"
+              (onUpload)="onUploadSuccessCsv($event)"
+              (onError)="onUploadErrorCsv($event)"
+            />
+            <div *ngIf="isCsvFileUploading" class="mt-2 text-sm text-gray-600">
+              <i class="pi pi-spin pi-spinner"></i> Uploading csv file, please wait…
+            </div>
+            <div *ngIf="uploadMessageCsv" class="mt-2 text-sm success-message">
+              {{ uploadMessageCsv }}
+            </div>
           </div>
         }
         
