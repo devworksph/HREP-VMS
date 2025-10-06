@@ -1,3 +1,5 @@
+@use 'base/media-queries' as mq;
+
 .ngx-form-wizard {
   font-family: 'Times New Roman', sans-serif;
   display: flex;
@@ -112,6 +114,10 @@
       align-content: flex-start;
       flex-direction: row;
 
+      @include mq.for-phone-only {
+        flex-direction: column;
+      }
+
       
       .p-fileupload-basic {
           justify-content: left;
@@ -130,6 +136,11 @@
           &.column-one {
               border-right: 1px solid rgba(26, 26, 26, 0.3);
               height: 850px;
+
+              @include mq.for-phone-only {
+                border-right: none;
+                height: auto;
+              }
           }
 
           .wizard-details {
@@ -244,6 +255,10 @@
           &.column-two {
             .wizard-details {
                 padding: 30px 15px;
+
+                @include mq.for-phone-only {
+                  padding: 0 30px;
+                }
             }
           }
       }
@@ -255,6 +270,10 @@
       width: 100%;
       position: absolute;
       bottom: 0;
+
+      @include mq.for-phone-only {
+        position: relative;
+      }
 
       button {
         font-family: var(--lexend-deca-light-font), sans-serif;
@@ -280,6 +299,11 @@
           position: absolute;
           right: 25px;
           bottom: 30px;
+
+          @include mq.for-phone-only {
+            position: relative;
+            right: -30px;
+          }
         }
       }
     }
