@@ -273,6 +273,11 @@
 
       @include mq.for-phone-only {
         position: relative;
+        justify-content: flex-end;
+
+        &.has-back {
+          justify-content: space-between;
+        }
       }
 
       button {
@@ -292,6 +297,10 @@
           position: absolute;
           left: 25px;
           bottom: 30px;
+
+          @include mq.for-phone-only {
+            position: relative;
+          }
         }
 
         &.next-btn,
@@ -302,7 +311,6 @@
 
           @include mq.for-phone-only {
             position: relative;
-            right: -30px;
           }
         }
       }
