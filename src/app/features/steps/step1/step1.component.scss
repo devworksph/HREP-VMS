@@ -1,3 +1,5 @@
+@use 'base/media-queries' as mq;
+
 .description {
     margin-bottom: var(--spacing-xxl);
 
@@ -17,6 +19,10 @@
     margin-top: var(--spacing-6xl);
     font-size: var(--font-size-sm);
     font-family: var(--proximanova-reg-font);
+
+    @include mq.for-phone-only {
+        display: none;
+    }
 
     ul {
         list-style-type: none;
