@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -27,14 +28,16 @@ import { environment } from '~environments/environment';
     FileUploadModule,
     SelectModule,
     ProgressBarModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    CommonModule
   ],
   templateUrl: './step2.component.html',
   styleUrl: './step2.component.scss',
 })
 export class Step2Component extends FormWizardStepBaseComponent {
   public step1Data: any;
-  public isUploading: boolean = false;
+  public isFileUploading: boolean = false;
+  public isCsvFileUploading: boolean = false;
   public uploadedFiles: any[] = [];
   public ageRange = [
     { name: '7-18', value: '7 - 18'},
@@ -47,7 +50,11 @@ export class Step2Component extends FormWizardStepBaseComponent {
     { name: 'Female', value: 'Female'},
   ];
   public apiUrl: string = '';
+  public vmsCmsUrl: string = '';
   public maxFileSize = 10; // 10mb
+  public uploadProgress = 0;
+  public uploadMessage = '';
+  public uploadMessageCsv = '';
 
   constructor(
     private wizardService: FormWizardService,
@@ -67,6 +74,7 @@ export class Step2Component extends FormWizardStepBaseComponent {
 
   ngOnInit() {
     this.apiUrl = environment.apiBaseUrl;
+    this.vmsCmsUrl = environment.vmsCmsBaseUrl;
     const step1Data = this.wizardService.getStepData(1);
     const date = DateTime.fromJSDate(step1Data.date);
     const formattedDate = date.toFormat('MMMM dd, yyyy');
@@ -84,55 +92,33 @@ export class Step2Component extends FormWizardStepBaseComponent {
   }
 
 
-  onUpload(event: any) {
-    console.log('File uploaded successfully', event);
+  onBeforeUpload(event: any) {
+    this.isFileUploading = true;
+    this.uploadMessage = '';
   }
 
-  public uploadFiles(files: File[]): Observable<any> {
-    console.log('files', files);
-    const formData = new FormData();
-    //formData.append('files', file, file.name)
-    files.forEach(file => formData.append('files', file, file.name));
-
-    // HttpRequest with multipart/form-data
-    const headers = new HttpHeaders();
-    const uploadReq = new HttpRequest(
-      'POST',
-      `${this.apiUrl}/upload`,
-      formData, 
-      {
-        headers: headers,
-        reportProgress: true,
-      }
-    );
-
-    return this.http.request(uploadReq);
+  onUploadSuccess(event: any) {
+    this.isFileUploading = false;
+    this.uploadMessage = 'File upload successful!';
   }
 
-  public handleFileSelect(event: any) {
-    this.isUploading = true;
-    const files = event.currentFiles;
+  onUploadError(event: any) {
+    this.isFileUploading = false;
+    this.uploadMessage = 'File upload failed.';
+  }
 
-    this.uploadFiles(files).subscribe(
-      (event: any) => {
-        switch (event.type) {
-          case HttpEventType.UploadProgress:
-            console.log('upload progress', event.total);
-            // if (event.total) {
-            //   this.uploadProgress = Math.round((100 * event.loaded) / event.total);
-            // }
-            break;
-          case HttpEventType.Response:
-            this.isUploading = false;
-            console.log('Upload response', event.body);
-            break;
-        }
-      },
-      (err) => {
-        console.error('Upload failed:', err);
-      }
-    );
+   onBeforeUploadCsv(event: any) {
+    this.isFileUploading = true;
+    this.uploadMessageCsv = '';
+  }
 
-    //this.isUploading = false;
+  onUploadSuccessCsv(event: any) {
+    this.isFileUploading = false;
+    this.uploadMessageCsv = 'File upload successful!';
+  }
+
+  onUploadErrorCsv(event: any) {
+    this.isFileUploading = false;
+    this.uploadMessageCsv = 'File upload failed.';
   }
 }
