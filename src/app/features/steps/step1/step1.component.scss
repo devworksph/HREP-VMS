@@ -82,3 +82,51 @@
         border: 1px solid var(--primitive-orange);
     }
 }
+
+.time-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.toggle-btn {
+  padding: 6px 15px;
+  border: 1px solid orange;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.toggle-btn.active {
+  background-color: orange;
+  color: white;
+}
+
+.time-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-option {
+  display: flex;
+  align-items: center;
+  border: 1px solid orange;
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.time-option.selected {
+  border: 2px solid orange;
+  background-color: #fff7ec;
+}
+
+.time-option label {
+  margin-left: 10px;
+  color: orange;
+  font-weight: 500;
+}
