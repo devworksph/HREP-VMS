@@ -18,6 +18,7 @@ import { Observable, finalize, map } from 'rxjs';
 import { VisitorTypes, BookingTypes, StudentTypes } from '../model/visitor-details.model';
 import { Municipalities } from '../model/municipality.model';
 import { Countries } from '../model/countries.model';
+import { TimePeriodFilterPipe } from './time-period-filter.pipe';
 
 @Component({
   selector: 'step1',
@@ -31,7 +32,8 @@ import { Countries } from '../model/countries.model';
     SelectModule,
     IftaLabelModule,
     HttpClientModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    TimePeriodFilterPipe
   ],
   templateUrl: './step1.component.html',
   styleUrl: './step1.component.scss',
@@ -54,14 +56,14 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   public isShowVisitPurpose = false;
   public isShowFixedSchedule = false;
 
-  times: string[] = [
-    '08:00', '09:00', '10:00', '11:00',
-    '12:00', '13:00', '14:00', '15:00',
-    '16:00', '17:00'
-  ];
+  // times: string[] = [
+  //   '08:00', '09:00', '10:00', '11:00',
+  //   '12:00', '13:00', '14:00', '15:00',
+  //   '16:00', '17:00'
+  // ];
 
   selectedPeriod: 'AM' | 'PM' = 'AM';
-  selectedTime: string | null = null;
+  // selectedTime: string | null = null;
 
   constructor(
     private wizardService: FormWizardService,
@@ -153,7 +155,7 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
 
   public onClickLocation(event: any) {
     const location = event.value.split(':')[0];
-    const date = this.form.get('date')?.value;
+    const date = this.form.get('date')?.value; 
 
     console.log('event', location);
 
@@ -225,20 +227,20 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     return this.form.get('visitorType')?.value === 'Foreign Visitor';
   }
 
-  get filteredTimes(): string[] {
-    return this.selectedPeriod === 'AM'
-      ? this.times.filter(t => parseInt(t) < 12)
-      : this.times.filter(t => parseInt(t) >= 12);
-  }
+  // get filteredTimes(): string[] {
+  //   return this.selectedPeriod === 'AM'
+  //     ? this.times.filter(t => parseInt(t) < 12)
+  //     : this.times.filter(t => parseInt(t) >= 12);
+  // }
 
   setPeriod(period: 'AM' | 'PM') {
     this.selectedPeriod = period;
-    this.selectedTime = null; // reset selection
+    // this.selectedTime = null; // reset selection
   }
 
-  selectTime(time: string) {
-    this.selectedTime = time;
-  }
+  // selectTime(time: string) {
+  //   this.selectedTime = time;
+  // }
 
   public countriesList() {
     return Countries.map(municipality => ({

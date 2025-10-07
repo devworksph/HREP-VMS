@@ -72,8 +72,7 @@
         <div class="section select-time">
           <h4>Select Time</h4>
 
-          
-          <div *ngIf="isShowFixedSchedule">
+          <div *ngIf="!isShowFixedSchedule">
             <div class="time-toggle">
               <button 
                 type="button" 
@@ -90,42 +89,10 @@
                 PM
               </button>
             </div>
-            <div class="section time-slots">
-              <div 
-                *ngFor="let time of filteredTimes"
-                [class.selected]="time === selectedTime"
-                (click)="selectTime(time)"
-                >
-                <p-radiobutton 
-                    value="{{ time }}-{{ time }}" 
-                    formControlName="timeSlot" />
-                  <label class="label">{{ time }}</label>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="!isShowFixedSchedule">
-            <!-- <div class="time-toggle">
-              <button 
-                type="button" 
-                class="toggle-btn" 
-                [class.active]="selectedPeriod === 'AM'"
-                (click)="setPeriod('AM')">
-                AM
-              </button>
-              <button 
-                type="button" 
-                class="toggle-btn" 
-                [class.active]="selectedPeriod === 'PM'"
-                (click)="setPeriod('PM')">
-                PM
-              </button>
-            </div> -->
             <ng-container *ngIf="schedules$ | async as schedules; else noAvailableSched">
               <div class="section time-slots">
                 <div
-                  *ngFor="let sched of schedules$ | async"
-                  [class.selected]="sched.time === selectedTime"
-                  (click)="selectTime(sched.time)"
+                  *ngFor="let sched of schedules | timePeriodFilter:selectedPeriod"
                   >
                   <p-radiobutton 
                       value="{{ sched.schedule_id }}-{{ sched.time }}" 
