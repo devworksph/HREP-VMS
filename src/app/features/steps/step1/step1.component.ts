@@ -168,10 +168,10 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     const locationArr = ['Library', 'Archives'];
     if (locationArr.includes(location)) {
       this.isShowVisitPurpose = true;
-      this.isShowFixedSchedule = true;
+      //this.isShowFixedSchedule = true;
     } else {
       this.isShowVisitPurpose = false;
-      this.isShowFixedSchedule = false;
+      //this.isShowFixedSchedule = false;
     }
   }
 
@@ -179,18 +179,24 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     this.isShedulesLoading = true;
     const locationId = this.form.get('location')?.value;
     const locationName = locationId.split(':')[0];
-    const selectedLocation = locationId.split(':')[1];
+    let selectedLocation = locationId.split(':')[1];
     const selectedDate = DateTime.fromJSDate(event).toFormat('yyyy-MM-dd');
 
-    const locationArr = ['Library', 'Archives'];
-    if (!locationArr.includes(locationName)) {
-      this.displayTime(
-        selectedLocation, selectedDate
-      );
-      this.isShowFixedSchedule = false;
-    } else {
-      this.isShowFixedSchedule = true;
+    if (locationName == 'All - Legislative Museum, Library, Archives') {
+      selectedLocation = 5;
     }
+
+    this.displayTime(
+      selectedLocation, selectedDate
+    );
+
+    // const locationArr = ['Library', 'Archives'];
+    // if (!locationArr.includes(locationName)) {
+      
+    //   this.isShowFixedSchedule = false;
+    // } else {
+    //   this.isShowFixedSchedule = true;
+    // }
   }
 
   private displayTime(
