@@ -66,8 +66,8 @@ export class Step2Component extends FormWizardStepBaseComponent {
       middleName: new FormControl(null, [Validators.required]),
       ageRange: new FormControl(null, [Validators.required]),
       sex: new FormControl(null, [Validators.required]),
-      isPwd: new FormControl(''),
-      isHouseEmployee: new FormControl('')
+      isSoloParent: new FormControl(''),
+      isHouseEmployee: new FormControl(''),
     };
     super(2, wizardService.getSteps(), true, formcontrols);
   }

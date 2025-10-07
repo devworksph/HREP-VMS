@@ -1,5 +1,53 @@
 export const Countries = [
     {
+        "name": "Brunei Darussalam",
+        "value": "Brunei Darussalam"
+    },
+    {
+        "name": "Cambodia",
+        "value": "Cambodia"
+    },
+    {
+        "name": "Timor-Leste",
+        "value": "Timor-Leste"
+    },
+    {
+        "name": "Indonesia",
+        "value": "Indonesia"
+    },
+    {
+        "name": "Laos",
+        "value": "Laos"
+    },
+    {
+        "name": "Malaysia",
+        "value": "Malaysia"
+    },
+    {
+        "name": "Myanmar",
+        "value": "Myanmar"
+    },
+    {
+        "name": "Philippines",
+        "value": "Philippines"
+    },
+    {
+        "name": "Singapore",
+        "value": "Singapore"
+    },
+    {
+        "name": "Thailand",
+        "value": "Thailand"
+    },
+    {
+        "name": "Vietnam",
+        "value": "Vietnam"
+    },
+    {
+        "name": "Afghanistan",
+        "value": "Afghanistan"
+    },
+    {
         "name": "Afghanistan",
         "value": "Afghanistan"
     },
@@ -127,10 +175,7 @@ export const Countries = [
         "name": "British Indian Ocean Territory",
         "value": "British Indian Ocean Territory"
     },
-    {
-        "name": "Brunei Darussalam",
-        "value": "Brunei Darussalam"
-    },
+    
     {
         "name": "Bulgaria",
         "value": "Bulgaria"
@@ -143,10 +188,7 @@ export const Countries = [
         "name": "Burundi",
         "value": "Burundi"
     },
-    {
-        "name": "Cambodia",
-        "value": "Cambodia"
-    },
+    
     {
         "name": "Cameroon",
         "value": "Cameroon"
@@ -403,10 +445,7 @@ export const Countries = [
         "name": "India",
         "value": "India"
     },
-    {
-        "name": "Indonesia",
-        "value": "Indonesia"
-    },
+    
     {
         "name": "Iran, Islamic Republic Of",
         "value": "Iran, Islamic Republic Of"
@@ -527,10 +566,7 @@ export const Countries = [
         "name": "Malawi",
         "value": "Malawi"
     },
-    {
-        "name": "Malaysia",
-        "value": "Malaysia"
-    },
+    
     {
         "name": "Maldives",
         "value": "Maldives"
@@ -595,10 +631,7 @@ export const Countries = [
         "name": "Mozambique",
         "value": "Mozambique"
     },
-    {
-        "name": "Myanmar",
-        "value": "Myanmar"
-    },
+    
     {
         "name": "Namibia",
         "value": "Namibia"
@@ -687,10 +720,7 @@ export const Countries = [
         "name": "Peru",
         "value": "Peru"
     },
-    {
-        "name": "Philippines",
-        "value": "Philippines"
-    },
+    
     {
         "name": "Pitcairn",
         "value": "Pitcairn"
@@ -779,10 +809,7 @@ export const Countries = [
         "name": "Sierra Leone",
         "value": "Sierra Leone"
     },
-    {
-        "name": "Singapore",
-        "value": "Singapore"
-    },
+    
     {
         "name": "Slovakia",
         "value": "Slovakia"
@@ -854,14 +881,6 @@ export const Countries = [
     {
         "name": "Tanzania, United Republic of",
         "value": "Tanzania, United Republic of"
-    },
-    {
-        "name": "Thailand",
-        "value": "Thailand"
-    },
-    {
-        "name": "Timor-Leste",
-        "value": "Timor-Leste"
     },
     {
         "name": "Togo",

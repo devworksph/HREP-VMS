@@ -68,7 +68,7 @@
   <div class="wizard-content column-threee">
     <div class="wizard-details">
       
-      <form [formGroup]="form" class="form">
+      <form [formGroup]="form" class="form" (ngSubmit)="$event.preventDefault()">
         <div class="section select-time">
           <h4>Select Time</h4>
           <ng-container *ngIf="schedules$ | async as schedules; else noAvailableSched">
@@ -90,6 +90,12 @@
         </div>
         <div class="section booking-details">
           <h4>Booking Details</h4>
+          <div *ngIf="isShowVisitPurpose">
+            <p-iftalabel>
+              <input pInputText formControlName="purposeOfVisit" autocomplete="off" />
+              <label>Purpose of Visit</label>
+            </p-iftalabel>
+          </div>
           <div>
             <p-iftalabel class="w-full">
               <p-select
@@ -102,7 +108,12 @@
               <label>Select Type of Visitor</label>
             </p-iftalabel>
           </div>
-          
+          <div *ngIf="form.get('visitorType')?.value === 'Private Sector'">
+            <p-iftalabel>
+              <input pInputText formControlName="companyName" autocomplete="off" />
+              <label>Company Name</label>
+            </p-iftalabel>
+          </div>
           <div>
             <p-iftalabel class="w-full">
               <p-select
