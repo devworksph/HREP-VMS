@@ -71,22 +71,57 @@
       <form [formGroup]="form" class="form" (ngSubmit)="$event.preventDefault()">
         <div class="section select-time">
           <h4>Select Time</h4>
-          <ng-container *ngIf="schedules$ | async as schedules; else noAvailableSched">
+
+          
+          <div *ngIf="isShowFixedSchedule">
+            <div class="time-toggle">
+              <button 
+                type="button" 
+                class="toggle-btn" 
+                [class.active]="selectedPeriod === 'AM'"
+                (click)="setPeriod('AM')">
+                AM
+              </button>
+              <button 
+                type="button" 
+                class="toggle-btn" 
+                [class.active]="selectedPeriod === 'PM'"
+                (click)="setPeriod('PM')">
+                PM
+              </button>
+            </div>
             <div class="section time-slots">
-              <div *ngFor="let sched of schedules$ | async">
+              <div 
+                *ngFor="let time of filteredTimes"
+                [class.selected]="time === selectedTime"
+                (click)="selectTime(time)"
+                >
                 <p-radiobutton 
-                    value="{{ sched.schedule_id }}-{{ sched.time }}" 
+                    value="{{ time }}-{{ time }}" 
                     formControlName="timeSlot" />
-                  <label class="label">{{ sched.time }}</label>
+                  <label class="label">{{ time }}</label>
               </div>
             </div>
-          </ng-container>
-          <ng-template #noAvailableSched>
-            <div class="alert-msg">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-              No available time slot for the selected date
-            </div>
-          </ng-template>
+          </div>
+          <div *ngIf="!isShowFixedSchedule">
+            <ng-container *ngIf="schedules$ | async as schedules; else noAvailableSched">
+              <div class="section time-slots">
+                <div *ngFor="let sched of schedules$ | async">
+                  <p-radiobutton 
+                      value="{{ sched.schedule_id }}-{{ sched.time }}" 
+                      formControlName="timeSlot" />
+                    <label class="label">{{ sched.time }}</label>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noAvailableSched>
+              <div class="alert-msg">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                No available time slot for the selected date
+              </div>
+            </ng-template>
+          </div>
+          
         </div>
         <div class="section booking-details">
           <h4>Booking Details</h4>
