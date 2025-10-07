@@ -56,12 +56,12 @@
           <p class="detail-field">Age Range</p>
           <p class="detail-value">{{ step2Data.ageRange }}</p>
 
-          <p class="detail-field">PWD (Person with Disability)?</p>
+          <p class="detail-field">Is Solo Parent?</p>
           <p class="detail-value">
-            {{ step2Data.isPwd ? 'Yes' : 'No'}}
+            {{ step2Data.isSoloParent ? 'Yes' : 'No'}}
           </p>
 
-          <p class="detail-field">House Employee?</p>
+          <p class="detail-field">Is House of Representatives Employee?</p>
           <p class="detail-value">{{ step2Data.isHouseEmployee ? 'Yes' : 'No'}}</p>
         </div>
       </div>
@@ -83,7 +83,15 @@
             </div>
             <div>
               <p-iftalabel>
-                <input pInputText formControlName="mobileNo" autocomplete="off" />
+                <input
+                  pInputText
+                  formControlName="mobileNo"
+                  autocomplete="off"
+                  placeholder="+639XXXXXXXXX"
+                  (keypress)="allowOnlyNumbers($event)"
+                  (input)="limitToTenDigits($event)"
+                  (blur)="onMobileBlur()"
+                />
                 <label>Mobile number</label>
               </p-iftalabel>
               <p class="small">(Enter your country code + remaining mobile numbers)<br />example: +63</p>

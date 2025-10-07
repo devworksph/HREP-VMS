@@ -45,12 +45,8 @@
         <form [formGroup]="form" class="form">
           <div class="section visitor-details">
             <h4>Visitors Details</h4>
-
-            <div>
-              <p-iftalabel>
-                <input pInputText formControlName="lastName" autocomplete="off" />
-                <label>Last Name</label>
-              </p-iftalabel>
+            <div class="required">
+              * All fields are  required
             </div>
             <div>
               <p-iftalabel>
@@ -64,7 +60,12 @@
                 <label>Middle Name</label>
               </p-iftalabel>
             </div>
-            
+            <div>
+              <p-iftalabel>
+                <input pInputText formControlName="lastName" autocomplete="off" />
+                <label>Last Name</label>
+              </p-iftalabel>
+            </div>
             <div>
               <p-iftalabel>
                 <p-select
@@ -89,22 +90,25 @@
                 <label>Sex</label>
               </p-iftalabel>
             </div>
+            <div>
+              Tick box if applicable
+            </div>
             <div class="checkboxes">
-                <p-checkbox
-                  formControlName="isPwd"
-                  value="yes"
-                  binary="true"
-                />
-                <label class="label">PWD? (Person with Disability)</label>
-              </div>
-              <div class="checkboxes">
-                <p-checkbox
-                  formControlName="isHouseEmployee"
-                  value="yes"
-                  binary="true"
-                />
-                <label class="label">Are you a House Employee?</label>
-              </div>
+              <p-checkbox
+                formControlName="isSoloParent"
+                value="yes"
+                binary="true"
+              />
+              <label class="label">Are you a Solo Parent?</label>
+            </div>
+            <div class="checkboxes">
+              <p-checkbox
+                formControlName="isHouseEmployee"
+                value="yes"
+                binary="true"
+              />
+              <label class="label">Are you an employee of the House of Representatives?</label>
+            </div>
           </div>
         </form>
       </div>

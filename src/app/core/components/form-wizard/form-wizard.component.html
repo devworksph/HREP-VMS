@@ -49,6 +49,7 @@
       @if (isLastStep) {
         <button
           class="wizard-action-btn finish-btn"
+          [disabled]="!activeStepInfo.dataValidated"
           (click)="finishWizard()">
           {{ finishActionBtnLabel }}
         </button>

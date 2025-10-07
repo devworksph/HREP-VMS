@@ -8,6 +8,7 @@ import { FormWizardStepBaseComponent } from '~core/components/form-wizard/form-w
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DatePickerClasses, DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { StrapiService } from '~core/services/strapi.service';
@@ -26,6 +27,7 @@ import { Countries } from '../model/countries.model';
     ReactiveFormsModule,
     RadioButtonModule,
     DatePickerModule,
+    InputTextModule,
     SelectModule,
     IftaLabelModule,
     HttpClientModule,
@@ -48,6 +50,7 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   public availableSchedules: ISchedule[] = [];
   public isLocationsLoaded = false;
   public isShedulesLoading = false;
+  public isShowVisitPurpose = false;
 
   constructor(
     private wizardService: FormWizardService,
@@ -57,9 +60,11 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
       location: new FormControl('', [Validators.required]),
       date: new FormControl('', [Validators.required]),
       timeSlot: new FormControl('', [Validators.required]),
+      purposeOfVisit: new FormControl(''),
       visitorType: new FormControl('', [Validators.required]),
       bookingType: new FormControl('', [Validators.required]),
       studentType: new FormControl(''),
+      companyName: new FormControl(''),
       municipalities: new FormControl(''),
       countryOfOrigin: new FormControl('')
     };
@@ -91,7 +96,10 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   }
 
   public onClickLocation(event: any) {
+    const location = event.value.split(':')[0];
     const date = this.form.get('date')?.value;
+
+    console.log('event', location);
 
     if (date) {
       const selectedLocation = event.value.split(':')[1];
@@ -99,6 +107,13 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
       this.displayTime(
         selectedLocation, selectedDate
       );
+    }
+
+    const locationArr = ['Library', 'Archives'];
+    if (locationArr.includes(location)) {
+      this.isShowVisitPurpose = true;
+    } else {
+      this.isShowVisitPurpose = false;
     }
   }
 

@@ -166,7 +166,7 @@
               h4 {
                   font-size: 20px;
                   font-weight: 700;
-                  margin-bottom: 30px;
+                  margin-bottom: 15px;
               }
 
               .title {
@@ -222,6 +222,7 @@
 
                   .small {
                     font-size: 12px;
+                    line-height: 18px;
                   }
 
                   .p-radiobutton-checked .p-radiobutton-box,
@@ -412,3 +413,13 @@
     height: 35px;
   }
 }
+
+.p-dialog {
+    margin: 10px 30px;
+
+    .p-button {
+      background-color: #1890ff !important;
+      border-color: #1890ff !important;
+    }
+}
+
