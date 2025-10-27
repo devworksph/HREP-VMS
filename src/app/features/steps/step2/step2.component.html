@@ -26,6 +26,9 @@
 
         @if (step1Data.visitor_type === 'Local Government') {
           <div class="schedule-selection">
+            <span>Province: </span>{{ step1Data.province }}
+          </div>
+          <div class="schedule-selection">
             <span>Municipality: </span>{{ step1Data.municipality }}
           </div>
         }
@@ -52,18 +55,45 @@
               <p-iftalabel>
                 <input pInputText formControlName="firstName" autocomplete="off" />
                 <label>First Name</label>
+                <div
+                  *ngIf="
+                    form.get('firstName')?.invalid &&
+                    form.get('firstName')?.touched
+                  "
+                  class="required"
+                >
+                  First name is required.
+                 </div>
               </p-iftalabel>
             </div>
             <div>
               <p-iftalabel>
                 <input pInputText formControlName="middleName" autocomplete="off" />
                 <label>Middle Name</label>
+                <div
+                  *ngIf="
+                    form.get('middleName')?.invalid &&
+                    form.get('middleName')?.touched
+                  "
+                  class="required"
+                >
+                  Middle name is required.
+                 </div>
               </p-iftalabel>
             </div>
             <div>
               <p-iftalabel>
                 <input pInputText formControlName="lastName" autocomplete="off" />
                 <label>Last Name</label>
+                <div
+                  *ngIf="
+                    form.get('lastName')?.invalid &&
+                    form.get('lastName')?.touched
+                  "
+                  class="required"
+                >
+                  Last name is required.
+                 </div>
               </p-iftalabel>
             </div>
             <div>
@@ -76,6 +106,15 @@
                   styleClass="w-full"
                 />
                 <label>Age Range</label>
+                <div
+                  *ngIf="
+                    form.get('ageRange')?.invalid &&
+                    form.get('ageRange')?.touched
+                  "
+                  class="required"
+                >
+                  Age name is required.
+                 </div>
               </p-iftalabel>
             </div>
             <div>
@@ -88,6 +127,15 @@
                   styleClass="w-full"
                 />
                 <label>Sex</label>
+                <div
+                  *ngIf="
+                    form.get('sex')?.invalid &&
+                    form.get('sex')?.touched
+                  "
+                  class="required"
+                >
+                  Sex is required.
+                 </div>
               </p-iftalabel>
             </div>
             <div>
@@ -139,6 +187,15 @@
           </div>
           <div *ngIf="uploadMessage" class="mt-2 text-sm success-message">
             {{ uploadMessage }}
+          </div>
+          <div
+            *ngIf="
+              form.get('uploadedIdFileName')?.invalid &&
+              form.get('uploadedIdFileName')?.touched
+            "
+            class="required"
+          >
+            ID is required.
           </div>
         </div>
 

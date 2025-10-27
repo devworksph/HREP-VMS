@@ -121,6 +121,18 @@
           <div>
             <p-iftalabel class="w-full">
               <p-select
+                [formControlName]="'bookingType'"
+                [options]="bookingTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Select Type of Booking</label>
+            </p-iftalabel>
+          </div>
+          <div>
+            <p-iftalabel class="w-full">
+              <p-select
                 [formControlName]="'visitorType'"
                 [options]="visitorTypes"
                 optionLabel="name"
@@ -136,22 +148,12 @@
               <label>Company Name</label>
             </p-iftalabel>
           </div>
-          <div>
-            <p-iftalabel class="w-full">
-              <p-select
-                [formControlName]="'bookingType'"
-                [options]="bookingTypes"
-                optionLabel="name"
-                optionValue="value"
-                styleClass="w-full"
-              />
-              <label>Select Type of Booking</label>
-            </p-iftalabel>
-          </div>
-          
         </div>
         <div class="section visitor-details">
-          <h4>Visitor Details</h4>
+
+          <h4 *ngIf="form.get('visitorType')?.value !== 'Others' && form.get('visitorType')?.value !== ''">
+            Visitor Details
+          </h4>
 
           @if (isStudent) {
           <div>
@@ -172,13 +174,20 @@
           <div>
             <p-iftalabel class="w-full">
               <p-select
-                [formControlName]="'municipalities'"
+                [options]="provinces"
+                optionLabel="province"
+                optionValue="province"
+                [formControlName]="'selectedProvince'"
+                (onChange)="onProvinceSelect()"
+              />
+              <label>Select Province</label>
+            </p-iftalabel>
+          </div>
+          <div *ngIf="municipalities.length > 0">
+            <p-iftalabel class="w-full">
+              <p-select
                 [options]="municipalities"
-                optionLabel="name"
-                optionValue="name"
-                styleClass="w-full"
-                [filter]="true"
-                filterBy="name"
+                [formControlName]="'selectedMunicipality'"
               />
               <label>Select Municipality</label>
             </p-iftalabel>

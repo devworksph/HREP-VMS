@@ -68,6 +68,7 @@ export class Step2Component extends FormWizardStepBaseComponent {
       sex: new FormControl(null, [Validators.required]),
       isSoloParent: new FormControl(''),
       isHouseEmployee: new FormControl(''),
+      uploadedIdFileName: new FormControl(null, [Validators.required])
     };
     super(2, wizardService.getSteps(), true, formcontrols);
   }
@@ -86,11 +87,11 @@ export class Step2Component extends FormWizardStepBaseComponent {
       visitor_type: step1Data.visitorType,
       booking_type: step1Data.bookingType,
       student_type: step1Data.studentType,
-        municipality: step1Data.municipalities,
-        country_of_origin: step1Data.countryOfOrigin,
-      };
+      province: step1Data.selectedProvince,
+      municipality: step1Data.selectedMunicipality,
+      country_of_origin: step1Data.countryOfOrigin,
+    };
   }
-
 
   onBeforeUpload(event: any) {
     this.isFileUploading = true;
@@ -100,6 +101,24 @@ export class Step2Component extends FormWizardStepBaseComponent {
   onUploadSuccess(event: any) {
     this.isFileUploading = false;
     this.uploadMessage = 'File upload successful!';
+
+    const response = event.originalEvent?.body;
+
+    if (response && response.status === 'success') {
+      const fileName = response.file_name;
+      const fileUrl = response.url;
+
+      console.log('File name:', fileName);
+      console.log('File URL:', fileUrl);
+
+      this.form.patchValue({
+        uploadedIdFileName: fileName
+      })
+
+      // You can store it in a variable if needed
+      // this.uploadedFileName = fileName;
+      // this.uploadedFileUrl = fileUrl;
+    }
   }
 
   onUploadError(event: any) {

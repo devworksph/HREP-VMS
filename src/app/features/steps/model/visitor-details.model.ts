@@ -3,6 +3,7 @@ export const VisitorTypes = [
     { name: 'Local Government', value: 'Local Government'},
     { name: 'Private Sector', value: 'Private Sector'},
     { name: 'Foreign Visitor', value: 'Foreign Visitor'},
+    { name: 'Others', value: 'Others'}
 ];
 
 export const BookingTypes = [
