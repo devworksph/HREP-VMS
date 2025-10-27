@@ -59,23 +59,31 @@
           <p class="detail-field">Age Range</p>
           <p class="detail-value">{{ step2Data.ageRange }}</p>
 
-          <p class="detail-field">Is Solo Parent?</p>
+          <p class="detail-field">Sex</p>
+          <p class="detail-value">{{ step2Data.sex }}</p>
+          
+          <!-- <p class="detail-field">Is Solo Parent?</p>
           <p class="detail-value">
             {{ step2Data.isSoloParent ? 'Yes' : 'No'}}
           </p>
 
           <p class="detail-field">Is House of Representatives Employee?</p>
-          <p class="detail-value">{{ step2Data.isHouseEmployee ? 'Yes' : 'No'}}</p>
+          <p class="detail-value">
+            {{ step2Data.isHouseEmployee ? 'Yes' : 'No'}}
+          </p> -->
         </div>
       </div>
     </div>
   </div>
   <div class="wizard-content column-threee">
     <div class="wizard-details">
-      <h4>Thank you for booking your visit with us</h4>
+      <h4>Receive your booking confirmation</h4>
       <div class="description">
         <p class="consent">
-          By providing your email address or mobile number, you acknowledge and agree that it will be used strictly for confirmation purposes related to your request. Any changes in schedule will also be communicated through the contact details you provide. Rest assured, your information will not be shared with any third parties and will be kept confidential in accordance with our <a href="#">privacy policy</a>.
+          Any changes in schedule will also be communicated through the contact details 
+          you provide. Rest assured, your information will not be shared with any 
+          third parties and will be kept confidential in 
+          accordance with our <a href="#" (click)="showPrivacyPolicyModal($event)">privacy policy</a>.
         </p>
         <form [formGroup]="form" class="form">
             <div>
@@ -90,11 +98,11 @@
                   class="required"
                 >
                   <div *ngIf="form.get('email')?.errors?.['required']">
-        Email is required.
-      </div>
-      <div *ngIf="form.get('email')?.errors?.['email']">
-        Please enter a valid email address.
-      </div>
+                    Email is required
+                  </div>
+                  <div *ngIf="form.get('email')?.errors?.['email']">
+                    Please enter a valid email address
+                  </div>
                 </div>
               </p-iftalabel>
             </div>
@@ -110,6 +118,15 @@
                   (blur)="onMobileBlur()"
                 />
                 <label>Mobile number</label>
+                <div
+                  *ngIf="
+                    form.get('mobileNo')?.invalid &&
+                    form.get('mobileNo')?.touched
+                  "
+                  class="required"
+                >
+                  Mobile number is required
+                </div>
               </p-iftalabel>
             </div>
           </form>
@@ -117,3 +134,24 @@
     </div>
   </div>
 </div>
+
+<p-dialog 
+  header="" 
+  [(visible)]="displayModal" 
+  [modal]="true" 
+  [closable]="false" 
+  [style]="{width: '400px'}">
+
+  <div class="privacy-policy">
+    <img src="./assets/img/logo.png" class="logo" />
+    <p><b>Data Privacy Consent</b></p>
+    <p>By filling out this form, you agree to let the
+      museum collect and use your personal information in line with 
+      the Data Privacy Act 2012 (RA 10173). Your details will only be used for 
+      visit records, safety, and reporting, and wont be shared with anyone else 
+      without your permission</p>
+
+      <button class="btn" (click)="agree()">I agree</button>
+  </div>
+
+</p-dialog>

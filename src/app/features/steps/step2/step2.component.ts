@@ -11,8 +11,10 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ButtonModule } from 'primeng/button';
 import { DateTime } from 'luxon';
 import { environment } from '~environments/environment';
 
@@ -29,6 +31,8 @@ import { environment } from '~environments/environment';
     SelectModule,
     ProgressBarModule,
     ProgressSpinnerModule,
+    DialogModule,
+    ButtonModule,
     CommonModule
   ],
   templateUrl: './step2.component.html',
@@ -55,6 +59,7 @@ export class Step2Component extends FormWizardStepBaseComponent {
   public uploadProgress = 0;
   public uploadMessage = '';
   public uploadMessageCsv = '';
+  public displayModal: boolean = false;
 
   constructor(
     private wizardService: FormWizardService,
@@ -139,5 +144,14 @@ export class Step2Component extends FormWizardStepBaseComponent {
   onUploadErrorCsv(event: any) {
     this.isFileUploading = false;
     this.uploadMessageCsv = 'File upload failed.';
+  }
+
+  public showPrivacyPolicyModal(event: Event): void {
+    event.preventDefault();
+    this.displayModal = true;
+  }
+
+  public agree() {
+    this.displayModal = false;
   }
 }
