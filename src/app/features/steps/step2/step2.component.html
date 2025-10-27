@@ -138,7 +138,7 @@
                  </div>
               </p-iftalabel>
             </div>
-            <div>
+            <!-- <div>
               Tick box if applicable
             </div>
             <div class="checkboxes">
@@ -156,7 +156,7 @@
                 binary="true"
               />
               <label class="label">Are you an employee of the House of Representatives?</label>
-            </div>
+            </div> -->
           </div>
         </form>
       </div>
@@ -166,7 +166,7 @@
     <div class="wizard-details">
       <h4>Identification</h4>
       <div class="description">
-        <p>Secure your spot and verify your identity--upload a valid ID to proceed with your museum visit registration</p>
+        <p>Upload a valid ID to proceed with your visit registration</p>
         <div class="id-upload">
           <p-fileupload
             mode="basic"
@@ -226,9 +226,34 @@
         }
         
         <p class="uploading-consent">
-          By uploading your valid ID, you agree that your information will be used only for identity verification. We handle all data with strict confidentiality and in compliance with the Philippine Data Privacy Act of 2012. For more details, please review our <a href="#">Privacy Policy</a>.
+          By uploading your valid ID, you agree that your information will be used
+          only for identity verification. We handle all data with strict
+          confidentiality and in compliance with the 
+          Philippine Data Privacy Act of 2012. For more details, 
+          please review our <a href="#" (click)="showPrivacyPolicyModal($event)">Privacy Policy</a>.
         </p>
       </div>
     </div>
   </div>
 </div>
+
+<p-dialog 
+  header="" 
+  [(visible)]="displayModal" 
+  [modal]="true" 
+  [closable]="false" 
+  [style]="{width: '400px'}">
+
+  <div class="privacy-policy">
+    <img src="./assets/img/logo.png" class="logo" />
+    <p><b>Data Privacy Consent</b></p>
+    <p>By filling out this form, you agree to let the
+      museum collect and use your personal information in line with 
+      the Data Privacy Act 2012 (RA 10173). Your details will only be used for 
+      visit records, safety, and reporting, and wont be shared with anyone else 
+      without your permission</p>
+
+      <button class="btn" (click)="agree()">I agree</button>
+  </div>
+
+</p-dialog>

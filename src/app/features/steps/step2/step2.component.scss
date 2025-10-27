@@ -20,3 +20,22 @@ a {
     font-size: 12px;
     margin-top: 5px;
 }
+
+.privacy-policy {
+    text-align: center;
+
+    .logo {
+        width: 200px;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        background-color: var(--primitive-blue);
+        color: var(--primitive-full-white);
+        border: 1px solid var(--primitive-blue);
+        font-size: 16px;
+        padding: 10px 40px;
+        border-radius: var(--border-radius-lg);
+    }
+}
+

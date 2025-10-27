@@ -1,25 +1,30 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormWizardService } from '~core/components/form-wizard/form-wizard.service';
 import { FormWizardStepBaseComponent } from '~core/components/form-wizard/form-wizard-step-base.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
+import { DialogModule } from 'primeng/dialog';
 import { DateTime } from 'luxon';
-import { last } from 'rxjs';
 
 @Component({
   selector: 'step3',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     InputTextModule,
-    IftaLabelModule
+    IftaLabelModule,
+    DialogModule
   ],
   templateUrl: './step3.component.html',
+  styleUrl: './step3.component.scss',
 })
 export class Step3Component extends FormWizardStepBaseComponent {
   public step1Data: any;
   public step2Data: any;
+  public displayModal: boolean = false;
 
   constructor(private wizardService: FormWizardService) {
     const formcontrols = {
@@ -56,7 +61,8 @@ export class Step3Component extends FormWizardStepBaseComponent {
       middleName: step2Data.middleName,
       ageRange: step2Data.ageRange,
       isSoloParent: step2Data.isSoloParent,
-      isHouseEmployee: step2Data.isHouseEmployee
+      isHouseEmployee: step2Data.isHouseEmployee,
+      sex: step2Data.sex
     }
   }
 
@@ -112,5 +118,15 @@ export class Step3Component extends FormWizardStepBaseComponent {
 
     event.target.value = '+63' + value;
     this.form.get('mobileNo')?.setValue(event.target.value, { emitEvent: false });
+  }
+
+  public showPrivacyPolicyModal(event: Event): void {
+    console.log('aaa');
+    event.preventDefault();
+    this.displayModal = true;
+  }
+
+  public agree() {
+    this.displayModal = false;
   }
 }

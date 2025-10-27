@@ -151,7 +151,11 @@
         </div>
         <div class="section visitor-details">
 
-          <h4 *ngIf="form.get('visitorType')?.value !== 'Others' && form.get('visitorType')?.value !== ''">
+          <h4 *ngIf="
+            form.get('visitorType')?.value !== 'Others' &&
+            form.get('visitorType')?.value !== 'Private Sector' &&
+            form.get('visitorType')?.value !== ''
+            ">
             Visitor Details
           </h4>
 
