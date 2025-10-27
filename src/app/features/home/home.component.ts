@@ -78,9 +78,7 @@ export class HomeComponent {
         this.ChangeDetectorRef.detectChanges();
         
       },
-      error => {
-
-    }
+      error => {}
     );
 
     console.log(allStepData);
