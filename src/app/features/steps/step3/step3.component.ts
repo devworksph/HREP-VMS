@@ -66,7 +66,7 @@ export class Step3Component extends FormWizardStepBaseComponent {
     }
   }
 
-  onMobileBlur(): void {
+  public onMobileBlur(): void {
     const control = this.form.get('mobileNo');
     if (!control) return;
 
@@ -74,8 +74,6 @@ export class Step3Component extends FormWizardStepBaseComponent {
     if (!value) return;
 
     const normalized = this.normalizeToE164(value);
-
-    // Validate if it has exactly 10 digits after +63
     const isPH = normalized.startsWith('+63');
     const digitsOnly = normalized.replace(/\D/g, '');
     const localPart = isPH ? digitsOnly.slice(2) : digitsOnly; // remove '63'
@@ -88,7 +86,7 @@ export class Step3Component extends FormWizardStepBaseComponent {
     }
   }
 
-  normalizeToE164(number: string): string {
+  public normalizeToE164(number: string): string {
     if (!number) return '';
     number = number.replace(/[\s\-()]/g, '');
 
@@ -98,7 +96,7 @@ export class Step3Component extends FormWizardStepBaseComponent {
     return '+63' + number; // fallback if no prefix
   }
 
-  allowOnlyNumbers(event: KeyboardEvent): void {
+  public allowOnlyNumbers(event: KeyboardEvent): void {
     const pattern = /[0-9]/;
     const inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
@@ -106,14 +104,12 @@ export class Step3Component extends FormWizardStepBaseComponent {
     }
   }
 
-  limitToTenDigits(event: any): void {
+  public limitToTenDigits(event: any): void {
     let value = event.target.value.replace(/\D/g, '');
 
-    // Remove the +63 if user manually types it
     if (value.startsWith('63')) value = value.slice(2);
     if (value.startsWith('0')) value = value.slice(1);
 
-    // Limit to 10 digits
     if (value.length > 10) value = value.slice(0, 10);
 
     event.target.value = '+63' + value;
@@ -121,7 +117,6 @@ export class Step3Component extends FormWizardStepBaseComponent {
   }
 
   public showPrivacyPolicyModal(event: Event): void {
-    console.log('aaa');
     event.preventDefault();
     this.displayModal = true;
   }
