@@ -26,6 +26,9 @@
 
         @if (step1Data.visitor_type === 'Local Government') {
           <div class="schedule-selection">
+            <span>Province: </span>{{ step1Data.province }}
+          </div>
+          <div class="schedule-selection">
             <span>Municipality: </span>{{ step1Data.municipality }}
           </div>
         }
@@ -79,6 +82,20 @@
               <p-iftalabel>
                 <input pInputText formControlName="email" autocomplete="off" />
                 <label>Email address</label>
+                <div
+                  *ngIf="
+                    form.get('email')?.invalid &&
+                    form.get('email')?.touched
+                  "
+                  class="required"
+                >
+                  <div *ngIf="form.get('email')?.errors?.['required']">
+        Email is required.
+      </div>
+      <div *ngIf="form.get('email')?.errors?.['email']">
+        Please enter a valid email address.
+      </div>
+                </div>
               </p-iftalabel>
             </div>
             <div>

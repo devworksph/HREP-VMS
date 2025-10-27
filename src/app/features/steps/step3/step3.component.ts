@@ -45,7 +45,8 @@ export class Step3Component extends FormWizardStepBaseComponent {
       visitor_type: step1Data.visitorType,
       booking_type: step1Data.bookingType,
       student_type: step1Data.studentType,
-      municipality: step1Data.municipalities,
+      province: step1Data.selectedProvince,
+      municipality: step1Data.selectedMunicipality,
       countryOfOrigin: step1Data.countryOfOrigin,
     }
 

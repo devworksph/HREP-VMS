@@ -142,6 +142,11 @@ export class FormWizardComponent implements OnInit, OnDestroy {
       stepConfig.dataValidated = component.form.valid;
       stepConfig.data = data;
 
+      if (component.form.invalid) {
+        component.form.markAllAsTouched();
+        return;
+      }
+
       this.wizardService.setStepData(component.stepNo, data);
     }
   }

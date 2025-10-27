@@ -6,17 +6,16 @@ import { DateTime } from 'luxon';
 import { FormWizardService } from '~core/components/form-wizard/form-wizard.service';
 import { FormWizardStepBaseComponent } from '~core/components/form-wizard/form-wizard-step-base.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { DatePickerClasses, DatePickerModule } from 'primeng/datepicker';
+import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { StrapiService } from '~core/services/strapi.service';
-import { ILocation } from '../model/locations.model';
+import { ILocation, IProvinceData, PhPlaces } from '../model/locations.model';
 import { ISchedule, IScheduleResponse } from '../model/schedules.model';
 import { Observable, finalize, map } from 'rxjs';
 import { VisitorTypes, BookingTypes, StudentTypes } from '../model/visitor-details.model';
-import { Municipalities } from '../model/municipality.model';
 import { Countries } from '../model/countries.model';
 import { TimePeriodFilterPipe } from './time-period-filter.pipe';
 
@@ -43,7 +42,6 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   public visitorTypes = VisitorTypes;
   public bookingTypes = BookingTypes;
   public studentTypes = StudentTypes;
-  public municipalities = Municipalities;
   public countries = Countries;
   public locations$!: Observable<ILocation[]>;
   public schedules$!: Observable<IScheduleResponse[]>;
@@ -56,14 +54,12 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   public isShowVisitPurpose = false;
   public isShowFixedSchedule = false;
 
-  // times: string[] = [
-  //   '08:00', '09:00', '10:00', '11:00',
-  //   '12:00', '13:00', '14:00', '15:00',
-  //   '16:00', '17:00'
-  // ];
-
   selectedPeriod: 'AM' | 'PM' = 'AM';
-  // selectedTime: string | null = null;
+
+  provinces: IProvinceData[] = [];
+  selectedProvince: string | null = null;
+  municipalities: string[] = [];
+  selectedMunicipality: string | null = null;
 
   constructor(
     private wizardService: FormWizardService,
@@ -78,75 +74,38 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
       bookingType: new FormControl('', [Validators.required]),
       studentType: new FormControl(''),
       companyName: new FormControl(''),
-      municipalities: new FormControl(''),
+      selectedProvince: new FormControl(),
+      selectedMunicipality: new FormControl(''),
       countryOfOrigin: new FormControl('')
     };
 
-    console.log(formcontrols);
-    
     super(1, wizardService.getSteps(), true, formcontrols);
   }
 
   ngOnInit() {
     const today = DateTime.local();
-    
-    // this.fixSchedules = {
-    //   'schedules': [
-    //     {
-    //       schedule_id: 1,
-    //       time: "08:00"
-    //     },
-    //     {
-    //       schedule_id: 2,
-    //       time: "09:00"
-    //     },
-    //     {
-    //       schedule_id: 3,
-    //       time: "10:00"
-    //     },
-    //     {
-    //       schedule_id: 4,
-    //       time: "11:00"
-    //     },
-    //     {
-    //       schedule_id: 5,
-    //       time: "12:00"
-    //     },
-    //     {
-    //       schedule_id: 6,
-    //       time: "13:00"
-    //     },
-    //     {
-    //       schedule_id: 7,
-    //       time: "14:00"
-    //     },
-    //     {
-    //       schedule_id: 8,
-    //       time: "15:00"
-    //     },
-    //     {
-    //       schedule_id: 9,
-    //       time: "16:00"
-    //     },
-    //     {
-    //       schedule_id: 10,
-    //       time: "17:00"
-    //     }
-    //   ]
-    // }
-    this.minDate = today.plus({ days: 5 }).toJSDate();
+    this.preparePhPlaces();
 
+    this.minDate = today.plus({ days: 5 }).toJSDate();
     this.locations$ = this.strapiService.getLocations();
+    
     this.countriesList();
   }
 
   ngAfterViewInit() {
     const step1Data = this.wizardService.getStepData(1);
+  }
 
-    // if (step1Data) {
-    //   this.loadLocations();
-    //   this.getHorSchedules();
-    // }
+  get isStudent() {
+    return this.form.get('visitorType')?.value === 'Student';
+  }
+
+  get isLGU() {
+    return this.form.get('visitorType')?.value === 'Local Government';
+  }
+
+  get isForeignVisitor() {
+    return this.form.get('visitorType')?.value === 'Foreign Visitor';
   }
 
   public saveStepData() {
@@ -156,8 +115,6 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   public onClickLocation(event: any) {
     const location = event.value.split(':')[0];
     const date = this.form.get('date')?.value; 
-
-    console.log('event', location);
 
     if (date) {
       const selectedLocation = event.value.split(':')[1];
@@ -170,10 +127,8 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     const locationArr = ['Library', 'Archives'];
     if (locationArr.includes(location)) {
       this.isShowVisitPurpose = true;
-      //this.isShowFixedSchedule = true;
     } else {
       this.isShowVisitPurpose = false;
-      //this.isShowFixedSchedule = false;
     }
   }
 
@@ -191,14 +146,6 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     this.displayTime(
       selectedLocation, selectedDate
     );
-
-    // const locationArr = ['Library', 'Archives'];
-    // if (!locationArr.includes(locationName)) {
-      
-    //   this.isShowFixedSchedule = false;
-    // } else {
-    //   this.isShowFixedSchedule = true;
-    // }
   }
 
   private displayTime(
@@ -215,37 +162,40 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     );
   }
 
-  get isStudent() {
-    return this.form.get('visitorType')?.value === 'Student';
-  }
-
-  get isLGU() {
-    return this.form.get('visitorType')?.value === 'Local Government';
-  }
-
-  get isForeignVisitor() {
-    return this.form.get('visitorType')?.value === 'Foreign Visitor';
-  }
-
-  // get filteredTimes(): string[] {
-  //   return this.selectedPeriod === 'AM'
-  //     ? this.times.filter(t => parseInt(t) < 12)
-  //     : this.times.filter(t => parseInt(t) >= 12);
-  // }
-
-  setPeriod(period: 'AM' | 'PM') {
+  public setPeriod(period: 'AM' | 'PM') {
     this.selectedPeriod = period;
-    // this.selectedTime = null; // reset selection
   }
-
-  // selectTime(time: string) {
-  //   this.selectedTime = time;
-  // }
 
   public countriesList() {
     return Countries.map(municipality => ({
       ...municipality,
       value: municipality.name
     }));
+  }
+
+  public onProvinceSelect() {    
+    const selectedProvince = this.form.get('selectedProvince')?.value;
+    const selected = this.provinces.find(p => p.province === selectedProvince);
+    this.municipalities = selected ? selected.municipalities : [];
+    this.form.get('selectedMunicipality')?.reset();
+  }
+
+  private preparePhPlaces() {
+    this.provinces = Object.values(PhPlaces)
+      .flatMap(region =>
+        Object.entries(region.province_list).map(([province, details]) => ({
+          province: this.toTitleCase(province),
+          municipalities: Object.keys(details.municipality_list)
+            .map(this.toTitleCase)
+            .sort((a, b) => a.localeCompare(b)),
+        }))
+      )
+      .sort((a, b) => a.province.localeCompare(b.province));
+  }
+
+  private toTitleCase(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/\b\w/g, char => char.toUpperCase());
   }
 }
