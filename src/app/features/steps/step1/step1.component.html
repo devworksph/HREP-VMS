@@ -93,6 +93,8 @@
               <div class="section time-slots">
                 <div
                   *ngFor="let sched of schedules | timePeriodFilter:selectedPeriod"
+                  [class.selected]="form.get('timeSlot')?.value === sched.schedule_id + '-' + sched.time"
+                  class="time-slot"
                   >
                   <p-radiobutton 
                       value="{{ sched.schedule_id }}-{{ sched.time }}" 
