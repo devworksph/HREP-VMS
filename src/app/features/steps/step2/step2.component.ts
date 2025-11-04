@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { FormWizardService } from '~core/components/form-wizard/form-wizard.service';
 import { FormWizardStepBaseComponent } from '~core/components/form-wizard/form-wizard-step-base.component';
+import { CookieService } from 'ngx-cookie-service';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -33,7 +35,11 @@ import { environment } from '~environments/environment';
     ProgressSpinnerModule,
     DialogModule,
     ButtonModule,
-    CommonModule
+    CommonModule,
+    FormsModule
+  ],
+  providers: [
+    CookieService
   ],
   templateUrl: './step2.component.html',
   styleUrl: './step2.component.scss',
@@ -52,6 +58,7 @@ export class Step2Component extends FormWizardStepBaseComponent {
   public sex = [
     { name: 'Male', value: 'Male'},
     { name: 'Female', value: 'Female'},
+    { name: 'Prefer not to say', value: 'Prefer not to say'},
   ];
   public apiUrl: string = '';
   public vmsCmsUrl: string = '';
@@ -60,9 +67,14 @@ export class Step2Component extends FormWizardStepBaseComponent {
   public uploadMessage = '';
   public uploadMessageCsv = '';
   public displayModal: boolean = false;
+  public showPrivacyPolicyModal = true;
+  public hasReadNotice = false;
+  public hasGivenConsent = false;
+  public hasConsented = true;
 
   constructor(
     private wizardService: FormWizardService,
+    private cookieService: CookieService,
     private http: HttpClient
   ) {
     const formcontrols = {
@@ -79,6 +91,9 @@ export class Step2Component extends FormWizardStepBaseComponent {
   }
 
   ngOnInit() {
+    if (this.cookieService.get('user_consent_vms')) {
+      this.showPrivacyPolicyModal = false;
+    }
     this.apiUrl = environment.apiBaseUrl;
     this.vmsCmsUrl = environment.vmsCmsBaseUrl;
     const step1Data = this.wizardService.getStepData(1);
@@ -146,12 +161,22 @@ export class Step2Component extends FormWizardStepBaseComponent {
     this.uploadMessageCsv = 'File upload failed.';
   }
 
-  public showPrivacyPolicyModal(event: Event): void {
-    event.preventDefault();
-    this.displayModal = true;
+  onOpenPrivacyPolicy() {
+    this.showPrivacyPolicyModal = true;
   }
 
-  public agree() {
-    this.displayModal = false;
+  agreeAndContinue() {
+    if (this.hasReadNotice && this.hasGivenConsent) {
+      this.hasConsented = true;
+      this.cookieService.set('user_consent_vms', 'true', 1, '/');
+      this.showPrivacyPolicyModal = false;
+    } else {
+      this.hasConsented = false;
+    }
+  }
+
+  declineAndExit() {
+    this.cookieService.delete('user_consent_vms');
+    this.showPrivacyPolicyModal = false;
   }
 }

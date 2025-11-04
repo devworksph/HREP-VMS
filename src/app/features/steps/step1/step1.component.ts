@@ -93,7 +93,27 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   }
 
   ngAfterViewInit() {
+    let period: 'AM' | 'PM' = 'PM';
+
     const step1Data = this.wizardService.getStepData(1);
+    const timeSlot = step1Data.timeSlot.split(':');
+    const hour = Number(timeSlot[0]);
+    const location = step1Data.location.split(':');
+    const locationId = location[1];
+    const selectedDate = DateTime.fromJSDate(
+      step1Data.date
+    ).toFormat('yyyy-MM-dd');
+   
+    period = 'PM';
+    if (hour < 12) {
+      period = 'AM';
+    }
+
+    this.setPeriod(period);
+    this.displayTime(
+      locationId,
+      selectedDate
+    );
   }
 
   get isStudent() {
@@ -118,17 +138,17 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
 
     if (date) {
       const selectedLocation = event.value.split(':')[1];
-      const selectedDate = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');;
+      const selectedDate = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');
       this.displayTime(
         selectedLocation, selectedDate
       );
     }
 
-    const locationArr = ['Library', 'Archives'];
+    const locationArr = ['Library'];
     if (locationArr.includes(location)) {
-      this.isShowVisitPurpose = true;
-    } else {
       this.isShowVisitPurpose = false;
+    } else {
+      this.isShowVisitPurpose = true;
     }
   }
 
