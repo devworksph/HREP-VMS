@@ -7,6 +7,7 @@ import { Observable, map } from 'rxjs';
 import { FormWizardService } from '~core/components/form-wizard/form-wizard.service';
 import { FormWizardStepBaseComponent } from '~core/components/form-wizard/form-wizard-step-base.component';
 import { CookieService } from 'ngx-cookie-service';
+import { StrapiService } from '~core/services/strapi.service';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -18,6 +19,7 @@ import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { DateTime } from 'luxon';
+import { IPrivacyPolicy } from '../model/settings.model';
 import { environment } from '~environments/environment';
 
 @Component({
@@ -71,10 +73,12 @@ export class Step2Component extends FormWizardStepBaseComponent {
   public hasReadNotice = false;
   public hasGivenConsent = false;
   public hasConsented = true;
+  public privacyPolicy$!: Observable<IPrivacyPolicy>;
 
   constructor(
     private wizardService: FormWizardService,
     private cookieService: CookieService,
+     private strapiService: StrapiService,
     private http: HttpClient
   ) {
     const formcontrols = {
@@ -101,8 +105,11 @@ export class Step2Component extends FormWizardStepBaseComponent {
     const formattedDate = date.toFormat('MMMM dd, yyyy');
     const slotTime = step1Data.timeSlot.split('-')[1];
 
+    // privacy policy
+    this.privacyPolicy$ = this.strapiService.getPrivacyPolicy();
+
     this.step1Data = {
-      location: step1Data.location.split(':')[0],
+      location: step1Data.location.name,
       date: `${formattedDate} - ${slotTime}`,
       visitor_type: step1Data.visitorType,
       booking_type: step1Data.bookingType,

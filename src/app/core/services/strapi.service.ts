@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 import { environment } from '~environments/environment';
 import { ILocation } from '~features/steps/model/locations.model';
 import { ISchedule, IScheduleResponse } from '~features/steps/model/schedules.model';
+import { IPrivacyPolicy } from '~features/steps/model/settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ import { ISchedule, IScheduleResponse } from '~features/steps/model/schedules.mo
 export class StrapiService {
   private apiUrl = environment.apiBaseUrl;
   private locations$?: Observable<ILocation[]>;
+  private privacyPolicy$?: Observable<IPrivacyPolicy>;
 
   constructor(private http: HttpClient) {}
 
@@ -26,6 +28,17 @@ export class StrapiService {
     }
 
     return this.locations$;
+  }
+  
+  getPrivacyPolicy(): Observable<IPrivacyPolicy> {
+    if (!this.privacyPolicy$) {
+      this.privacyPolicy$ = this.http.get<any>(`${this.apiUrl}/privacy-policy`).pipe(
+        map(res => res.privacy_policy),
+        shareReplay(1)
+      );
+    }
+
+    return this.privacyPolicy$;
   }
 
   getSchedules(data: any): Observable<IScheduleResponse[]> {
@@ -54,7 +67,6 @@ export class StrapiService {
       observe: 'response'
     }).pipe(
       switchMap(res => {
-        console.log('resxxx', res)
         if (res.status === 200) {
           visitorId = res.body.visitor_id;
 

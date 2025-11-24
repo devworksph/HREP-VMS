@@ -32,7 +32,7 @@
               <div *ngFor="let location of locations$ | async" class="hor-location">
                 <p-radiobutton
                   name="location"
-                  [value]="location.name + ':' + location.id"
+                  [value]="{id: location.id, name: location.name, purpose: location.purpose}"
                   formControlName="location"
                   (onClick)="onClickLocation($event)"
                   >
@@ -116,7 +116,10 @@
           <h4>Booking Details</h4>
           <div *ngIf="isShowVisitPurpose">
             <p-iftalabel>
-              <input pInputText formControlName="purposeOfVisit" autocomplete="off" />
+              <input
+                pInputText
+                formControlName="purposeOfVisit"
+                autocomplete="off" />
               <label>Purpose of Visit</label>
             </p-iftalabel>
           </div>

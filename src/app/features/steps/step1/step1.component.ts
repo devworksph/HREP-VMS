@@ -96,24 +96,27 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
     let period: 'AM' | 'PM' = 'PM';
 
     const step1Data = this.wizardService.getStepData(1);
-    const timeSlot = step1Data.timeSlot.split(':');
-    const hour = Number(timeSlot[0]);
-    const location = step1Data.location.split(':');
-    const locationId = location[1];
-    const selectedDate = DateTime.fromJSDate(
-      step1Data.date
-    ).toFormat('yyyy-MM-dd');
-   
-    period = 'PM';
-    if (hour < 12) {
-      period = 'AM';
-    }
+    
+    if (step1Data) {
+      const timeSlot = step1Data.timeSlot.split(':');
+      const hour = Number(timeSlot[0]);
+      const location = step1Data.location.split(':');
+      const locationId = location[1];
+      const selectedDate = DateTime.fromJSDate(
+        step1Data.date
+      ).toFormat('yyyy-MM-dd');
+    
+      period = 'PM';
+      if (hour < 12) {
+        period = 'AM';
+      }
 
-    this.setPeriod(period);
-    this.displayTime(
-      locationId,
-      selectedDate
-    );
+      this.setPeriod(period);
+      this.displayTime(
+        locationId,
+        selectedDate
+      );
+    }
   }
 
   get isStudent() {
@@ -133,38 +136,44 @@ export class Step1Component extends FormWizardStepBaseComponent implements OnIni
   }
 
   public onClickLocation(event: any) {
-    const location = event.value.split(':')[0];
+    const selectedLocation = this.form.get('location')?.value;
+    const location = selectedLocation.name;
     const date = this.form.get('date')?.value; 
 
     if (date) {
-      const selectedLocation = event.value.split(':')[1];
+      const selectedLocationId = selectedLocation.id;
       const selectedDate = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');
       this.displayTime(
-        selectedLocation, selectedDate
+        selectedLocationId, selectedDate
       );
     }
 
-    const locationArr = ['Library'];
+    const locationArr = [''];
     if (locationArr.includes(location)) {
       this.isShowVisitPurpose = false;
+      this.form.patchValue({
+        purposeOfVisit: ''
+      });
     } else {
       this.isShowVisitPurpose = true;
+      this.form.patchValue({
+        purposeOfVisit: selectedLocation.purpose
+      });
     }
   }
 
   public onDateSelect(event: any) {
     this.isShedulesLoading = true;
-    const locationId = this.form.get('location')?.value;
-    const locationName = locationId.split(':')[0];
-    let selectedLocation = locationId.split(':')[1];
+    const selectedLocation = this.form.get('location')?.value;
+    const locationId = selectedLocation.id;
     const selectedDate = DateTime.fromJSDate(event).toFormat('yyyy-MM-dd');
 
-    if (locationName == 'All - Legislative Museum, Library, Archives') {
-      selectedLocation = 5;
-    }
+    // if (locationName == 'All - Legislative Museum, Library, Archives') {
+    //   locationId = 5;
+    // }
 
     this.displayTime(
-      selectedLocation, selectedDate
+      locationId, selectedDate
     );
   }
 
