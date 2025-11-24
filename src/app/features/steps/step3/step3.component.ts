@@ -45,7 +45,7 @@ export class Step3Component extends FormWizardStepBaseComponent {
 
     console.log('all', allStepData);
     this.step1Data = {
-      location: step1Data.location.split(':')[0],
+      location: step1Data.location.name,
       date: `${formattedDate} - ${slotTime}`,
       visitor_type: step1Data.visitorType,
       booking_type: step1Data.bookingType,
