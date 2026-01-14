@@ -230,6 +230,10 @@
                     border-color: var(--primitive-blue);
                     background: var(--primitive-blue);
                   }
+
+                  .p-radiobutton-checked .p-radiobutton-box .p-radiobutton-icon {
+                    display: none;
+                  }
               }
 
               .detail-field {
@@ -427,4 +431,3 @@
       border-color: #1890ff !important;
     }
 }
-
