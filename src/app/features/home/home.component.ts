@@ -81,10 +81,6 @@ export class HomeComponent {
       error => {}
     );
 
-    setTimeout(() => {
-      this.displaySuccessDialog = true;
-    }, 2000); // 3000 ms = 3 seconds
-
     console.log(allStepData);
   }
 
