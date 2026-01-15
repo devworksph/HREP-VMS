@@ -41,6 +41,7 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   isFirstStep: boolean = true;
   activeStepInfo: IWizardStep = <IWizardStep>{};
   componentChangesSub: Subscription | undefined;
+  isSubmitFinal: boolean = false;
 
   // Stepper variables
   stepperClass: string = '';
@@ -78,6 +79,7 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   }
 
   finishWizard(): void {
+    this.isSubmitFinal = true;
     this.finished.emit();
   }
 
