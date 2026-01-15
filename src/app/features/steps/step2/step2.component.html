@@ -237,7 +237,95 @@
   </div>
 </div>
 
-<p-dialog 
+<div class="modal-backdrop" *ngIf="showPrivacyPolicyModal">
+  <div class="modal">
+    <div class="privacy-policy">
+      <div class="logo-wrapper">
+        <img src="./assets/img/logo.png" class="logo" />
+      </div>
+      <h2>House of Representatives
+        Legislative Information Resources Management Department (LIRMD)
+        DATA PRIVACY NOTICE & CONSENT</h2>
+      <p>The Legislative Information Resources Management Department (LIRMD) of the House of
+        Representatives (HRep) is committed to protecting your personal information in accordance
+        with the Data Privacy Act of 2012 (Republic Act No. 10173) and its Implementing Rules and
+        Regulations (IRR).</p>
+
+      <h3>PURPOSE OF DATA COLLECTION</h3>
+      <p>The personal information you provide through this form will be collected and processed to: </p>
+      <ul class="text-left">
+        <li>Facilitate your request, inquiry, or transaction;</li>
+        <li>Provide access to LIRMD programs, services, and facilities;</li>
+        <li>Improve accessibility, inclusivity, and overall service quality;</li>
+        <li>Ensure website functionality, performance, and security; and</li>
+        <li>Comply with government reporting, documentation, and audit requirements</li>
+      </ul>
+
+      <h3>DATA COLLECTED</h3>
+      <p>Depending on the nature of your transaction, we may collect the following</p>
+      <ul class="text-left">
+        <li><strong>Technical Information (automatically collected): IP address</strong>, browser type, device
+          information, access date and time, and pages visited
+        </li>
+      </ul>
+      <p>
+        Providing this information is voluntary, but failure to do so may prevent us from processing
+        your request effectively
+      </p>
+      <h3>DATA PROTECTION AND RETENTION</h3>
+      <p>
+        Your personal data will be stored securely and accessed only by authorized personnel. It will
+        be retained only as long as necessary for the stated purposes or as required by law, in
+        accordance with <strong>Sections 20–22 of the IRR of RA 10173</strong>.
+      </p>
+      <h3>DATA SHARING</h3>
+      <p>
+        Your information will not be shared with unauthorized parties. It may be disclosed only to
+        authorized HRep personnel or other government agencies when required by law or regulation,
+        consistent with <strong>Rule IV, Section 18 of the IRR</strong> (principles of transparency, legitimate purpose,
+        and proportionality). 
+      </p>
+      <h3>YOUR RIGHTS</h3>
+      <p>You have the right to access, correct, or withdraw your personal data, and to file a complaint
+      with the <strong>National Privacy Commission (NPC)</strong> pursuant to <strong>Sections 16–19 of the Data
+      Privacy Act</strong> and its <strong>IRR</strong>.</p>
+      <h3>CONTACT US</h3>
+      <p>For any concerns or inquiries about data privacy, you may contact:</p>
+      <p class="text-center">
+        <strong>Atty. Ricardo D. Bering</strong> <br />
+        <i>Data Protection Officer</i> <br />
+        Email: ricardo.bering&#64;house.gov.ph <br />
+        Phone: (+632) 8952-4150</p>
+      <h3 class="text-left">CONSENT</h3>
+      <p class="text-left">Please confirm your agreement before proceeding:</p>
+      <label class="consent text-left">
+        <input type="checkbox" [(ngModel)]="hasReadNotice" id="readNotice" />
+        <div>
+          I have read and understood the above Data Privacy Notice.
+        </div>
+      </label>
+      <label class="consent text-left">
+        <input type="checkbox" [(ngModel)]="hasGivenConsent" id="giveConsent"/>
+        <div>
+          I give my consent to the collection and processing of my personal data by the Legislative
+          Information Resources Management Department (LIRMD) of the House of
+          Representatives, in accordance with the Data Privacy Act of 2012 (RA 10173) and its
+          Implementing Rules and Regulations (IRR).
+        </div>
+      </label>
+
+      <div *ngIf="!hasConsented" class="error">Please confirm both checkboxes before continuing.</div>
+      <div class="text-center btn-container">
+        <button class="btn btn-blue mr-1" (click)="agreeAndContinue()">Agree and Continue</button>
+        <button class="btn btn-grey" (click)="declineAndExit()">Decline and Exit</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<!-- <p-dialog 
   header="" 
   [(visible)]="showPrivacyPolicyModal" 
   [modal]="true" 
@@ -327,4 +415,4 @@
     
   </div>
 
-</p-dialog>
+</p-dialog> -->
