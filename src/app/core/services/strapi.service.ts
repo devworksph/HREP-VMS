@@ -86,7 +86,7 @@ export class StrapiService {
         console.log('loginRes', loginRes);
         const date = DateTime.fromJSDate(data.date);
         const formattedDate = date.toFormat('yyyy-MM-dd');
-        const location = data.location.split(':')[0];
+        const location = data.location.name;
 
         token = loginRes?.access_token;
         if (!token) throw new Error('No access token received');
