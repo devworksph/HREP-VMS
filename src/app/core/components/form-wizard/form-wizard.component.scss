@@ -431,3 +431,43 @@
       border-color: #1890ff !important;
     }
 }
+
+/* Modals */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  color: #000;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 30px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  height: 400px;
+  overflow-y: auto;
+  width: 450px;
+
+  button {
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    
+    cursor: pointer;
+
+    &.leave {
+      background-color: #6c757d;
+    }
+  }
+}
