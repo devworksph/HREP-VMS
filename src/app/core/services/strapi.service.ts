@@ -61,12 +61,15 @@ export class StrapiService {
   createVisitor(data: any): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     let visitorId = 0;
+    let token = 0;
 
+    console.log('data', data);
     return this.http.post<any>(`${this.apiUrl}/create/visitor`, data, {
       headers,
       observe: 'response'
     }).pipe(
       switchMap(res => {
+        console.log('XXX', res);
         if (res.status === 200) {
           visitorId = res.body.visitor_id;
 
@@ -85,7 +88,7 @@ export class StrapiService {
         const formattedDate = date.toFormat('yyyy-MM-dd');
         const location = data.location.split(':')[0];
 
-        const token = loginRes?.access_token;
+        token = loginRes?.access_token;
         if (!token) throw new Error('No access token received');
 
         const authHeaders = new HttpHeaders({
@@ -97,7 +100,8 @@ export class StrapiService {
           "data": {
               "booking_details": {
                   "visit_date": formattedDate,
-                  "visit_area": location
+                  "visit_area": location,
+                  "visit_purpose": data.purposeOfVisit
               },
               "visitors": [
                   {
@@ -110,7 +114,7 @@ export class StrapiService {
                   }
               ]
           }
-      };
+        };
 
         return this.http.post<any>(`https://housepass-uat.hrep.online/api/museum/register-visitor`, dataForm, {
           headers: authHeaders
