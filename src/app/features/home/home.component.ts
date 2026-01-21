@@ -5,6 +5,7 @@ import { FormWizardComponent } from '~core/components/form-wizard/form-wizard.co
 import { IStepperOptions, IWizardStep } from '~core/components/form-wizard/form-wizard.model';
 import { FormWizardService } from '~core/components/form-wizard/form-wizard.service';
 import { StrapiService } from '~core/services/strapi.service';
+import { CookieService } from 'ngx-cookie-service';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button'; // For buttons inside the dialog
 import { Step1Component } from '../steps/step1/step1.component';
@@ -21,6 +22,9 @@ import { Step3Component } from '../steps/step3/step3.component';
     FormWizardComponent,
     DialogModule,
     ButtonModule
+  ],
+  providers: [
+    CookieService
   ],
 })
 export class HomeComponent {
@@ -60,7 +64,8 @@ export class HomeComponent {
   constructor(
     private WizardService: FormWizardService,
     private StrapiService: StrapiService,
-    private ChangeDetectorRef: ChangeDetectorRef
+    private ChangeDetectorRef: ChangeDetectorRef,
+    private cookieService: CookieService,
   ) {}
 
   onFinish(): void {
@@ -89,6 +94,7 @@ export class HomeComponent {
   }
 
   closeSuccessDialog() {
+    this.cookieService.delete('user_consent_vms');
     window.location.reload();
   }
 }
