@@ -119,6 +119,15 @@ export class StrapiService {
         return this.http.post<any>(`https://housepass-uat.hrep.online/api/museum/register-visitor`, dataForm, {
           headers: authHeaders
         });
+      }),
+      switchMap((visitorRes: any) => {
+        const visitorData = {
+          visitorId: visitorId,
+          hrepId: visitorRes.visitors[0].hrep_id
+        };
+        return this.http.post<any>(`${this.apiUrl}/update/visitor`, visitorData, {
+          headers: headers
+        });
       })
       // map(res => {
       //   if (res.status === 200) {
