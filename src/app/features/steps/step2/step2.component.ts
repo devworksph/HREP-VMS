@@ -78,7 +78,7 @@ export class Step2Component extends FormWizardStepBaseComponent {
   constructor(
     private wizardService: FormWizardService,
     private cookieService: CookieService,
-     private strapiService: StrapiService,
+    private strapiService: StrapiService,
     private http: HttpClient
   ) {
     const formcontrols = {
