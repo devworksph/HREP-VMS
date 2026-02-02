@@ -274,8 +274,10 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      position: absolute;
+      position: relative;
       bottom: 0;
+      background: #fff;
+      height: 70px;
 
       @include mq.for-phone-only {
         position: relative;
@@ -303,20 +305,15 @@
           position: absolute;
           left: 25px;
           bottom: 30px;
-
-          @include mq.for-phone-only {
-            position: relative;
-          }
         }
 
         &.next-btn,
         &.finish-btn {
           position: absolute;
           right: 25px;
-          bottom: 30px;
 
           @include mq.for-phone-only {
-            position: relative;
+            right: 33px;
           }
         }
       }
