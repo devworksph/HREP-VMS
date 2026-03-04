@@ -6,11 +6,23 @@
 
     .logo {
       text-align: center;
+      padding: 10px 0;
 
       img {
-        width: 184px;
-        height: 93px;
+        width: 180px;
+        height: auto;
         padding: 10px;
+      }
+
+      p {
+        color: #4b5563;
+        font-family: var(--timesnewroman-font);
+        font-size: 32px;
+        line-height: 40px;
+      }
+
+      .italic {
+        font-style: italic;
       }
     }
 

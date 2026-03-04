@@ -8,9 +8,7 @@ import { getEndpoints } from '~core/constants/endpoints.constants';
 export class AnalyticsService {
   private readonly endpoints = getEndpoints();
 
-  getRealtimeUsersResource(): HttpResourceRef<{ activeUsers: number }> {
-    return httpResource<{ activeUsers: number }>(this.endpoints.analytics.v1.realtimeUsers, {
-      defaultValue: { activeUsers: 1 },
-    });
+  getRealtimeUsersResource() {
+    return false;''
   }
 }

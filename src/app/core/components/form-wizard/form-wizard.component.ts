@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, HostBinding, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormWizardStepDirective } from './form-wizard-step.directive';
 import { IStepperOptions, IWizardStep, STEPPER_DEFAULTS } from './form-wizard.model';
 import { FormWizardService } from './form-wizard.service';
@@ -14,7 +15,7 @@ import { FormWizardStepBaseComponent } from './form-wizard-step-base.component';
   host: {
     class: 'ngx-form-wizard'
   },
-  imports: [FormWizardStepDirective]
+  imports: [FormWizardStepDirective, CommonModule]
 })
 export class FormWizardComponent implements OnInit, OnDestroy {
 
@@ -30,6 +31,7 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   @Output() cancelled: EventEmitter<void> = new EventEmitter();
 
   @ViewChild(FormWizardStepDirective, { static: true }) wizardStep!: FormWizardStepDirective;
+  @ViewChild(FormWizardStepBaseComponent, { static: false }) activeStepComponent!: FormWizardStepBaseComponent;
 
   @HostBinding('class.stepper-positioned-right') stepperRight = false;
 
@@ -39,6 +41,7 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   isFirstStep: boolean = true;
   activeStepInfo: IWizardStep = <IWizardStep>{};
   componentChangesSub: Subscription | undefined;
+  isSubmitFinal: boolean = false;
 
   // Stepper variables
   stepperClass: string = '';
@@ -64,6 +67,10 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
+     if (this.activeStepComponent) {
+      //this.activeStepComponent.saveStepData();
+    }
+
     if (this.activeStep < this.noOfSteps) {
       const nextStep = this.steps[this.activeStep++];
       this.activeStepInfo = nextStep;
@@ -72,6 +79,7 @@ export class FormWizardComponent implements OnInit, OnDestroy {
   }
 
   finishWizard(): void {
+    this.isSubmitFinal = true;
     this.finished.emit();
   }
 
@@ -135,6 +143,13 @@ export class FormWizardComponent implements OnInit, OnDestroy {
       const stepConfig = component.getCurrentStepInfo();
       stepConfig.dataValidated = component.form.valid;
       stepConfig.data = data;
+
+      if (component.form.invalid) {
+        component.form.markAllAsTouched();
+        return;
+      }
+
+      this.wizardService.setStepData(component.stepNo, data);
     }
   }
 

@@ -2,7 +2,7 @@
 
 @mixin reset() {
   :root {
-    --page-width: 160ch;
+    --page-width: 122ch;
     --layout-padding: var(--spacing-r-xl);
 
     @include mq.for-tablet-up {

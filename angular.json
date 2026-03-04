@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "hor": {
+    "hrep-visitors": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -19,7 +19,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/hor",
+            "outputPath": "dist/hrep-visitors",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["@angular/localize/init"],
@@ -56,8 +56,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "10kB",
-                  "maximumError": "10kB"
+                  "maximumWarning": "20kB",
+                  "maximumError": "20kB"
                 }
               ],
               "fileReplacements": [
@@ -91,13 +91,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "hor:build:production"
+              "buildTarget": "hrep-visitors:build:production"
             },
             "development-en": {
-              "buildTarget": "hor:build:development-en"
+              "buildTarget": "hrep-visitors:build:development-en"
             },
             "development-es": {
-              "buildTarget": "hor:build:development-es"
+              "buildTarget": "hrep-visitors:build:development-es"
             }
           },
           "defaultConfiguration": "development-en"
@@ -105,7 +105,7 @@
         "extract-i18n": {
           "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
           "options": {
-            "buildTarget": "hor:build",
+            "buildTarget": "hrep-visitors:build",
             "format": "xlf",
             "outputPath": "src/locale",
             "targetFiles": ["messages.es.xlf"]
@@ -141,6 +141,9 @@
           "options": {
             "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       },
       "i18n": {

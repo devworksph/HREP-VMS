@@ -1,0 +1,19 @@
+{
+    "location": "Museum:5",
+    "date": "2025-09-30T16:00:00.000Z",
+    "timeSlot": "3-20:00",
+    "visitorType": "Student",
+    "bookingType": "Individual",
+    "studentType": "Pre - Elementary",
+    "municipalities": "",
+    "countryOfOrigin": "",
+    "lastName": "fdgh",
+    "firstName": "fd",
+    "middleName": "fdg",
+    "ageRange": "36 - 59",
+    "sex": "Male",
+    "isPwd": true,
+    "isHouseEmployee": "",
+    "email": "dfgfdg@gmail.com",
+    "mobileNo": "425435345"
+}

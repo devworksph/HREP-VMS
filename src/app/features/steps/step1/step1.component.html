@@ -1,35 +1,207 @@
 <div class="wizard-container">
-  <div class="wizard-content column-one">
-    <div class="wizard-details">
-      <h3>House of Representatives</h3>
-      <p class="title">Select Places to Visit</p>
-      <div class="description">
-        <p>Welcome!</p>
-        <p>Kindly select the place you're visiting to give you available date and time of visit, you may also do multiple bookings later</p>
-      </div>
-    </div>
-  </div>
   <div class="wizard-content column-two">
     <div class="wizard-details">
-      <h4>Select Location</h4>
-      <div class="description">
-        <p>What are you visiting? Let us help you filter available dates for your agenda.</p>
-        <form [formGroup]="form" class="form">
-          <div>
-            <input type="radio" value="all" formControlName="location">
-            <label class="label">All - Admission to both museum and library archive</label>
+      <form [formGroup]="form" class="form">
+        
+        <div class="description">
+          <div class="section location">
+            <h4>Select Location</h4>
+            <p>What are you visiting? Let us help you filter available dates for your agenda.</p>
+            <ng-container *ngIf="locations$ | async as locations; else loading">
+              <div *ngFor="let location of locations$ | async" class="hor-location">
+                <p-radiobutton
+                  name="location"
+                  [value]="{id: location.id, name: location.name, purpose: location.purpose}"
+                  formControlName="location"
+                  (onClick)="onClickLocation($event)"
+                  >
+                </p-radiobutton>
+                <label [for]="'loc' + location.id">{{ location.name }}</label>
+              </div>
+            </ng-container>
+            <ng-template #loading>
+              <div class="spinner-container">
+                <p-progressSpinner
+                  ariaLabel="loading"
+                />
+              </div>
+            </ng-template>
           </div>
-          <div>
-            <input type="radio" value="Legislative Museum" formControlName="location">
-            <label class="label">Legislative Museum only</label>
-          </div>
-          <div>
-            <input type="radio" value="Library Archives" formControlName="location">
-            <label class="label">Library Archives for Research only</label>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="section calendar">
+          <h4>Select Date</h4>
+          <p-datepicker 
+            class="max-w-full"
+            formControlName="date"
+            [inline]="true"
+            [fluid]="true"
+            [selectOtherMonths]="true"
+            [showWeek]="false"
+            [minDate]="minDate"
+            [disabledDays]="[0, 6]"
+            (onSelect)="onDateSelect($event)"
+          />
+        </div>
+      </form>
     </div>
   </div>
-  <div class="wizard-content column-threee"></div>
+  <div class="wizard-content column-threee">
+    <div class="wizard-details">
+      
+      <form [formGroup]="form" class="form" (ngSubmit)="$event.preventDefault()">
+        <div class="section select-time">
+          <h4>Select Time</h4>
+
+          <div *ngIf="!isShowFixedSchedule">
+            <div class="time-toggle">
+              <button 
+                type="button" 
+                class="toggle-btn" 
+                [class.active]="selectedPeriod === 'AM'"
+                (click)="setPeriod('AM')">
+                AM
+              </button>
+              <button 
+                type="button" 
+                class="toggle-btn" 
+                [class.active]="selectedPeriod === 'PM'"
+                (click)="setPeriod('PM')">
+                PM
+              </button>
+            </div>
+            <ng-container *ngIf="schedules$ | async as schedules; else noAvailableSched">
+              <div class="section time-slots">
+                <div
+                  *ngFor="let sched of schedules | timePeriodFilter:selectedPeriod"
+                  [class.selected]="form.get('timeSlot')?.value === sched.schedule_id + '-' + sched.time"
+                  class="time-slot"
+                  >
+                  <p-radiobutton 
+                      value="{{ sched.schedule_id }}-{{ sched.time }}" 
+                      formControlName="timeSlot" />
+                    <label class="label">{{ sched.time }}</label>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noAvailableSched>
+              <div class="alert-msg">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                No available time slot for the selected date
+              </div>
+            </ng-template>
+          </div>
+          
+        </div>
+        <div class="section booking-details">
+          <h4>Booking Details</h4>
+          <div *ngIf="isShowVisitPurpose">
+            <p-iftalabel>
+              <input
+                pInputText
+                formControlName="purposeOfVisit"
+                autocomplete="off" />
+              <label>Purpose of Visit</label>
+            </p-iftalabel>
+          </div>
+          <div>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'bookingType'"
+                [options]="bookingTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Select Type of Booking</label>
+            </p-iftalabel>
+          </div>
+          <div>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'visitorType'"
+                [options]="visitorTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Select Type of Visitor</label>
+            </p-iftalabel>
+          </div>
+          <div *ngIf="form.get('visitorType')?.value === 'Private Sector'">
+            <p-iftalabel>
+              <input pInputText formControlName="companyName" autocomplete="off" />
+              <label>Company Name</label>
+            </p-iftalabel>
+          </div>
+        </div>
+        <div class="section visitor-details">
+
+          <h4 *ngIf="
+            form.get('visitorType')?.value !== 'Others' &&
+            form.get('visitorType')?.value !== 'Private Sector' &&
+            form.get('visitorType')?.value !== ''
+            ">
+            Visitor Details
+          </h4>
+
+          @if (isStudent) {
+          <div>
+            <p-iftalabel class="w-full">
+              <p-select
+                [formControlName]="'studentType'"
+                [options]="studentTypes"
+                optionLabel="name"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <label>Type of Student</label>
+            </p-iftalabel>
+          </div>
+          }
+
+          @if (isLGU) {
+          <div>
+            <p-iftalabel class="w-full">
+              <p-select
+                [options]="provinces"
+                optionLabel="province"
+                optionValue="province"
+                [formControlName]="'selectedProvince'"
+                (onChange)="onProvinceSelect()"
+              />
+              <label>Select Province</label>
+            </p-iftalabel>
+          </div>
+          <div *ngIf="municipalities.length > 0">
+            <p-iftalabel class="w-full">
+              <p-select
+                [options]="municipalities"
+                [formControlName]="'selectedMunicipality'"
+              />
+              <label>Select Municipality</label>
+            </p-iftalabel>
+          </div>
+          }
+
+          @if (isForeignVisitor) {
+            <div>
+              <p-iftalabel class="w-full">
+                <p-select
+                  [formControlName]="'countryOfOrigin'"
+                  [options]="countries"
+                  optionLabel="name"
+                  optionValue="value"
+                  styleClass="w-full"
+                  [filter]="true"
+                  filterBy="name"
+                />
+                <label>Select Country of Origin</label>
+              </p-iftalabel>
+            </div>
+          }
+          
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
