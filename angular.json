@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "visit-app": {
+    "hrep-visitors": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -24,7 +24,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/visit-app",
+            "outputPath": "dist/hrep-visitors",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "visit-app:build:production"
+              "buildTarget": "hrep-visitors:build:production"
             },
             "development": {
-              "buildTarget": "visit-app:build:development"
+              "buildTarget": "hrep-visitors:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "visit-app:build"
+            "buildTarget": "hrep-visitors:build"
           }
         },
         "test": {
