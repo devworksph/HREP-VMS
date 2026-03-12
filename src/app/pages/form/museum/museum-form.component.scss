@@ -1,0 +1,131 @@
+@import "variables";
+
+.row {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.row-3 {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.row-4 {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+input, select{
+  width:100%;
+  padding:8px;
+  border:1px solid #ccc;
+  border-radius:4px;
+}
+
+input[type="checkbox"] {
+  width: auto;
+}
+
+.visitor{
+  margin-bottom:15px;
+  border-radius:5px;
+}
+
+.add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: $gold;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.3s;
+}
+
+.add-btn:hover {
+  background-color: $gold1;
+}
+
+.remove-btn{
+  background:#d9534f;
+  border:none;
+  color:white;
+  padding:5px 10px;
+  border-radius:4px;
+  cursor:pointer;
+}
+
+.badge{
+  background: $gold;
+  color: $white-color;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-left: 10px;
+}
+
+.checkboxes{
+  margin-bottom: 10px;
+  display: flex;
+  gap: 5px;
+
+  label {
+    padding-right: 30px;
+  }
+}
+
+.controls {
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-top:10px;
+}
+
+.no-of-pax {
+  font-size: 18px;
+  margin: 25px 0 15px;
+}
+
+.visitor-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.visitor-forms {
+  flex: 1;
+}
+
+hr {
+  color: $divider;
+  margin-bottom: 10px;
+}
+
+/* Controls container stays narrow */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 700px) {
+  .visitor-container {
+    flex-direction: column; /* stack vertically on small screens */
+  }
+
+  .controls {
+    flex-direction: row;    /* optional: place buttons horizontally */
+  }
+}

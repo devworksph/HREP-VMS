@@ -1,0 +1,108 @@
+<h2 class="main-title">
+  {{ location }} Booking Form
+</h2>
+<div class="info-container">
+  <form [formGroup]="visitForm" (ngSubmit)="submit()">
+    <h4>Tour Schedule</h4>
+    <div class="row">
+      <div>
+        <label>Preferred Schedule</label>
+        <input formControlName="preferredSchedule">
+      </div>
+      <div>
+        <label>Preferred Date</label>
+        <input type="date" formControlName="preferredDate">
+      </div>
+    </div>
+
+    <h4>Visitor Details</h4>
+    <div class="row">
+      <div>
+        <label>Select Visitor Type</label>
+        <select formControlName="visitorType">
+          <option>Student</option>
+          <option>Adult</option>
+        </select>
+      </div>
+      <div>
+        <label>Level</label>
+        <select formControlName="level">
+          <option>Select Level</option>
+        </select>
+      </div>
+    </div>
+
+    <h4>Visitor Information</h4>
+    <label>All fields are required</label>
+    <p class="alert warning">Reminder: Additional visitor may be added by clicking on plus (+) icon. Maximum of 25 visitors can be submitted.</p>
+    
+    <div class="visitor-container">
+      <div class="visitor-forms" formArrayName="visitors">
+        <div *ngFor="let visitor of visitors.controls; let i=index"
+            [formGroupName]="i"
+            class="visitor">
+          <div class="row-3">
+            <div>
+              <input formControlName="firstName" placeholder="First Name">
+            </div>
+            <div>
+              <input formControlName="middleName" placeholder="Middle Name">
+            </div>
+            <div>
+              <input formControlName="lastName" placeholder="Last Name">
+            </div>
+          </div>
+          <div class="row-4">
+            <div>
+              <select formControlName="sex">
+                <option value="" selected>Sex</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+            <div>
+              <input type="number" formControlName="age" placeholder="Age">
+            </div>
+            <div>
+              <input formControlName="email" placeholder="Email">
+            </div>
+            <div>
+              <input formControlName="contact" placeholder="Contact">
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="remove-btn"
+            *ngIf="visitors.length > 1"
+            (click)="removeVisitor(i)">
+          − Remove
+          </button>
+          
+        </div>
+      </div>
+      <div class="controls">
+        <button
+          type="button"
+          class="add-btn"
+          (click)="addVisitor()">
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="checkboxes">
+      <label>Select box if applicable</label>
+      <input type="checkbox"> Solo parent
+      <input type="checkbox"> PWD
+      <input type="checkbox"> Senior Citizen
+    </div>
+    
+    <div class="no-of-pax">Number of pax is
+      <span class="badge">{{ paxCount }}</span>
+    </div>
+    <hr />
+    <p>The main contact person of this visit must upload a valid government ID for identification. This is required for the issuance of House Pass.</p>
+    <button type="submit">Submit</button>
+  </form>
+</div>

@@ -1,0 +1,83 @@
+@import "variables";
+
+.main-title {
+  font-family: "Andalus", sans-serif;
+  color: $gold1;
+  font-weight: 400;
+  font-size: 50px;
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 30px 40px 40px 40px;
+  flex-wrap: wrap;
+
+  .card-wrapper {
+    text-align: center;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+
+    .card {
+      width: 320px;
+      height: 220px;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+
+      &.card-museum {
+        background: url('../../../assets/images/museum.jpg');
+        background-size: cover;
+      }
+
+      &.card-library {
+        background: url('../../../assets/images/library.jpg');
+        background-size: cover;
+      }
+
+      &.card-house-archives {
+        background: url('../../../assets/images/library-museum.jpg');
+        background-size: cover;
+      }
+
+      &:hover {
+        border: 5px solid $gold1;
+      }
+    }
+
+    .title {
+      font-family: "Andalus", sans-serif;
+      color: #FFFFFF;
+      font-size: 20px;
+      word-wrap: break-word;
+      white-space: normal;
+      min-height: 48px;
+      line-height: 1.4;
+      margin-top: 15px;
+    }
+
+    &:hover {
+      color: $gold1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+  }
+
+  .form-container,
+  .info-container {
+    margin: 40px 20px;
+    padding: 25px;
+  }
+}

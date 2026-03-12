@@ -1,0 +1,50 @@
+@import "variables";
+
+.info-container {
+  ul {
+    text-align: left;
+    margin-bottom: 30px;
+    padding: 0 40px;
+
+    li {
+      margin-bottom: 10px;
+      list-style: decimal;
+      line-height: 30px;
+    }
+  }
+
+  .checkbox-group {
+    margin-top: 20px;
+    padding: 0 65px;
+    text-align: left;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: $info-content;
+  }
+
+  .checkbox-row input {
+    margin-top: 4px;
+  }
+
+  .checkbox-row a {
+    font-style: italic;
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+  }
+
+  .form-container,
+  .info-container {
+    margin: 40px 20px;
+    padding: 25px;
+  }
+}

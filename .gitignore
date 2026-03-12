@@ -1,7 +1,7 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
-/test-results
+/dist
 /tmp
 /out-tsc
 /bazel-out
@@ -36,7 +36,6 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
-/playwright-report
 
 # System files
 .DS_Store
