@@ -1,0 +1,75 @@
+@import "variables";
+
+
+
+.form-container {
+  max-width: 500px;
+  margin: 100px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #0B4F9D;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    input {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      transition: 0.3s;
+
+      &:focus {
+        outline: none;
+        border-color: #0B4F9D;
+        box-shadow: 0 0 6px rgba(11, 79, 157, 0.4);
+      }
+
+      &.ng-invalid.ng-touched {
+        border-color: #e74c3c;
+      }
+    }
+
+    .error {
+      color: #e74c3c;
+      font-size: 13px;
+    }
+
+    button {
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      transition: 0.3s;
+
+      &:first-of-type {
+        background: #0B4F9D;
+        color: white;
+
+        &:hover {
+          background: darken(#0B4F9D, 8%);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+  }
+
+  .form-container,
+  .info-container {
+    margin: 40px 20px;
+    padding: 25px;
+  }
+}

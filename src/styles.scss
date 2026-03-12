@@ -1,0 +1,89 @@
+@import "variables";
+
+// ===== RESET =====
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: $primary-color;
+}
+
+button {
+  background-color: $gold;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    background: darken($gold, 8%);
+  }
+}
+
+.main-title {
+  font-family: "Andalus", sans-serif;
+  color: $gold1;
+  font-weight: 400;
+  font-size: 50px;
+}
+
+.info-container {
+  font-family: "Aeroport", sans-serif;
+  max-width: 1024px;
+  margin: 30px auto;
+  background: $info-bg-color;
+  padding: 40px 80px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  color: $info-content;
+
+  h3 {
+    font-family: "Andalus", sans-serif;
+    color: $info-title;
+    font-size: 50px;
+    font-weight: 400;
+    margin-bottom: 30px;
+  }
+
+  .error-message {
+    color: #c62828;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .next-btn {
+    margin-top: 20px;
+    padding: 10px 30px;
+  }
+}
+
+form {
+  font-family: "Aeroport", sans-serif;
+  text-align: left;
+
+  h4 {
+    color: $black-color;
+    font-weight: 400;
+    font-size: 30px;
+  }
+
+  label {
+    color: $form-label-color;
+  }
+
+  .alert {
+    margin: 10px 0;
+    font-size: 12px;
+  }
+
+  .warning {
+    color: $warning;  
+  }
+}

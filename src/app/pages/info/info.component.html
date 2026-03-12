@@ -1,0 +1,50 @@
+<form [formGroup]="consentForm">
+  <h2 class="main-title">
+    {{ location }}
+  </h2>
+  <div class="info-container">
+    <h3>Notes and Reminders</h3>
+    <ul>
+      <li>The online booking form must be completely filled-up and submitted at least 3 working days (except Fridays and Holidays) prior to your preferred date of visit.</li>
+      <li>The Museum is open from Monday to Thursday. The guided tours are at 9:00 am, 1:00 pm and 3:00 PM(Guided tour)</li>
+      <li>All tours are free of charge.</li>
+      <li>Children should be at least 5 years old and accompanied by a parent/guardian. We also recommend companion for guests who require assistance.</li>
+      <li>Dress respectfully and appropriately.6. No food and beverages inside the museum7. We only accept maximum of 25 persons per tour slot.8. Parking areas inside the House of Representative property is on a first-come-first-served basis.9. Video recording is strictly prohibited.</li>
+    </ul>
+
+    <div class="checkbox-group">
+
+    <label class="checkbox-row">
+      <input type="checkbox" formControlName="privacyNotice">
+
+      <span>
+        I have read and understood the
+        <a href="#">Data Privacy Notice</a>
+      </span>
+
+    </label>
+
+    <label class="checkbox-row">
+
+      <input type="checkbox" formControlName="consent">
+
+      <span>
+        I give my consent to the collection and processing of my personal data
+        by the Legislative Information Resources Management Department (LIRMD)
+        of the House of Representatives in accordance with the Data Privacy
+        Act of 2012 RA 10173 and its implementing Rules and Regulations IRR.
+      </span>
+
+    </label>
+
+  </div>
+
+  <div class="error-message" *ngIf="submitted && consentForm.invalid">
+    Please read the privacy notice and provide your consent before proceeding.
+  </div>
+
+  <button type="button" class="next-btn" (click)="proceed()">
+    Next
+  </button>
+  </div>
+</form>

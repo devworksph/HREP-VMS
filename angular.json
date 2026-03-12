@@ -3,13 +3,18 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "hrep-visitors": {
+    "visit-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "standalone": true,
-          "changeDetection": "OnPush"
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
         }
       },
       "root": "",
@@ -19,70 +24,46 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/hrep-visitors",
+            "outputPath": "dist/visit-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["@angular/localize/init"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
-            "i18nMissingTranslation": "warning",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public",
-                "output": ""
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "./node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
-              "./node_modules/@fortawesome/fontawesome-free/scss/regular.scss",
-              "./node_modules/@fortawesome/fontawesome-free/scss/solid.scss",
-              "./node_modules/@fortawesome/fontawesome-free/scss/brands.scss",
-              "@shoelace-style/shoelace/dist/themes/light.css",
-              "src/styles/global.scss"
+              "src/styles.scss"
             ],
+            "scripts": [],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
-            },
-            "scripts": []
+              "includePaths": ["src/assets/styles"]
+            }
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kB",
-                  "maximumError": "20kB"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.production.ts"
-                }
-              ],
-              "outputHashing": "all",
-              "localize": ["es", "en"]
-            },
-            "production-sourcemaps": {
-              "sourceMap": true,
               "outputHashing": "all"
             },
-            "development-en": {
+            "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
-            },
-            "development-es": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "localize": ["es"]
             }
           },
           "defaultConfiguration": "production"
@@ -91,77 +72,40 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "hrep-visitors:build:production"
+              "buildTarget": "visit-app:build:production"
             },
-            "development-en": {
-              "buildTarget": "hrep-visitors:build:development-en"
-            },
-            "development-es": {
-              "buildTarget": "hrep-visitors:build:development-es"
+            "development": {
+              "buildTarget": "visit-app:build:development"
             }
           },
-          "defaultConfiguration": "development-en"
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "hrep-visitors:build",
-            "format": "xlf",
-            "outputPath": "src/locale",
-            "targetFiles": ["messages.es.xlf"]
+            "buildTarget": "visit-app:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": ["@angular/localize/init"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public",
-                "output": ""
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "normalize.css/normalize.css",
-              "@shoelace-style/shoelace/dist/themes/light.css",
-              "src/styles/global.scss"
+              "src/styles.scss"
             ],
-            "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
-            },
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
-          }
-        },
-        "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
-        }
-      },
-      "i18n": {
-        "sourceLocale": {
-          "code": "en",
-          "baseHref": "/"
-        },
-        "locales": {
-          "es": {
-            "translation": "src/locale/messages.es.xlf",
-            "baseHref": "/es/"
           }
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "49e1320d-9031-4d19-bb7c-2d84a0f2fd49",
-    "schematicCollections": ["@angular-eslint/schematics"]
   }
 }
