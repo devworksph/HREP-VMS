@@ -20,14 +20,52 @@
       <div>
         <label>Select Visitor Type</label>
         <select formControlName="visitorType">
-          <option>Student</option>
-          <option>Adult</option>
+          <option
+            *ngFor="let type of visitorTypes"
+            [value]="type.value">
+              {{ type.name }}
+          </option>
         </select>
       </div>
-      <div>
-        <label>Level</label>
+      <div *ngIf="isStudent">
+        <label>Type of Student</label>
         <select formControlName="level">
-          <option>Select Level</option>
+          <option
+            *ngFor="let type of studentTypes"
+            [value]="type.value">{{ type.name }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="isLGU">
+        <label>Select Province</label>
+        <select
+          formControlName="province"
+          (change)="onProvinceSelect()">
+          <option
+            *ngFor="let type of provinces"
+            [value]="type.province">{{ type.province }}
+          </option>
+        </select>
+        <label>Select Municipality</label>
+        <select
+          formControlName="municipality">
+          <option
+            *ngFor="let municipality of municipalities"
+            [value]="municipality">{{ municipality }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="isPrivateSector">
+        <label>Company Name</label>
+        <input type="text" formControlName="companyName" />
+      </div>
+      <div *ngIf="isForeignVisitor">
+        <label>Select Country of Origin</label>
+        <select formControlName="countryOfOrigin">
+          <option
+            *ngFor="let type of countries"
+            [value]="type.value">{{ type.name }}
+          </option>
         </select>
       </div>
     </div>
