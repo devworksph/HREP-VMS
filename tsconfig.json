@@ -25,7 +25,8 @@
     ],
     "paths": {
       "@models/*": ["src/app/models/*"],
-      "@helpers/*": ["src/app/helpers/*"]
+      "@helpers/*": ["src/app/helpers/*"],
+      "@services/*": ["src/app/services/*"]
     }
   },
   "angularCompilerOptions": {
