@@ -21,8 +21,15 @@ button {
   transition: 0.3s;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: darken($gold, 8%);
+  }
+
+  &:disabled {
+    background-color: #cccccc; /* gray color */
+    color: #666666; /* darker gray text */
+    cursor: not-allowed;
+    opacity: 0.7; /* slightly faded */
   }
 }
 
@@ -53,10 +60,10 @@ button {
     margin-bottom: 30px;
   }
 
-  .error-message {
-    color: #c62828;
-    margin-top: 10px;
-    font-size: 14px;
+  .error {
+    color: $error;
+    margin-top: 3px;
+    font-size: 12px;
   }
 
   .next-btn {
@@ -86,5 +93,55 @@ form {
 
   .warning {
     color: $warning;  
+  }
+}
+
+.id-upload {
+  margin: 15px 0 25px;
+
+  .upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: $buttonGray;
+    border: 1px solid $buttonGrayBorder;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+    color: $black-color;
+
+    &:hover {
+      background-color: $buttonBackground;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .uploaded-file {
+    margin-top: 10px;
+    font-size: 12px;
+    color: $green;
+  }
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
