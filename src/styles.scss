@@ -46,7 +46,7 @@ button {
   max-width: 1024px;
   margin: 30px auto;
   background: $info-bg-color;
-  padding: 40px 80px;
+  padding: 40px 25px;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
@@ -143,5 +143,11 @@ form {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 25px;
   }
 }

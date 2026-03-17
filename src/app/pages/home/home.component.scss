@@ -1,12 +1,5 @@
 @import "variables";
 
-.main-title {
-  font-family: "Andalus", sans-serif;
-  color: $gold1;
-  font-weight: 400;
-  font-size: 50px;
-}
-
 .cards {
   display: flex;
   justify-content: center;
@@ -71,10 +64,6 @@
 }
 
 @media (max-width: 768px) {
-  .cards {
-    flex-direction: column;
-  }
-
   .form-container,
   .info-container {
     margin: 40px 20px;

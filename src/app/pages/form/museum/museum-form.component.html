@@ -157,13 +157,18 @@
           </div>
           <div class="row-1">
             <div class="checkboxes">
-              <label>Select box if applicable</label>
-              <input type="checkbox" formControlName="soloParent"> Solo parent
-              <input type="checkbox" formControlName="pwd"> PWD
-              <input type="checkbox" formControlName="seniorCitizen"> Senior Citizen
+              <label class="title">Select box if applicable</label>
+              <label class="checkbox-item">
+                <input type="checkbox" formControlName="soloParent"> Solo parent
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" formControlName="pwd"> PWD
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" formControlName="seniorCitizen"> Senior Citizen
+              </label>
             </div>
           </div>
-
           <button
             type="button"
             class="remove-btn"
@@ -179,8 +184,10 @@
           type="button"
           class="add-btn"
           (click)="addVisitor()">
-          +
+          <span class="icon">+</span>
+          
         </button>
+        <span class="mobile-text" (click)="addVisitor()">Add Visitor</span>
       </div>
     </div>
     <div class="no-of-pax">Number of pax is
