@@ -5,6 +5,7 @@
 body {
   background: $primary-color;
 }
+
 .page-container {
   text-align: center;
   padding-bottom: 100px;
@@ -29,101 +30,12 @@ body {
   margin: 20px 0 40px;
 }
 
-// // CARDS
-// .cards {
-//   display: flex;
-//   justify-content: center;
-//   gap: 20px;
-//   flex-wrap: wrap;
-//   background: $primary-color;
+@media (max-width: 768px) {
+  .page-container {
+    padding: 0 20px;
 
-//   .card {
-//     width: 300px;
-//     padding: 60px 20px;
-//     background: white;
-//     border-radius: 15px;
-//     cursor: pointer;
-//     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-//     transition: all 0.3s ease;
-
-//     &:hover {
-//       transform: translateY(-5px);
-//       background: #0B4F9D;
-//       color: white;
-//     }
-
-//     .title {
-//       font-size: 18px;
-//       font-weight: 600;
-//     }
-//   }
-// }
-
-// // FORM
-// .form-container {
-//   margin: 50px auto 0;
-//   width: 420px;
-//   background: white;
-//   padding: 30px;
-//   border-radius: 15px;
-//   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-
-//   h2 {
-//     margin-bottom: 20px;
-//   }
-
-//   form {
-//     display: flex;
-//     flex-direction: column;
-//     gap: 12px;
-
-//     input {
-//       padding: 10px;
-//       border-radius: 8px;
-//       border: 1px solid #ccc;
-//       transition: 0.3s;
-
-//       &:focus {
-//         outline: none;
-//         border-color: #0B4F9D;
-//         box-shadow: 0 0 5px rgba(11, 79, 157, 0.4);
-//       }
-
-//       &.ng-invalid.ng-touched {
-//         border-color: #e74c3c;
-//       }
-//     }
-
-//     .error {
-//       color: #e74c3c;
-//       font-size: 12px;
-//       text-align: left;
-//     }
-
-//     button {
-//       padding: 10px;
-//       border-radius: 8px;
-//       border: none;
-//       cursor: pointer;
-//       font-weight: 600;
-//       transition: 0.3s;
-
-//       &:first-of-type {
-//         background: #0B4F9D;
-//         color: white;
-
-//         &:hover {
-//           background: darken(#0B4F9D, 8%);
-//         }
-//       }
-
-//       &:last-of-type {
-//         background: #ddd;
-
-//         &:hover {
-//           background: #ccc;
-//         }
-//       }
-//     }
-//   }
-// }
+    .dept-title {
+      font-size: 20px;
+    }
+  }
+}

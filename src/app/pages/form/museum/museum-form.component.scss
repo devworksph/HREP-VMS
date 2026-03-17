@@ -80,9 +80,17 @@ input[type="checkbox"] {
   margin-bottom: 10px;
   display: flex;
   gap: 5px;
+  flex-wrap: wrap;
 
-  label {
-    padding-right: 30px;
+  .title {
+    width: 100%;
+    font-weight: 600;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
 }
 
@@ -91,6 +99,17 @@ input[type="checkbox"] {
   align-items:center;
   gap:15px;
   margin-top:10px;
+
+  .add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .mobile-text {
+    display: none;
+  }
 }
 
 .no-of-pax {
@@ -120,12 +139,23 @@ hr {
   gap: 10px;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+  .row, .row-3, .row-4 {
+    grid-template-columns: 1fr;
+  }
+
   .visitor-container {
-    flex-direction: column; /* stack vertically on small screens */
+    flex-direction: column;
+    gap: 2px;
   }
 
   .controls {
-    flex-direction: row;    /* optional: place buttons horizontally */
+    flex-direction: row;
+
+    .mobile-text {
+      display: inline;
+      margin-left: 5px;
+    }
   }
 }
+
