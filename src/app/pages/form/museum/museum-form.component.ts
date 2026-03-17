@@ -18,7 +18,8 @@ export class MuseumFormComponent implements OnInit {
 
   visitForm!: FormGroup;
   submitted = false;
-  maxVisitors = 25;
+  maxVisitors = 2;
+  isMaxVisitorReached: boolean = false;
   visitorTypes = VisitorTypes;
   studentTypes = StudentTypes;
   provinces: IProvinceData[] = [];
@@ -101,9 +102,11 @@ export class MuseumFormComponent implements OnInit {
   }
 
   addVisitor() {
+    this.isMaxVisitorReached = false;
     if (this.visitorDetails.length >= this.maxVisitors) {
-      alert("Maximum of 25 visitors allowed");
-      return;
+      this.isMaxVisitorReached = true;
+      // alert("Maximum of 25 visitors allowed");
+      // return;
     }
 
     this.visitorDetails.push(this.createVisitor());
