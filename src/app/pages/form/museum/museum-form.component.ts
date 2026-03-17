@@ -18,7 +18,7 @@ export class MuseumFormComponent implements OnInit {
 
   visitForm!: FormGroup;
   submitted = false;
-  maxVisitors = 2;
+  maxVisitors = 25;
   isMaxVisitorReached: boolean = false;
   visitorTypes = VisitorTypes;
   studentTypes = StudentTypes;
