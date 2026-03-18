@@ -29,6 +29,7 @@ export class MuseumFormComponent implements OnInit {
   uploadMessage: string = '';
   isFormSuccess: boolean = false;
   isLoading: boolean = false;
+  timeSlots: { label: string; value: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +48,7 @@ export class MuseumFormComponent implements OnInit {
       municipality: [''],
       countryOfOrigin: [''],
       companyName: [''],
+      otherLGU: [''],
       visitorDetails: this.fb.array([this.createVisitor()]),
       governmentId: ['']
     });
@@ -56,6 +58,7 @@ export class MuseumFormComponent implements OnInit {
       this.setConditionalValidators(type);
     });
 
+    this.generateTimeSlots();
     this.preparePhPlaces();
     this.countriesList();
   }
@@ -70,6 +73,10 @@ export class MuseumFormComponent implements OnInit {
 
   get isLGU() {
     return this.visitForm.get('visitorType')?.value === 'Local Government';
+  }
+
+  get isOtherLGU() {
+    return this.visitForm.get('visitorType')?.value === 'Other LGU';
   }
 
   get isForeignVisitor() {
@@ -116,15 +123,54 @@ export class MuseumFormComponent implements OnInit {
     this.visitorDetails.removeAt(index);
   }
 
+  generateTimeSlots() {
+    const startHour = 9;
+    const endHour = 17; // up to 5 PM
+
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (let min of [0, 30]) {
+        const start = this.formatTime(hour, min);
+
+        // compute end time
+        let endHourVal = hour;
+        let endMinVal = min + 30;
+
+        if (endMinVal === 60) {
+          endHourVal += 1;
+          endMinVal = 0;
+        }
+
+        const end = this.formatTime(endHourVal, endMinVal);
+
+        this.timeSlots.push({
+          label: `${start} - ${end}`,
+          value: `${this.pad(hour)}:${this.pad(min)}-${this.pad(endHourVal)}:${this.pad(endMinVal)}`
+        });
+      }
+    }
+  }
+
+  formatTime(hour: number, minute: number): string {
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const h = hour % 12 || 12;
+    const m = this.pad(minute);
+    return `${h}:${m} ${ampm}`;
+  }
+
+  pad(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
   setConditionalValidators(type: string) {
     const level = this.visitForm.get('level');
     const province = this.visitForm.get('province');
     const municipality = this.visitForm.get('municipality');
     const company = this.visitForm.get('companyName');
     const country = this.visitForm.get('countryOfOrigin');
+    const otherLgu = this.visitForm.get('otherLGU');
 
     // Reset validators first
-    [level, province, municipality, company, country].forEach((ctrl) => {
+    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
@@ -142,8 +188,11 @@ export class MuseumFormComponent implements OnInit {
     if (type === 'Foreign Visitor') {
       country?.setValidators(Validators.required);
     }
+    if (type === 'Other LGU') {
+      otherLgu?.setValidators(Validators.required);
+    }
 
-    [level, province, municipality, company, country].forEach((ctrl) => {
+    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.updateValueAndValidity();
     });
   }

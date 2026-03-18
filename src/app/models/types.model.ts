@@ -1,6 +1,7 @@
 export const VisitorTypes = [
     { name: 'Student', value: 'Student'},
     { name: 'Local Government', value: 'Local Government'},
+    { name: 'Other LGU', value: 'Other LGU'},
     { name: 'Private Sector', value: 'Private Sector'},
     { name: 'Foreign Visitor', value: 'Foreign Visitor'},
     { name: 'Others', value: 'Others'}

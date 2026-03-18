@@ -30,7 +30,7 @@ export class FormComponent implements OnInit {
     console.log('location', this.location);
     
     switch(this.location) {
-      case 'Museum': this.currentFormComponent = MuseumFormComponent; break;
+      case 'The Museum': this.currentFormComponent = MuseumFormComponent; break;
       default: this.currentFormComponent = null;
     }
   }
