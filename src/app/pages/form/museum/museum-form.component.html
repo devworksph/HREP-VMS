@@ -16,7 +16,12 @@
       </div>
       <div>
         <label>Preferred Time</label>
-        <input type="time" formControlName="preferredTime">
+        <select formControlName="preferredTime">
+          <option value="">Select Time Slot</option>
+          <option *ngFor="let slot of timeSlots" [value]="slot.value">
+            {{ slot.label }}
+          </option>
+        </select>
         <div class="error" *ngIf="visitForm.get('preferredTime')?.touched && visitForm.get('preferredTime')?.invalid">
           Preferred Date is required
         </div>
@@ -74,6 +79,13 @@
         </select>
         <div class="error" *ngIf="visitForm.get('municipality')?.touched && visitForm.get('municipality')?.invalid">
           Municipality is required
+        </div>
+      </div>
+      <div *ngIf="isOtherLGU">
+        <label>LGU</label>
+        <input type="text" formControlName="otherLGU" />
+        <div class="error" *ngIf="visitForm.get('otherLGU')?.touched && visitForm.get('otherLGU')?.invalid">
+          Other LGU is required
         </div>
       </div>
       <div *ngIf="isPrivateSector">
