@@ -129,20 +129,28 @@
       <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Benchmarking / Tour'">
         <small>For benchmarking purposes, please upload letter of request.</small>
         <div class="id-upload document">
-          <label for="govId" class="upload-btn">
+          <label for="documentId" class="upload-btn">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M288 109.3L288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-242.7-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352l128 0c0 35.3 28.7 64 64 64s64-28.7 64-64l128 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>
             Click to Upload Document
           </label>
           <input
             type="file"
             id="documentId"
-            (change)="onFileSelected($event)"
+            (change)="onFileSelected($event, 'file')"
             hidden
           />
+          <p class="uploaded-file" *ngIf="uploadMessage.file">File Uploaded: {{ uploadMessage.file }}</p>
+          <div class="error" *ngIf="uploadErrors.file && !uploadMessage.file">
+            {{ uploadErrors.file }}
+          </div>
         </div>
-        
-        
-        
+      </div>
+      <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Other'">
+        <label>Others</label>
+        <input type="text" formControlName="purposeOfVisitOther" />
+        <div class="error" *ngIf="visitForm.get('purposeOfVisitOther')?.touched && visitForm.get('purposeOfVisitOther')?.invalid">
+          Other Purpose is required
+        </div>
       </div>
     </div>
 
@@ -253,14 +261,14 @@
       <input
         type="file"
         id="govId"
-        (change)="onFileSelected($event)"
+        (change)="onFileSelected($event, 'image')"
         hidden
       />
-      <p class="uploaded-file" *ngIf="uploadedFileName">File Uploaded: {{ uploadedFileName }}</p>
-      <div class="error" *ngIf="uploadMessage">
-        {{ uploadMessage }}
+      <p class="uploaded-file" *ngIf="uploadMessage.image">File Uploaded: {{ uploadMessage.image }}</p>
+      <div class="error" *ngIf="uploadErrors.image && !uploadMessage.image">
+        {{ uploadErrors.image }}
       </div>
-      <div class="error" *ngIf="visitForm.get('governmentId')?.touched && visitForm.get('governmentId')?.invalid">
+      <div class="error" *ngIf="visitForm.get('fileUploaded')?.touched && visitForm.get('fileUploaded')?.invalid">
         Uploading a valid ID is required
       </div>
     </div>

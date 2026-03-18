@@ -27,11 +27,18 @@ export class MuseumFormComponent implements OnInit {
   municipalities: string[] = [];
   countries = Countries;
   uploadedFileName: string = '';
-  uploadMessage: string = '';
   isFormSuccess: boolean = false;
   isLoading: boolean = false;
   timeSlots: { label: string; value: string }[] = [];
   today: string = '';
+  uploadMessage: any = {
+    image: '',
+    file: ''
+  };
+  uploadErrors: any = {
+    image: '',
+    file: ''
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -45,7 +52,8 @@ export class MuseumFormComponent implements OnInit {
       preferredSchedule: ['', Validators.required],
       preferredTime: ['', Validators.required],
       visitorType: ['', Validators.required],
-     
+      purposeOfVisit: [''],
+      purposeOfVisitOther: [''],
       level: [''],
       province: [''],
       municipality: [''],
@@ -53,7 +61,7 @@ export class MuseumFormComponent implements OnInit {
       companyName: [''],
       otherLGU: [''],
       visitorDetails: this.fb.array([this.createVisitor()]),
-      governmentId: ['']
+      fileUploaded: ['']
     });
 
     // Conditional validation
@@ -61,6 +69,13 @@ export class MuseumFormComponent implements OnInit {
       this.setConditionalValidators(type);
     });
 
+    if (this.location === 'The House Museum and Library & Archives') {
+      this.visitForm.get('purposeOfVisit')?.valueChanges.subscribe((type) => {
+        this.setPurposeOfVisitValidators(type);
+      });
+    }
+   
+    this.validatePurposeOfVisit();
     this.generateTimeSlots();
     this.preparePhPlaces();
     this.countriesList();
@@ -74,7 +89,7 @@ export class MuseumFormComponent implements OnInit {
   }
 
   get isShowPurposeOfVisit() {
-    return this.location === 'Library & Archives'
+    return this.location === 'The House Museum and Library & Archives'
   }
 
   get isStudent() {
@@ -135,44 +150,26 @@ export class MuseumFormComponent implements OnInit {
 
   generateTimeSlots() {
     const startHour = 9;
-    const endHour = 17; // up to 5 PM
+    const endHour = 17; // 5 PM
 
     for (let hour = startHour; hour < endHour; hour++) {
-      for (let min of [0, 30]) {
-        const start = this.formatTime(hour, min);
+      const start = this.formatTime(hour);
+      const end = this.formatTime(hour + 1);
 
-        // compute end time
-        let endHourVal = hour;
-        let endMinVal = min + 30;
-
-        if (endMinVal === 60) {
-          endHourVal += 1;
-          endMinVal = 0;
-        }
-
-        const end = this.formatTime(endHourVal, endMinVal);
-
-        this.timeSlots.push({
-          label: `${start} - ${end}`,
-          value: `${this.pad(hour)}:${this.pad(min)}-${this.pad(endHourVal)}:${this.pad(endMinVal)}`
-        });
-      }
+      this.timeSlots.push({
+        label: `${start} - ${end}`,
+        value: `${hour}:00-${hour + 1}:00` // backend-friendly value
+      });
     }
   }
 
-  formatTime(hour: number, minute: number): string {
+  formatTime(hour: number): string {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const h = hour % 12 || 12;
-    const m = this.pad(minute);
-    return `${h}:${m} ${ampm}`;
-  }
-
-  pad(num: number): string {
-    return num.toString().padStart(2, '0');
+    return `${h}:00 ${ampm}`;
   }
 
   setConditionalValidators(type: string) {
-    const purposeOfVisit = this.visitForm.get('purposeOfVisit');
     const level = this.visitForm.get('level');
     const province = this.visitForm.get('province');
     const municipality = this.visitForm.get('municipality');
@@ -181,14 +178,10 @@ export class MuseumFormComponent implements OnInit {
     const otherLgu = this.visitForm.get('otherLGU');
 
     // Reset validators first
-    [purposeOfVisit, level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
-
-    if (this.location === 'Library & Archives') {
-      purposeOfVisit?.setValidators(Validators.required);
-    }
 
     if (type === 'Student') {
       level?.setValidators(Validators.required);
@@ -207,7 +200,25 @@ export class MuseumFormComponent implements OnInit {
       otherLgu?.setValidators(Validators.required);
     }
 
-    [purposeOfVisit, level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+      ctrl?.updateValueAndValidity();
+    });
+  }
+
+  setPurposeOfVisitValidators(type: string) {
+    const purposeOfVisitOther = this.visitForm.get('purposeOfVisitOther');
+
+    // Reset validators first
+    [purposeOfVisitOther].forEach((ctrl) => {
+      ctrl?.clearValidators();
+      ctrl?.updateValueAndValidity();
+    });
+
+    if (type === 'Other') {
+      purposeOfVisitOther?.setValidators(Validators.required);
+    }
+   
+    [purposeOfVisitOther].forEach((ctrl) => {
       ctrl?.updateValueAndValidity();
     });
   }
@@ -234,6 +245,17 @@ export class MuseumFormComponent implements OnInit {
       .sort((a, b) => a.province.localeCompare(b.province));
   }
 
+  private validatePurposeOfVisit() {
+    const control = this.visitForm.get('purposeOfVisit');
+    if (this.location === 'Library & Archives') {
+      control?.setValidators([Validators.required]);    
+    } else {
+      control?.clearValidators();
+    }
+
+    control?.updateValueAndValidity();
+  }
+
   private countriesList() {
     return Countries.map(municipality => ({
       ...municipality,
@@ -241,24 +263,33 @@ export class MuseumFormComponent implements OnInit {
     }));
   }
 
-  onFileSelected(event: any) {
+  onFileSelected(
+    event: any,
+    type: string
+  ) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
+
+    let endpoint = '/upload-id';
+    if (type == 'file') {
+      endpoint = '/upload-doc';
+    }
 
     const formData = new FormData();
     formData.append('file', file);
 
-    this.http.post<any>(`${environment.apiBaseUrl}/upload-id`, formData)
+    this.http.post<any>(`${environment.apiBaseUrl}${endpoint}`, formData)
       .subscribe({
         next: (res) => {
           if (res.status) {
-            this.uploadedFileName = res.file;
+            this.uploadMessage[type] = res.file;
             // store uploaded file in form
-            this.visitForm.patchValue({ governmentId: res.file });
+            this.visitForm.patchValue({ fileUploaded: res.file });
             console.log('Upload success', res);
           } else {
-            //alert('Upload failed: ' + res.message);
-            this.uploadMessage = res.message;
+            this.uploadErrors[type] = res.message;
           }
         },
         error: (err) => {
@@ -267,7 +298,7 @@ export class MuseumFormComponent implements OnInit {
       });
 
     this.visitForm.patchValue({ uploadedId: file });
-    this.visitForm.get('governmentId')?.updateValueAndValidity();
+    this.visitForm.get('fileUploaded')?.updateValueAndValidity();
   }
 
   getMissingFields(): string[] {
