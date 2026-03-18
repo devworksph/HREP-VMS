@@ -45,7 +45,7 @@ export class MuseumFormComponent implements OnInit {
       preferredSchedule: ['', Validators.required],
       preferredTime: ['', Validators.required],
       visitorType: ['', Validators.required],
-      purposeOfVisit: [''],
+     
       level: [''],
       province: [''],
       municipality: [''],
