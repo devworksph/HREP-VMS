@@ -2,18 +2,18 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { VisitorService } from '@services/visitor.service';
-import { VisitorTypes, StudentTypes, PurposeOfVisit } from '@models/types.model';
+import { VisitorTypes, StudentTypes } from '@models/types.model';
 import { ILocation, IProvinceData, PhPlaces } from '@models/locations.model';
 import { Countries } from '@models/countries.model';
 import { StringHelper } from '@helpers/string.helper';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'museum-form',
-  templateUrl: './museum-form.component.html',
-  styleUrls: ['./museum-form.component.scss']
+  selector: 'library-archives-form',
+  templateUrl: './library-archives-form.component.html',
+  styleUrls: ['./library-archives-form.component.scss']
 })
-export class MuseumFormComponent implements OnInit {
+export class LibraryArchivesFormComponent implements OnInit {
   @Input() location: string = '';
 
   visitForm!: FormGroup;
@@ -22,7 +22,6 @@ export class MuseumFormComponent implements OnInit {
   isMaxVisitorReached: boolean = false;
   visitorTypes = VisitorTypes;
   studentTypes = StudentTypes;
-  purposeOfVisit = PurposeOfVisit;
   provinces: IProvinceData[] = [];
   municipalities: string[] = [];
   countries = Countries;
@@ -45,7 +44,6 @@ export class MuseumFormComponent implements OnInit {
       preferredSchedule: ['', Validators.required],
       preferredTime: ['', Validators.required],
       visitorType: ['', Validators.required],
-      purposeOfVisit: [''],
       level: [''],
       province: [''],
       municipality: [''],
@@ -71,10 +69,6 @@ export class MuseumFormComponent implements OnInit {
 
   get visitorDetails(): FormArray {
     return this.visitForm.get('visitorDetails') as FormArray;
-  }
-
-  get isShowPurposeOfVisit() {
-    return this.location === 'Library & Archives'
   }
 
   get isStudent() {
@@ -172,7 +166,6 @@ export class MuseumFormComponent implements OnInit {
   }
 
   setConditionalValidators(type: string) {
-    const purposeOfVisit = this.visitForm.get('purposeOfVisit');
     const level = this.visitForm.get('level');
     const province = this.visitForm.get('province');
     const municipality = this.visitForm.get('municipality');
@@ -181,14 +174,10 @@ export class MuseumFormComponent implements OnInit {
     const otherLgu = this.visitForm.get('otherLGU');
 
     // Reset validators first
-    [purposeOfVisit, level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
-
-    if (this.location === 'Library & Archives') {
-      purposeOfVisit?.setValidators(Validators.required);
-    }
 
     if (type === 'Student') {
       level?.setValidators(Validators.required);
@@ -207,7 +196,7 @@ export class MuseumFormComponent implements OnInit {
       otherLgu?.setValidators(Validators.required);
     }
 
-    [purposeOfVisit, level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.updateValueAndValidity();
     });
   }

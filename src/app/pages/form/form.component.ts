@@ -2,6 +2,7 @@ import { Component, OnInit, Type } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MuseumFormComponent } from './museum/museum-form.component';
+import { LibraryArchivesFormComponent } from './library-archives/library-archives-form.component';
 
 @Component({
   selector: 'app-form',
@@ -27,10 +28,15 @@ export class FormComponent implements OnInit {
   }
 
   loadFormComponent() {
-    console.log('location', this.location);
+    console.log('locationXXX', this.location);
     
     switch(this.location) {
-      case 'The Museum': this.currentFormComponent = MuseumFormComponent; break;
+      case 'The House Museum':
+        this.currentFormComponent = MuseumFormComponent;
+        break;
+      case 'Library & Archives':
+        this.currentFormComponent = LibraryArchivesFormComponent;
+        break;
       default: this.currentFormComponent = null;
     }
   }

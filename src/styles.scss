@@ -99,6 +99,22 @@ form {
 .id-upload {
   margin: 15px 0 25px;
 
+  &.document {
+    font-size: 12px;
+    margin: 0;
+
+    label {
+      padding: 8px;
+    }
+
+    .upload-btn {
+      .icon {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  }
+
   .upload-btn {
     display: inline-flex;
     align-items: center;
