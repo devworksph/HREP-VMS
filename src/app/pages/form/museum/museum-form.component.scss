@@ -139,6 +139,16 @@ hr {
   gap: 10px;
 }
 
+.success-message {
+  text-align: left;
+
+  p {
+    margin-bottom: 10px;
+  }
+}
+
+
+
 @media (max-width: 768px) {
   .row, .row-3, .row-4 {
     grid-template-columns: 1fr;

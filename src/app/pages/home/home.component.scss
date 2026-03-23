@@ -55,6 +55,10 @@
       min-height: 48px;
       line-height: 1.4;
       margin-top: 15px;
+
+      span {
+        text-transform: uppercase;
+      }
     }
 
     &:hover {

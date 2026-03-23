@@ -9,10 +9,16 @@
     <div class="row">
       <div>
         <label>Preferred Schedule</label>
-        <input
+        <!-- <input
           type="date"
           formControlName="preferredSchedule"
-          min="today">
+          min="today"> -->
+        <input
+          type="text"
+          #dateInput
+          formControlName="preferredSchedule"
+          class="date-input"
+        />
         <div class="error" *ngIf="visitForm.get('preferredSchedule')?.touched && visitForm.get('preferredSchedule')?.invalid">
           Preferred Schedule is required
         </div>
@@ -56,6 +62,12 @@
         </select>
         <div class="error" *ngIf="visitForm.get('level')?.touched && visitForm.get('level')?.invalid">
           Student level is required
+        </div>
+
+        <label>School Name</label>
+        <input type="text" formControlName="schoolName" />
+        <div class="error" *ngIf="visitForm.get('schoolName')?.touched && visitForm.get('schoolName')?.invalid">
+          School Name is required
         </div>
       </div>
       <div *ngIf="isLGU">
@@ -264,6 +276,7 @@
         (change)="onFileSelected($event, 'image')"
         hidden
       />
+      <div class="uploaded-file">Allowed filetype is jpg/png with 5MB max filesize.</div>
       <p class="uploaded-file" *ngIf="uploadMessage.image">File Uploaded: {{ uploadMessage.image }}</p>
       <div class="error" *ngIf="uploadErrors.image && !uploadMessage.image">
         {{ uploadErrors.image }}
@@ -286,6 +299,14 @@
     </button>
   </form>
   <ng-template #formSuccessTemplate>
-    <p>We have received the booking request. You will receive a confirmation and further instructions thru your email.</p>
+    <div class="success-message">
+      <p>Mabuhay!</p><br />
+      <p>
+        Thank you for choosing to visit THE HOUSE, Legislative Museum and Conservation Laboratory of the House of Representatives. 
+        We have received your booking request. Please wait for a confirmation email with further instructions.</p>
+      <p>
+        For inquiries, you may contact us at 8000-0111 loc. 1111 or email legislativemuseum&#64;house.gov.ph.
+      </p>
+    </div>
   </ng-template>
 </div>
