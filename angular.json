@@ -37,6 +37,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/flatpickr/dist/flatpickr.min.css",
               "src/styles.scss"
             ],
             "scripts": [],
@@ -50,7 +51,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",

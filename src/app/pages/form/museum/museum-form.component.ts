@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { VisitorService } from '@services/visitor.service';
 import { VisitorTypes, StudentTypes, PurposeOfVisit } from '@models/types.model';
 import { ILocation, IProvinceData, PhPlaces } from '@models/locations.model';
+import flatpickr from 'flatpickr';
 import { Countries } from '@models/countries.model';
 import { StringHelper } from '@helpers/string.helper';
 import { environment } from 'src/environments/environment';
@@ -15,7 +16,8 @@ import { environment } from 'src/environments/environment';
 })
 export class MuseumFormComponent implements OnInit {
   @Input() location: string = '';
-
+  @ViewChild('dateInput') dateInput!: ElementRef;
+  
   visitForm!: FormGroup;
   submitted = false;
   maxVisitors = 25;
@@ -47,6 +49,17 @@ export class MuseumFormComponent implements OnInit {
     private http: HttpClient
   ) {}
 
+  ngAfterViewInit() {
+    flatpickr(this.dateInput.nativeElement, {
+      dateFormat: "l, F j, Y",
+      minDate: "today",
+      allowInput: false,
+      onClose: () => {
+        this.visitForm.get('preferredSchedule')?.markAsTouched();
+      }
+    });
+  }
+  
   ngOnInit() {
     this.visitForm = this.fb.group({
       preferredSchedule: ['', Validators.required],
@@ -55,6 +68,7 @@ export class MuseumFormComponent implements OnInit {
       purposeOfVisit: [''],
       purposeOfVisitOther: [''],
       level: [''],
+      schoolName: [''],
       province: [''],
       municipality: [''],
       countryOfOrigin: [''],
@@ -171,6 +185,7 @@ export class MuseumFormComponent implements OnInit {
 
   setConditionalValidators(type: string) {
     const level = this.visitForm.get('level');
+    const schoolName = this.visitForm.get('schoolName');
     const province = this.visitForm.get('province');
     const municipality = this.visitForm.get('municipality');
     const company = this.visitForm.get('companyName');
@@ -178,13 +193,14 @@ export class MuseumFormComponent implements OnInit {
     const otherLgu = this.visitForm.get('otherLGU');
 
     // Reset validators first
-    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
 
     if (type === 'Student') {
       level?.setValidators(Validators.required);
+      schoolName?.setValidators(Validators.required);
     }
     if (type === 'Local Government') {
       province?.setValidators(Validators.required);
@@ -200,7 +216,7 @@ export class MuseumFormComponent implements OnInit {
       otherLgu?.setValidators(Validators.required);
     }
 
-    [level, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, country, otherLgu].forEach((ctrl) => {
       ctrl?.updateValueAndValidity();
     });
   }
@@ -359,4 +375,33 @@ export class MuseumFormComponent implements OnInit {
     );
     console.log('Manila Form Submitted', visitFormData);
   }
+
+  showPicker = false;
+formattedDate = '';
+
+openPicker() {
+  this.showPicker = true;
+}
+
+closePicker() {
+  setTimeout(() => {
+    this.showPicker = false;
+  }, 150);
+}
+
+formatDate(event: any) {
+  const value = event.target.value;
+  if (!value) return;
+
+  const date = new Date(value);
+
+  this.formattedDate = date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  this.showPicker = false;
+}
 }
