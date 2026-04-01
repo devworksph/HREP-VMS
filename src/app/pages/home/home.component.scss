@@ -13,12 +13,20 @@
     width: 320px;
     display: flex;
     flex-direction: column;
+    position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(39, 56, 99, 0.75);
+      z-index: 1;
+      transition: .3s ease;
+    }
 
     .card {
       width: 320px;
       height: 220px;
-      background: white;
-      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -41,12 +49,13 @@
         background-size: cover;
       }
 
-      &:hover {
-        border: 5px solid $gold1;
-      }
+      // &:hover {
+      //   border: 5px solid $gold1;
+      // }
     }
 
     .title {
+      z-index: 2;
       font-family: "Andalus", sans-serif;
       color: #FFFFFF;
       font-size: 20px;
@@ -55,14 +64,18 @@
       min-height: 48px;
       line-height: 1.4;
       margin-top: 15px;
+      padding: 0 30px;
 
       span {
         text-transform: uppercase;
+        font-size: 25px;
       }
     }
 
     &:hover {
-      color: $gold1;
+      &:after {
+        background: rgba(39, 56, 99, 0.45);
+      }
     }
   }
 }

@@ -1,18 +1,13 @@
-<h2 class="main-title">
-  {{ location }} Booking Form
-</h2>
+
 <div class="info-container">
+  <h3>Booking Form</h3>
   <form
     *ngIf="!isFormSuccess; else formSuccessTemplate"
     [formGroup]="visitForm" (ngSubmit)="submit()">
     <h4>Tour Schedule</h4>
     <div class="row">
       <div>
-        <label>Preferred Schedule</label>
-        <!-- <input
-          type="date"
-          formControlName="preferredSchedule"
-          min="today"> -->
+        <label>Preferred Date</label>
         <input
           type="text"
           #dateInput
@@ -20,7 +15,7 @@
           class="date-input"
         />
         <div class="error" *ngIf="visitForm.get('preferredSchedule')?.touched && visitForm.get('preferredSchedule')?.invalid">
-          Preferred Schedule is required
+          Preferred Date is required
         </div>
       </div>
       <div>
@@ -168,7 +163,7 @@
 
     <h4>Visitor Information</h4>
     <label>All fields are required</label>
-    <p class="alert warning">Reminder: Additional visitor may be added by clicking on plus (+) icon. Maximum of 25 visitors can be submitted.</p>
+    <p class="alert warning">Reminder: Additional visitor may be added by clicking the plus (+) icon. A maximum of 25 visitors can be submitted per request.</p>
     
     <div class="visitor-container">
       <div class="visitor-forms" formArrayName="visitorDetails">
@@ -263,7 +258,7 @@
       <span class="badge">{{ paxCount }}</span>
     </div>
     <hr />
-    <p>The main contact person of this visit must upload a valid government ID for identification. This is required for the issuance of House Pass.</p>
+    <p>The main contact person for this visit must upload a valid government-issued ID. This is required for the issuance of House Pass.</p>
     
     <div class="id-upload">
       <label for="govId" class="upload-btn">
@@ -276,7 +271,7 @@
         (change)="onFileSelected($event, 'image')"
         hidden
       />
-      <div class="uploaded-file">Allowed filetype is jpg/png with 5MB max filesize.</div>
+      <div class="uploaded-file">Accepted formats: JPG/PNG (Max: 5MB)</div>
       <p class="uploaded-file" *ngIf="uploadMessage.image">File Uploaded: {{ uploadMessage.image }}</p>
       <div class="error" *ngIf="uploadErrors.image && !uploadMessage.image">
         {{ uploadErrors.image }}

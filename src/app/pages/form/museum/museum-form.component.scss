@@ -21,12 +21,18 @@
   margin-bottom:10px;
 }
 
-input, select{
-  width:100%;
-  padding:8px;
-  border:1px solid #ccc;
-  border-radius:4px;
+input, select, .flatpickr-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
+
+// :host ::ng-deep .flatpickr-input {
+//   width: 100%;
+//   padding: 8px;
+//   border: 1px solid #ccc;
+// }
 
 input[type="checkbox"] {
   width: auto;
@@ -146,8 +152,6 @@ hr {
     margin-bottom: 10px;
   }
 }
-
-
 
 @media (max-width: 768px) {
   .row, .row-3, .row-4 {
