@@ -8,7 +8,19 @@
 }
 
 body {
-  background: $primary-color;
+  background-color: $secondary-color;
+}
+
+.header {
+  background-color: $primary-color;
+  padding-bottom: 20px;
+}
+
+.flatpickr-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {

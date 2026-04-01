@@ -2,40 +2,61 @@
 @import "../assets/fonts/aeroport/stylesheet.css";
 @import "../assets/fonts/andalus/stylesheet.css";
 
-body {
-  background: $primary-color;
-}
+.header {
+  height: 520px;
+  display: flex;
+  align-items: center;
+  padding: 80px;
+  color: white;
+  background-image: 
+    linear-gradient(
+      90deg,
+      rgba(8, 32, 92, 0.95) 0%,
+      rgba(8, 32, 92, 0.85) 35%,
+      rgba(8, 32, 92, 0.60) 55%,
+      rgba(8, 32, 92, 0.0) 75%
+    ),
+    url('../assets/images/header-bg.jpg');
 
-.page-container {
-  text-align: center;
-  padding-bottom: 100px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-  .logo {
-    margin-top: 30px;
+  h1 {
+    font-family: "Andalus", sans-serif;
+    font-size: 64px;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 20px;
+
+    a {
+      color: $white-color;
+      text-decoration: none;
+    }
   }
 
-  .dept-title {
-    font-family: "Aeroport", sans-serif;
-    margin: 20px 0;
-    font-weight: 400;
-    font-size: 30px;
-    color: $white-color;
+  p {
+    width: 520px;
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: .9;
   }
-}
-
-.divider {
-  height: 4px;
-  background: $gold;
-  width: 100%;
-  margin: 20px 0 40px;
 }
 
 @media (max-width: 768px) {
-  .page-container {
-    padding: 0 20px;
+  .header {
+    height: auto;
+    padding: 20px;
 
-    .dept-title {
-      font-size: 20px;
+    h1 {
+      font-size: 45px;
     }
+
+    p {
+      width: 100%;
+    }
+  }
+  .main-content {
+    padding: 0 20px;
   }
 }
