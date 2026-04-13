@@ -6,8 +6,17 @@ import { InfoComponent } from './pages/info/info.component';
 import { FormComponent } from './pages/form/form.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'info/:location', component: InfoComponent },
+  {
+    path: '',
+    component: HomeComponent
+  },
+  {
+    path: 'info/:location',
+    component: InfoComponent,
+    data: {
+      hideHeader: true
+    }
+  },
   { path: 'form/:location', component: FormComponent },
   { path: '**', redirectTo: '' }
 ];
