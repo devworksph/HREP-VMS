@@ -1,39 +1,55 @@
-<form [formGroup]="consentForm">
-  <div class="info-container">
-    <h3>Notes and Reminders</h3>
-    <div [innerHTML]="reminders" class="reminders"></div>
-    <div class="checkbox-group">
-
-      <label class="checkbox-row">
-        <input type="checkbox" formControlName="privacyNotice">
-
-        <span>
-          I have read and understood the
-          <a href="#">Data Privacy Notice</a>
-        </span>
-
-      </label>
-
-      <label class="checkbox-row">
-
-        <input type="checkbox" formControlName="consent">
-
-        <span>
-          I give my consent to the collection and processing of my personal data
-          by the Legislative Information Resources Management Department (LIRMD)
-          of the House of Representatives in accordance with the Data Privacy
-          Act of 2012 RA 10173 and its implementing Rules and Regulations IRR.
-        </span>
-
-      </label>
+<div class="container">
+  <div class="left">
+    <div class="logo">
+      <img src="../../../assets/images/the-house-logo-white.png" alt="" />
     </div>
+    <form [formGroup]="consentForm">
+      <div class="info-container">
+        <h3>Notes and Reminders</h3>
+        <div [innerHTML]="reminders" class="reminders"></div>
+        <div class="checkbox-group">
 
-    <div class="error" *ngIf="submitted && consentForm.invalid">
-      Please read the privacy notice and provide your consent before proceeding.
-    </div>
+          <label class="checkbox-row">
+            <input type="checkbox" formControlName="privacyNotice">
 
-    <button type="button" class="next-btn" (click)="proceed()">
-      Next
-    </button>
+            <span>
+              I have read and understood the
+              <a href="#">Data Privacy Notice</a>
+            </span>
+
+          </label>
+
+          <label class="checkbox-row">
+
+            <input type="checkbox" formControlName="consent">
+
+            <span>
+              I give my consent to the collection and processing of my personal data
+              by the Legislative Information Resources Management Department (LIRMD)
+              of the House of Representatives in accordance with the Data Privacy
+              Act of 2012 RA 10173 and its implementing Rules and Regulations IRR.
+            </span>
+
+          </label>
+        </div>
+
+        <div class="error" *ngIf="submitted && consentForm.invalid">
+          Please read the privacy notice and provide your consent before proceeding.
+        </div>
+
+        <button type="button" class="next-btn" (click)="proceed()">
+          Next
+        </button>
+      </div>
+    </form>
+
+    <div class="footer">
+        © The House Museum • Contact: legislative&#64;house.gov.ph
+      </div>
   </div>
-</form>
+  <div class="right">
+
+  </div>
+</div>
+
+

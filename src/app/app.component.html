@@ -1,6 +1,10 @@
-<div class="page-container">
-  <div class="header">
+<div class="page-container" [class.full-layout]="isInfoPage">
+  <div class="header" *ngIf="!isInfoPage">
     <div class="header-content">
+      <div class="logos">
+        <img src="../assets/images/logo-header-1.png" alt="Logo 1">
+        <img src="../assets/images/logo-header-2.png" alt="Logo 2">
+      </div>
       <h1>
         <a routerLink="/">
           Plan your<br>visit with us
@@ -13,7 +17,7 @@
       </p>
     </div>
   </div>
-  <div class="main-content">
+  <div class="main-content" [class.full]="isInfoPage">
     <router-outlet></router-outlet>
   </div>
 </div>
