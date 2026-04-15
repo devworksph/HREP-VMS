@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { VisitorService } from '@services/visitor.service';
+import { faXTwitter, faInstagram, faTiktok } from '@fortawesome/free-brands-svg-icons';
+import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-info',
@@ -15,6 +17,11 @@ export class InfoComponent implements OnInit {
   reminders!: SafeHtml;
   consentForm: FormGroup;
   submitted = false;
+  faXTwitter = faXTwitter;
+  faInstagram = faInstagram;
+  faEnvelope = faEnvelope;
+  faPhone = faPhone;
+  faTiktok = faTiktok;
 
   constructor(
     private route: ActivatedRoute,

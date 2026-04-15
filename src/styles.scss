@@ -7,10 +7,6 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: $secondary-color;
-}
-
 .header {
   background-color: $primary-color;
   padding-bottom: 20px;
@@ -67,7 +63,7 @@ button {
   h3 {
     font-family: "Andalus", sans-serif;
     color: $info-title;
-    font-size: 50px;
+    font-size: 30px;
     font-weight: 400;
     margin-bottom: 30px;
   }

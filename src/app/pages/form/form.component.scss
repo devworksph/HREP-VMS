@@ -1,5 +1,34 @@
 @import "variables";
 
+.forms {
+  background: url('../../../assets/images/booking-form-bg.jpg') no-repeat top center;
+  background-size: cover;
+
+  .logos {
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 20px;
+
+    .logo-1 {
+      margin-right: 50px;
+    }
+
+    img {
+      height: 120px;
+    }
+  }
+
+  .footer {
+    font-family: "Andalus", sans-serif;
+    text-align: center;
+    padding: 50px 0;
+    color: $white-color;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+}
 
 .form-container {
   max-width: 500px;
@@ -64,5 +93,9 @@
 @media (max-width: 768px) {
   .info-container {
     padding: 300px;
+  }
+
+  .forms {
+    padding: 0 30px;
   }
 }
