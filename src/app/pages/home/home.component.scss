@@ -67,8 +67,8 @@
       padding: 0 30px;
 
       span {
-        text-transform: uppercase;
-        font-size: 25px;
+        font-size: 35px;
+        line-height: 35px;
       }
     }
 
@@ -78,6 +78,10 @@
       }
     }
   }
+}
+
+.content {
+  background-color: $secondary-color;
 }
 
 @media (max-width: 768px) {

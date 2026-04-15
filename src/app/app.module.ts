@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -18,6 +19,7 @@ import { FormsModule } from './pages/form/forms.module';
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    FontAwesomeModule,
     AppRoutingModule,
     FormsModule
   ],

@@ -17,7 +17,13 @@ const routes: Routes = [
       hideHeader: true
     }
   },
-  { path: 'form/:location', component: FormComponent },
+  {
+    path: 'form/:location',
+    component: FormComponent,
+    data: {
+      hideHeader: true
+    }
+  },
   { path: '**', redirectTo: '' }
 ];
 
