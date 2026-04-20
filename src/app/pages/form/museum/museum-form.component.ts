@@ -3,9 +3,8 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { VisitorService } from '@services/visitor.service';
 import { VisitorTypes, StudentTypes, PurposeOfVisit } from '@models/types.model';
-import { ILocation, IProvinceData, PhPlaces } from '@models/locations.model';
+import { ILocation, IProvinceData, ContinentsAndCountries, PhPlaces } from '@models/locations.model';
 import flatpickr from 'flatpickr';
-import { Countries } from '@models/countries.model';
 import { StringHelper } from '@helpers/string.helper';
 import { environment } from 'src/environments/environment';
 
@@ -27,7 +26,12 @@ export class MuseumFormComponent implements OnInit {
   purposeOfVisit = PurposeOfVisit;
   provinces: IProvinceData[] = [];
   municipalities: string[] = [];
-  countries = Countries;
+
+  continentsAndCountries = ContinentsAndCountries;
+  continents: string[] = [];
+  filteredCountries: string[] = [];
+  selectedContinent: string = '';
+
   uploadedFileName: string = '';
   isFormSuccess: boolean = false;
   isLoading: boolean = false;
@@ -41,6 +45,12 @@ export class MuseumFormComponent implements OnInit {
     image: '',
     file: ''
   };
+  ageRange = [
+    { name: '7-18', value: '7 - 18'},
+    { name: '19-35', value: '19 - 35'},
+    { name: '36-59', value: '36 - 59'},
+    { name: '60-Above', value: '60 - Above'},
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -71,6 +81,7 @@ export class MuseumFormComponent implements OnInit {
       schoolName: [''],
       province: [''],
       municipality: [''],
+      continent: [''],
       countryOfOrigin: [''],
       companyName: [''],
       otherLGU: [''],
@@ -92,10 +103,24 @@ export class MuseumFormComponent implements OnInit {
     this.validatePurposeOfVisit();
     this.generateTimeSlots();
     this.preparePhPlaces();
-    this.countriesList();
+    // this.countriesList();
 
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
+
+    // get unique continents
+    this.continents = [...new Set(this.continentsAndCountries.map(d => d.continent))]
+      .sort((a, b) => a.localeCompare(b));
+
+    // React to continent changes
+    this.visitForm.get('continent')?.valueChanges.subscribe(continent => {
+      this.filteredCountries = this.continentsAndCountries
+        .filter(d => d.continent === continent)
+        .map(d => d.country);
+
+      // Reset country when continent changes
+      this.visitForm.get('country')?.setValue('');
+    });
   }
 
   get visitorDetails(): FormArray {
@@ -103,7 +128,7 @@ export class MuseumFormComponent implements OnInit {
   }
 
   get isShowPurposeOfVisit() {
-    return this.location === 'The House Museum and Library & Archives'
+    return this.location === 'Library, Archives and The House'
   }
 
   get isStudent() {
@@ -189,11 +214,12 @@ export class MuseumFormComponent implements OnInit {
     const province = this.visitForm.get('province');
     const municipality = this.visitForm.get('municipality');
     const company = this.visitForm.get('companyName');
+    const continent = this.visitForm.get('continent');
     const country = this.visitForm.get('countryOfOrigin');
     const otherLgu = this.visitForm.get('otherLGU');
 
     // Reset validators first
-    [level, schoolName, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, continent, country, otherLgu].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
@@ -210,6 +236,7 @@ export class MuseumFormComponent implements OnInit {
       company?.setValidators(Validators.required);
     }
     if (type === 'Foreign Visitor') {
+      continent?.setValidators(Validators.required);
       country?.setValidators(Validators.required);
     }
     if (type === 'Other LGU') {
@@ -272,12 +299,12 @@ export class MuseumFormComponent implements OnInit {
     control?.updateValueAndValidity();
   }
 
-  private countriesList() {
-    return Countries.map(municipality => ({
-      ...municipality,
-      value: municipality.name
-    }));
-  }
+  // private countriesList() {
+  //   return Countries.map(municipality => ({
+  //     ...municipality,
+  //     value: municipality.name
+  //   }));
+  // }
 
   onFileSelected(
     event: any,
@@ -295,7 +322,8 @@ export class MuseumFormComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('file', file);
-
+    this.uploadMessage.image = null;
+    this.uploadErrors.image = null;
     this.http.post<any>(`${environment.apiBaseUrl}${endpoint}`, formData)
       .subscribe({
         next: (res) => {
@@ -389,19 +417,20 @@ closePicker() {
   }, 150);
 }
 
-formatDate(event: any) {
-  const value = event.target.value;
-  if (!value) return;
+  formatDate(event: any) {
+    const value = event.target.value;
+    if (!value) return;
 
-  const date = new Date(value);
+    const date = new Date(value);
 
-  this.formattedDate = date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+    this.formattedDate = date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 
-  this.showPicker = false;
-}
+    this.showPicker = false;
+  }
+
 }

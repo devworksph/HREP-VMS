@@ -13,7 +13,7 @@ export const BookingTypes = [
 ];
 
 export const StudentTypes = [
-    { name: 'Pre - Elementary', value: 'PreElementary' },
+    { name: 'Pre - Elementary', value: 'Pre-Elementary' },
     { name: 'Elementary', value: 'Elementary' },
     { name: 'High school', value: 'High school' },
     { name: 'College', value: 'College' },
