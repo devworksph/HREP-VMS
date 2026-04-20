@@ -106,11 +106,21 @@
         </div>
       </div>
       <div *ngIf="isForeignVisitor">
+        <label>Continents</label>
+         <select formControlName="continent">
+          <option value="">-- Select Continent --</option>
+          <option *ngFor="let continent of continents" [value]="continent">
+            {{ continent }}
+          </option>
+        </select>
+        <div class="error" *ngIf="visitForm.get('continent')?.touched && visitForm.get('continent')?.invalid">
+          Continent is required
+        </div>
         <label>Select Country of Origin</label>
         <select formControlName="countryOfOrigin">
-          <option
-            *ngFor="let type of countries"
-            [value]="type.value">{{ type.name }}
+          <option value="">-- Select Country --</option>
+          <option *ngFor="let country of filteredCountries" [value]="country">
+            {{ country }}
           </option>
         </select>
         <div class="error" *ngIf="visitForm.get('countryOfOrigin')?.touched && visitForm.get('countryOfOrigin')?.invalid">
@@ -146,6 +156,7 @@
             (change)="onFileSelected($event, 'file')"
             hidden
           />
+          <div class="uploaded-file">Accepted format: PDF (Max: 5MB)</div>
           <p class="uploaded-file" *ngIf="uploadMessage.file">File Uploaded: {{ uploadMessage.file }}</p>
           <div class="error" *ngIf="uploadErrors.file && !uploadMessage.file">
             {{ uploadErrors.file }}
@@ -199,7 +210,15 @@
               </div>
             </div>
             <div>
-              <input type="number" formControlName="age" placeholder="Age">
+              <!-- <input type="number" formControlName="age" placeholder="Age"> -->
+              <select formControlName="age">
+                <option value="" selected>Age Range</option>
+                <option
+                  *ngFor="let type of ageRange"
+                  [value]="type.value">
+                    {{ type.name }}
+                </option>
+              </select>
               <div class="error" *ngIf="visitor.get('age')?.touched && visitor.get('age')?.invalid">
                 <span *ngIf="visitor.get('age')?.errors?.['required']">Age is required</span>
                 <span *ngIf="visitor.get('age')?.errors?.['min']">Age must be at least 1</span>

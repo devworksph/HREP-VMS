@@ -49,6 +49,11 @@ input, select, .flatpickr-input {
   border-radius: 4px;
 }
 
+.error {
+  color: $error;
+  font-size: 13px;
+}
+
 // :host ::ng-deep .flatpickr-input {
 //   width: 100%;
 //   padding: 8px;
