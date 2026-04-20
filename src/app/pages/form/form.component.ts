@@ -27,8 +27,6 @@ export class FormComponent implements OnInit {
   }
 
   loadFormComponent() {
-    console.log('locationXXX', this.location);
-    
     switch(this.location) {
       case 'The House Museum':
         this.currentFormComponent = MuseumFormComponent;

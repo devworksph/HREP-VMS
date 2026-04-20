@@ -60,10 +60,24 @@ export class MuseumFormComponent implements OnInit {
   ) {}
 
   ngAfterViewInit() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const disableUntil = new Date();
+    disableUntil.setDate(today.getDate() + 4);
     flatpickr(this.dateInput.nativeElement, {
       dateFormat: "l, F j, Y",
-      minDate: "today",
+      minDate: today,
       allowInput: false,
+      disable: [
+        {
+          from: today,
+          to: disableUntil
+        },
+        function(date) {
+          return (date.getDay() === 0 || date.getDay() === 6);
+        }
+      ],
       onClose: () => {
         this.visitForm.get('preferredSchedule')?.markAsTouched();
       }
@@ -197,7 +211,7 @@ export class MuseumFormComponent implements OnInit {
 
       this.timeSlots.push({
         label: `${start} - ${end}`,
-        value: `${hour}:00-${hour + 1}:00` // backend-friendly value
+        value: `${start} - ${end}` // backend-friendly value
       });
     }
   }
@@ -290,7 +304,7 @@ export class MuseumFormComponent implements OnInit {
 
   private validatePurposeOfVisit() {
     const control = this.visitForm.get('purposeOfVisit');
-    if (this.location === 'Library & Archives') {
+    if (this.location === 'Library, Archives and The House') {
       control?.setValidators([Validators.required]);    
     } else {
       control?.clearValidators();
@@ -380,7 +394,7 @@ export class MuseumFormComponent implements OnInit {
     this.submitted = true;
     if (this.visitForm.invalid) return;
     const locationType = {
-      "locationType": "Museum"
+      "locationType": this.location
     }
     const visitFormData = {
       ...locationType,
