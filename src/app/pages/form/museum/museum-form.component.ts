@@ -142,7 +142,8 @@ export class MuseumFormComponent implements OnInit {
   }
 
   get isShowPurposeOfVisit() {
-    return this.location === 'Library, Archives and The House'
+    console.log('SS', this.location);
+    return this.location === 'Library, Archives and The House' || 'Library and Archives'
   }
 
   get isStudent() {
