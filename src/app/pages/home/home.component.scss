@@ -91,3 +91,20 @@
     padding: 25px;
   }
 }
+
+@media (max-width: 320px) {
+  .form-container,
+  .info-container {
+    margin: 40px 20px;
+    padding: 25px;
+  }
+
+  .cards {
+    .card-wrapper {
+      width: 300px;
+      .card {
+        width: 100%;
+      }
+    }
+  }
+}
