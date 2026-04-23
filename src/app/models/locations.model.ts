@@ -136,7 +136,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Brunei",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Bulgaria",
@@ -152,7 +152,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Cambodia",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Cameroon",
@@ -247,8 +247,8 @@ export const ContinentsAndCountries = [
         "continent": "North America"
     },
     {
-        "country": "East Timor",
-        "continent": "Asia"
+        "country": "Timor-Leste",
+        "continent": "ASEAN"
     },
     {
         "country": "Ecuador",
@@ -412,7 +412,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Indonesia",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Iran",
@@ -472,7 +472,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Laos",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Latvia",
@@ -524,7 +524,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Malaysia",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Maldives",
@@ -596,7 +596,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Myanmar",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Namibia",
@@ -696,7 +696,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Philippines",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Pitcairn",
@@ -792,7 +792,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Singapore",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Slovakia",
@@ -868,7 +868,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Thailand",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "The Democratic Republic of Congo",
@@ -952,7 +952,7 @@ export const ContinentsAndCountries = [
     },
     {
         "country": "Vietnam",
-        "continent": "Asia"
+        "continent": "ASEAN"
     },
     {
         "country": "Virgin Islands, British",
