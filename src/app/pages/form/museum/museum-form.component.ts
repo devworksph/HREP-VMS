@@ -142,12 +142,10 @@ export class MuseumFormComponent implements OnInit {
   }
 
   get isShowPurposeOfVisit() {
-    console.log('SS', this.location);
     const match = 
       this.location === 'Library, Archives and The House' || 
       this.location === 'Library and Archives'
 
-    console.log('XXX', match);
     return match;
   }
 
@@ -184,7 +182,7 @@ export class MuseumFormComponent implements OnInit {
       lastName: ['', Validators.required],
       sex: ['', Validators.required],
       age: ['', Validators.required],
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       contact: ['', Validators.required],
       soloParent: [false],
       pwd: [false],
@@ -196,8 +194,6 @@ export class MuseumFormComponent implements OnInit {
     this.isMaxVisitorReached = false;
     if (this.visitorDetails.length >= this.maxVisitors) {
       this.isMaxVisitorReached = true;
-      // alert("Maximum of 25 visitors allowed");
-      // return;
     }
 
     this.visitorDetails.push(this.createVisitor());
@@ -291,8 +287,6 @@ export class MuseumFormComponent implements OnInit {
     const selected = this.provinces.find(p => p.province === selectedProvince);
     this.municipalities = selected ? selected.municipalities : [];
     this.visitForm.get('municipality')?.reset();
-
-    console.log('municipalities', this.municipalities);
   }
 
   private preparePhPlaces() {
@@ -318,13 +312,6 @@ export class MuseumFormComponent implements OnInit {
 
     control?.updateValueAndValidity();
   }
-
-  // private countriesList() {
-  //   return Countries.map(municipality => ({
-  //     ...municipality,
-  //     value: municipality.name
-  //   }));
-  // }
 
   onFileSelected(
     event: any,
