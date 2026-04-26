@@ -38,10 +38,12 @@ export class InfoComponent implements OnInit {
 
   ngOnInit() {
     this.location = this.route.snapshot.paramMap.get('location')!;
-
-    this.visitorService.reminders().subscribe(
+    console.log('location', this.location);
+    const params = {
+      location: this.location
+    };
+    this.visitorService.reminders(params).subscribe(
       response => {
-        console.log('response', response);
         this.reminders = this.sanitizer.bypassSecurityTrustHtml(response.reminders);
       },
       error => {}

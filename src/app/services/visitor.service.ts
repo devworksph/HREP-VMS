@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { DateTime } from 'luxon';
@@ -22,7 +22,7 @@ export class VisitorService {
     return this.http.post<any>(`${this.apiUrl}/create/visitor`, data);
   }
 
-  reminders(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/reminders`);
+  reminders(params: any): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/reminders`, { params });
   }
 }
