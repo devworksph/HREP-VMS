@@ -174,7 +174,7 @@
 
     <h4>Visitor Information</h4>
     <label>All fields are required</label>
-    <p class="alert warning">Reminder: Additional visitor may be added by clicking the plus (+) icon. A maximum of 25 visitors can be submitted per request.</p>
+    <p class="alert warning">Reminder: Additional Visitors may be added by clicking the plus (+) icon. A maximum of 25 visitors can be submitted per request.</p>
     
     <div class="visitor-container">
       <div class="visitor-forms" formArrayName="visitorDetails">
@@ -250,6 +250,9 @@
               <label class="checkbox-item">
                 <input type="checkbox" formControlName="seniorCitizen"> Senior Citizen
               </label>
+              <label class="checkbox-item">
+                <input type="checkbox" formControlName="indigenousPeople"> Indigenous People
+              </label>
             </div>
           </div>
           <button
@@ -271,7 +274,7 @@
         <span class="mobile-text" (click)="addVisitor()">Add Visitor</span>
       </div>
     </div>
-    <div class="no-of-pax">Number of pax is
+    <div class="no-of-pax">Number of Guests is
       <span class="badge">{{ paxCount }}</span>
     </div>
     <hr />
@@ -314,10 +317,10 @@
     <div class="success-message">
       <p>Mabuhay!</p><br />
       <p>
-        Thank you for choosing to visit THE HOUSE, Legislative Museum and Conservation Laboratory of the House of Representatives. 
+        Thank you for choosing to visit The House Legislative Museum. 
         We have received your booking request. Please wait for a confirmation email with further instructions.</p>
       <p>
-        For inquiries, you may contact us at 8000-0111 loc. 1111 or email legislativemuseum&#64;house.gov.ph.
+        For inquiries, you may contact us at (02) 886-31023 loc. 7649 / 7650 or email legislativemuseum&#64;house.gov.ph.
       </p>
     </div>
   </ng-template>
