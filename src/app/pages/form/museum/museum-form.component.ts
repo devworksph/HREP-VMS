@@ -100,7 +100,7 @@ export class MuseumFormComponent implements OnInit {
       companyName: [''],
       otherLGU: [''],
       visitorDetails: this.fb.array([this.createVisitor()]),
-      fileUploaded: ['']
+      fileUploaded: ['', Validators.required]
     });
 
     // Conditional validation
@@ -187,6 +187,7 @@ export class MuseumFormComponent implements OnInit {
       soloParent: [false],
       pwd: [false],
       seniorCitizen: [false],
+      indigenousPeople: [false]
     });
   }
 
