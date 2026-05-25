@@ -181,6 +181,9 @@
         <div *ngFor="let visitor of visitorDetails.controls; let i=index"
             [formGroupName]="i"
             class="visitor">
+          <div class="row-2" *ngIf="i == 1">
+            <h4>Additional Visitor/s</h4>
+          </div>
           <div class="row-3">
             <div>
               <input formControlName="firstName" placeholder="First Name">
@@ -242,7 +245,7 @@
             <div class="checkboxes">
               <label class="title">Select box if applicable</label>
               <label class="checkbox-item">
-                <input type="checkbox" formControlName="soloParent"> Solo parent
+                <input type="checkbox" formControlName="soloParent"> Solo Parent
               </label>
               <label class="checkbox-item">
                 <input type="checkbox" formControlName="pwd"> PWD
@@ -258,7 +261,7 @@
           <button
             type="button"
             class="remove-btn"
-            *ngIf="visitorDetails.length > 1"
+            *ngIf="visitorDetails.length > 1 && i === visitorDetails.length - 1"
             (click)="removeVisitor(i)">
           − Remove
           </button>
@@ -274,7 +277,7 @@
         <span class="mobile-text" (click)="addVisitor()">Add Visitor</span>
       </div>
     </div>
-    <div class="no-of-pax">Number of Guests is
+    <div class="no-of-pax">Number of {{ paxCount <= 1 ? 'Guest is' : 'Guests are' }}:
       <span class="badge">{{ paxCount }}</span>
     </div>
     <hr />
