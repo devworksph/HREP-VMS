@@ -2,7 +2,18 @@
   <div class="left">
     <div class="logo">
       <a routerLink="/">
-        <img src="../../../assets/images/the-house-logo-white.png" alt="" />
+        <img
+          *ngIf="location !== 'Library and Archives'"
+          class="the-house" 
+          src="../../../assets/images/the-house-logo-white.png"
+          alt="The House" 
+        />
+        <img
+          *ngIf="location == 'Library and Archives'"
+          class="lib-archives-the-house"
+          src="../../../assets/images/library-archives-the-house.svg"
+          alt="Library, Archives and The House"
+        />
       </a>
     </div>
     <form [formGroup]="consentForm">
