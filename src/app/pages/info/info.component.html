@@ -3,13 +3,13 @@
     <div class="logo">
       <a routerLink="/">
         <img
-          *ngIf="location !== 'Library and Archives'"
+          *ngIf="location !== 'Library and Archives' "
           class="the-house" 
           src="../../../assets/images/the-house-logo-white.png"
           alt="The House" 
         />
         <img
-          *ngIf="location == 'Library and Archives'"
+          *ngIf="location == 'Library and Archives' || location == 'Library, Archives and The House'"
           class="lib-archives-the-house"
           src="../../../assets/images/library-archives-the-house.svg"
           alt="Library, Archives and The House"
@@ -82,8 +82,12 @@
   </div>
   <div class="right">
     <div class="footer">
-        <img src="../assets/images/logo-header-1.svg" alt="Logo 1" class="logo-1">
-        <img src="../assets/images/the-house-logo-blue.svg" alt="Logo 2">
+        <img
+          *ngIf="location !== 'Library and Archives'" 
+          src="../assets/images/lib-archives.svg" alt="Logo 1" class="logo-1">
+        <img
+          *ngIf="location == 'Library and Archives' || location == 'Library, Archives and The House'"
+          src="../assets/images/the-house-logo-blue.svg" alt="Logo 2"> 
     </div>
   </div>
 </div>
