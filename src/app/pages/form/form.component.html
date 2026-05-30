@@ -3,7 +3,10 @@
         <a routerLink="/">
           <img src="../assets/images/logo-header-1.svg" alt="Logo 1" class="logo-1">
           <img src="../assets/images/library-archives-the-house.svg" alt="Logo 2">
-          <img src="../assets/images/the-house-logo-white.png" alt="Logo 1">
+          <img
+            *ngIf="location == 'The Legislative Museum of the House of Representatives'"
+            src="../assets/images/the-house-logo-white.png" 
+            alt="Logo 1">
         </a>
     </div>
     <museum-form
