@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
 import { VisitorService } from '@services/visitor.service';
 import { VisitorTypes, StudentTypes, PurposeOfVisit } from '@models/types.model';
 import { ILocation, IProvinceData, ContinentsAndCountries, PhPlaces } from '@models/locations.model';
@@ -51,12 +52,15 @@ export class MuseumFormComponent implements OnInit {
     { name: '36-59', value: '36 - 59'},
     { name: '60-Above', value: '60 - Above'},
   ];
+  showPicker = false;
+  formattedDate = '';
 
   constructor(
     private fb: FormBuilder,
     private visitorService: VisitorService,
     private stringHelper: StringHelper,
-    private http: HttpClient
+    private http: HttpClient,
+    private cookieService: CookieService
   ) {}
 
   ngAfterViewInit() {
@@ -183,7 +187,10 @@ export class MuseumFormComponent implements OnInit {
       sex: ['', Validators.required],
       age: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      contact: ['', Validators.required],
+      contact: ['', [
+        Validators.required,
+        Validators.pattern(/^09\d{9}$/)
+      ]],
       soloParent: [false],
       pwd: [false],
       seniorCitizen: [false],
@@ -402,6 +409,10 @@ export class MuseumFormComponent implements OnInit {
         if (response.success == true) {
           this.isFormSuccess = true;
           this.isLoading = false;
+
+          this.cookieService.delete(
+            `visitor-consent-${this.location}`
+          );
         }
       },
       error => {
@@ -409,21 +420,43 @@ export class MuseumFormComponent implements OnInit {
         this.isLoading = false;
       }
     );
-    console.log('Manila Form Submitted', visitFormData);
   }
 
-  showPicker = false;
-formattedDate = '';
+  formatContact(index: number): void {
+    const control = this.visitorDetails.at(index).get('contact');
 
-openPicker() {
-  this.showPicker = true;
-}
+    if (!control) {
+      return;
+    }
 
-closePicker() {
-  setTimeout(() => {
-    this.showPicker = false;
-  }, 150);
-}
+    let digits = control.value?.replace(/\D/g, '') || '';
+
+    // +639xxxxxxxxx or 639xxxxxxxxx -> 09xxxxxxxxx
+    if (digits.startsWith('639')) {
+      digits = '0' + digits.substring(2);
+    }
+
+    // 9xxxxxxxxx -> 09xxxxxxxxx
+    if (digits.startsWith('9') && digits.length <= 10) {
+      digits = '0' + digits;
+    }
+
+    // Limit to 11 digits
+    digits = digits.substring(0, 11);
+
+    control.setValue(digits, { emitEvent: false });
+  }
+  
+
+  openPicker() {
+    this.showPicker = true;
+  }
+
+  closePicker() {
+    setTimeout(() => {
+      this.showPicker = false;
+    }, 150);
+  }
 
   formatDate(event: any) {
     const value = event.target.value;
@@ -440,5 +473,4 @@ closePicker() {
 
     this.showPicker = false;
   }
-
 }

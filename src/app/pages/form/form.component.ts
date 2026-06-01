@@ -1,6 +1,7 @@
 import { Component, OnInit, Type } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
 import { MuseumFormComponent } from './museum/museum-form.component';
 
 @Component({
@@ -17,11 +18,22 @@ export class FormComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private router: Router,
+    private fb: FormBuilder,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit() {
     this.location = this.route.snapshot.paramMap.get('location')!;
+
+    const hasConsent = this.cookieService.check(
+      `visitor-consent-${this.location}`
+    );
+
+    if (!hasConsent) {
+      this.router.navigate(['/info', this.location]);
+      return;
+    }
 
     this.loadFormComponent();
   }
