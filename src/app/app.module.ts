@@ -4,13 +4,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { InfoComponent } from './pages/info/info.component';
 import { FormComponent } from './pages/form/form.component';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from './pages/form/forms.module';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, InfoComponent, FormComponent],
@@ -23,7 +23,9 @@ import { FormsModule } from './pages/form/forms.module';
     AppRoutingModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

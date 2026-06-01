@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CookieService } from 'ngx-cookie-service';
 import { VisitorService } from '@services/visitor.service';
 import { faXTwitter, faInstagram, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +29,7 @@ export class InfoComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
+    private cookieService: CookieService,
     private visitorService: VisitorService
   ) {
     this.consentForm = this.fb.group({
@@ -38,7 +40,6 @@ export class InfoComponent implements OnInit {
 
   ngOnInit() {
     this.location = this.route.snapshot.paramMap.get('location')!;
-    console.log('location', this.location);
     const params = {
       location: this.location
     };
@@ -56,6 +57,16 @@ export class InfoComponent implements OnInit {
     if (this.consentForm.invalid) {
       return;
     }
+
+    // set the cookie
+    this.cookieService.set(
+      `visitor-consent-${this.location}`,
+      'true',
+      {
+        expires: 1,
+        path: '/'
+      }
+    );
 
     this.router.navigate(['/form', this.location]);
   }

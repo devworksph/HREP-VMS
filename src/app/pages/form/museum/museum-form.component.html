@@ -213,7 +213,6 @@
               </div>
             </div>
             <div>
-              <!-- <input type="number" formControlName="age" placeholder="Age"> -->
               <select formControlName="age">
                 <option value="" selected>Age Range</option>
                 <option
@@ -235,9 +234,19 @@
               </div>
             </div>
             <div>
-              <input formControlName="contact" placeholder="Contact">
+              <input
+                formControlName="contact"
+                placeholder="Contact"
+                (input)="formatContact(i)"
+                >
               <div class="error" *ngIf="visitor.get('contact')?.touched && visitor.get('contact')?.invalid">
-                Contact is required
+                <span *ngIf="visitor.get('contact')?.errors?.['required']">
+                  Contact is required
+                </span>
+
+                <span *ngIf="visitor.get('contact')?.errors?.['pattern']">
+                  Contact must be in the format 09XXXXXXXXX
+                </span>
               </div>
             </div>
           </div>

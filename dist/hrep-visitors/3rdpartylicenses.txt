@@ -789,6 +789,11 @@ Awesome, nor vice versa. **Please do not use brand logos for any purpose except
 to represent the company, product, or service to which they refer.**
 
 --------------------------------------------------------------------------------
+Package: ngx-cookie-service
+License: "MIT"
+
+
+--------------------------------------------------------------------------------
 Package: flatpickr
 License: "MIT"
 
