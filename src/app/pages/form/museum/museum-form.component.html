@@ -4,7 +4,8 @@
   <form
     *ngIf="!isFormSuccess; else formSuccessTemplate"
     [formGroup]="visitForm" (ngSubmit)="submit()">
-    <h4>Tour Schedule</h4>
+    <h4 *ngIf="location !== 'Library and Archives'">Tour Schedule</h4>
+    <h4 *ngIf="location == 'Library and Archives'">Visit</h4>
     <div class="row">
       <div>
         <label>Preferred Date</label>
@@ -164,7 +165,7 @@
         </div>
       </div>
       <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Other'">
-        <label>Others</label>
+        <label>Other</label>
         <input type="text" formControlName="purposeOfVisitOther" />
         <div class="error" *ngIf="visitForm.get('purposeOfVisitOther')?.touched && visitForm.get('purposeOfVisitOther')?.invalid">
           Other Purpose is required
@@ -329,10 +330,10 @@
     <div class="success-message">
       <p>Mabuhay!</p><br />
       <p>
-        Thank you for choosing to visit The House Legislative Museum. 
+        Thank you for choosing to visit {{ location }}. 
         We have received your booking request. Please wait for a confirmation email with further instructions.</p>
       <p>
-        For inquiries, you may contact us at (02) 886-31023 loc. 7649 / 7650 or email legislativemuseum&#64;house.gov.ph.
+        For inquiries, you may contact us at {{ locationContactNo }} or email {{ locationEmail }}.
       </p>
     </div>
   </ng-template>
