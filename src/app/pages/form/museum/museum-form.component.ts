@@ -93,7 +93,7 @@ export class MuseumFormComponent implements OnInit {
   ngOnInit() {
     this.visitForm = this.fb.group({
       preferredSchedule: ['', Validators.required],
-      preferredTime: ['', Validators.required],
+      preferredTime: [''],
       visitorType: ['', Validators.required],
       purposeOfVisit: [''],
       purposeOfVisitOther: [''],
@@ -108,6 +108,15 @@ export class MuseumFormComponent implements OnInit {
       visitorDetails: this.fb.array([this.createVisitor()]),
       fileUploaded: ['', Validators.required]
     });
+    const preferredTime = this.visitForm.get('preferredTime');
+
+    if (this.location == 'Library and Archives') {
+      preferredTime?.clearValidators();
+    } else {
+      preferredTime?.setValidators([Validators.required]);
+    }
+
+    preferredTime?.updateValueAndValidity();
 
     // Conditional validation
     this.visitForm.get('visitorType')?.valueChanges.subscribe((type) => {
@@ -365,6 +374,7 @@ export class MuseumFormComponent implements OnInit {
   getMissingFields(): string[] {
     const missingFields: string[] = [];
 
+    console.log('XX', this.visitForm.get('preferredTime')?.invalid);
     // Tour Schedule fields
     if (this.visitForm.get('preferredSchedule')?.invalid) missingFields.push('Preferred Schedule');
     if (this.visitForm.get('preferredTime')?.invalid) missingFields.push('Preferred Time');
