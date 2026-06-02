@@ -170,3 +170,11 @@
 
 //   }
 // }
+
+@media (max-width: 768px) {
+  .footer {
+    span {
+      display: inline-block;
+    }
+  }
+}

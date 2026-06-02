@@ -11,6 +11,8 @@
     </div>
     <museum-form
         [location]="location"
+        [locationContactNo]="locationContactNo"
+        [locationEmail]="locationEmail"
     ></museum-form>
     <div class="footer">
         <span class="x">
@@ -22,12 +24,12 @@
         <span class="email">
           <i class="fa-solid fa-envelope"></i>
           <a href="mailto:legislativemuseum@house.gov.ph">
-            legislativemuseum&#64;house.gov.ph
+            {{ locationEmail }}
           </a>
         </span>
         <span class="phone">
           <i class="fa-solid fa-phone"></i>
-          (02) 886-31023 loc. 7649 / 7650
+          {{ locationContactNo }}
         </span>
         <span class="tiktok">
           <i class="fa-brands fa-tiktok"></i>

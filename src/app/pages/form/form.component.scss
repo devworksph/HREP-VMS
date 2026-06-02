@@ -101,5 +101,17 @@
 
   .forms {
     padding: 0 30px;
+
+    .logos {
+      .logo-1 {
+        margin-right: 0;
+      }
+    }
+
+    .footer {
+      span {
+        display: inline-block;
+      }
+    }
   }
 }

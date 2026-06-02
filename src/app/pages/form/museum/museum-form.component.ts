@@ -16,6 +16,8 @@ import { environment } from 'src/environments/environment';
 })
 export class MuseumFormComponent implements OnInit {
   @Input() location: string = '';
+  @Input() locationContactNo: string = '';
+  @Input() locationEmail: string = '';
   @ViewChild('dateInput') dateInput!: ElementRef;
   
   visitForm!: FormGroup;
@@ -431,12 +433,10 @@ export class MuseumFormComponent implements OnInit {
 
     let digits = control.value?.replace(/\D/g, '') || '';
 
-    // +639xxxxxxxxx or 639xxxxxxxxx -> 09xxxxxxxxx
     if (digits.startsWith('639')) {
       digits = '0' + digits.substring(2);
     }
 
-    // 9xxxxxxxxx -> 09xxxxxxxxx
     if (digits.startsWith('9') && digits.length <= 10) {
       digits = '0' + digits;
     }
