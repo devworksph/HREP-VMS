@@ -19,7 +19,9 @@
           Preferred Date is required
         </div>
       </div>
-      <div>
+      <div
+        *ngIf="location !== 'Library and Archives'"
+        >
         <label>Preferred Time</label>
         <select formControlName="preferredTime">
           <option value="">Select Time Slot</option>
@@ -28,7 +30,7 @@
           </option>
         </select>
         <div class="error" *ngIf="visitForm.get('preferredTime')?.touched && visitForm.get('preferredTime')?.invalid">
-          Preferred Date is required
+          Preferred Time Slot is required
         </div>
       </div>
     </div>
