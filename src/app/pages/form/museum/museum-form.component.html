@@ -166,8 +166,8 @@
           </div>
         </div>
       </div>
-      <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Other'">
-        <label>Other</label>
+      <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Others'">
+        <label>Others</label>
         <input type="text" formControlName="purposeOfVisitOther" />
         <div class="error" *ngIf="visitForm.get('purposeOfVisitOther')?.touched && visitForm.get('purposeOfVisitOther')?.invalid">
           Other Purpose is required

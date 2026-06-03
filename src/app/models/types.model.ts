@@ -4,7 +4,7 @@ export const VisitorTypes = [
     { name: 'Other Government Agency', value: 'Other LGU'},
     { name: 'Private Sector', value: 'Private Sector'},
     { name: 'Foreign Visitor', value: 'Foreign Visitor'},
-    { name: 'Other', value: 'Other'}
+    { name: 'Others', value: 'Others'}
 ];
 
 export const BookingTypes = [
@@ -24,6 +24,6 @@ export const PurposeOfVisit = [
     { name: 'Research', value: 'Research' },
     { name: 'Pick up documents', value: 'Pick up documents' },
     { name: 'Benchmarking / Tour', value: 'Benchmarking / Tour' },
-    { name: 'Other', value: 'Other' },
+    { name: 'Others', value: 'Others' },
 ]
 
