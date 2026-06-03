@@ -28,6 +28,7 @@ export class InfoComponent implements OnInit {
   faEnvelope = faEnvelope;
   faPhone = faPhone;
   faTiktok = faTiktok;
+  infoBgImage: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -50,17 +51,20 @@ export class InfoComponent implements OnInit {
         this.locationContactNo = '+63(2) 893-15001 local 7101';
         this.locationEmail = 'info.services@house.gov.ph / legislativemuseum@house.gov.ph';
         this.xAccount = 'thehouse.museum';
+        this.infoBgImage = 'lib-archive-house-bg-info.jpg';
       break;
       case 'Library and Archives':
         this.locationContactNo = '+63(2) 893-15001 local 7101/7603 - +63(995) 427-0655 - +63(968) 411-1045';
         this.locationEmail = 'info.services@house.gov.ph';
         this.xAccount = 'HRepLAM';
         this.fbAccount = 'HREPLibraryArchivesMuseum';
+        this.infoBgImage = 'lib-bg-info.jpg';
       break;
       default: // The House Museum
         this.locationContactNo = '+63(02) 886-31023 loc. 7649 / 7650';
         this.locationEmail = 'legislativemuseum@house.gov.ph';
         this.xAccount = 'thehouse.museum';
+        this.infoBgImage = 'info-bg.jpg';
     }
 
     const params = {
