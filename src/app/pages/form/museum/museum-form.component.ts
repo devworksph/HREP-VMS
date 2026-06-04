@@ -158,7 +158,6 @@ export class MuseumFormComponent implements OnInit {
 
   get isShowPurposeOfVisit() {
     const match = 
-      this.location === 'Library, Archives and The House' || 
       this.location === 'Library and Archives'
 
     return match;
