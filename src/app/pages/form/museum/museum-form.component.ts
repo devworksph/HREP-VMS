@@ -150,6 +150,18 @@ export class MuseumFormComponent implements OnInit {
       // Reset country when continent changes
       this.visitForm.get('country')?.setValue('');
     });
+
+    const missingFields = Object.keys(this.visitForm.controls)
+      .filter(key => {
+        const control = this.visitForm.get(key);
+
+        return (
+          control?.hasValidator(Validators.required) &&
+          control.hasError('required')
+        );
+      });
+
+    console.log('missingFields', missingFields);
   }
 
   get visitorDetails(): FormArray {
@@ -322,7 +334,7 @@ export class MuseumFormComponent implements OnInit {
 
   private validatePurposeOfVisit() {
     const control = this.visitForm.get('purposeOfVisit');
-    if (this.location === 'Library, Archives and The House') {
+    if (this.location === 'Library and Archives') {
       control?.setValidators([Validators.required]);    
     } else {
       control?.clearValidators();
