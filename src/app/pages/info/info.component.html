@@ -76,14 +76,14 @@
           *ngIf="tiktokAccount"
           class="tiktok">
           <i class="fa-brands fa-tiktok"></i>
-          <a href="https://www.tiktok.com/@thehousehrepmuseum" target="_blank">
-            &#64;thehousemuseum
+          <a href="https://www.tiktok.com/@{{ tiktokAccount }}" target="_blank">
+            &#64;{{ tiktokAccount }}
           </a>
         </span>
         <span
           *ngIf="fbAccount"
-          class="tiktok">
-          <i class="fa-brands fa-tiktok"></i>
+          class="facebook">
+          <i class="fa-brands fa-facebook"></i>
           <a href="https://www.facebook.com/{{ fbAccount }}" target="_blank">
             &#64;{{ fbAccount }}
           </a>

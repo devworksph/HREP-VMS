@@ -47,20 +47,21 @@ export class InfoComponent implements OnInit {
   ngOnInit() {
     this.location = this.route.snapshot.paramMap.get('location')!;
     switch (this.location) {
-      case 'Library, Archives and The House':
-        this.locationContactNo = '+63(2) 893-15001 local 7101';
-        this.locationEmail = 'info.services@house.gov.ph / legislativemuseum@house.gov.ph';
-        this.xAccount = 'thehouse.museum';
-        this.infoBgImage = 'lib-archive-house-bg-info.jpg';
-      break;
-      case 'Library and Archives':
+      case 'Library, Archives and The House': // track 3
         this.locationContactNo = '+63(2) 893-15001 local 7101/7603 - +63(995) 427-0655 - +63(968) 411-1045';
         this.locationEmail = 'info.services@house.gov.ph';
         this.xAccount = 'HRepLAM';
-        this.fbAccount = 'HREPLibraryArchivesMuseum';
-        this.infoBgImage = 'lib-bg-info.jpg';
+        this.tiktokAccount = 'HREPLibraryArchivesMuseum';
+        this.infoBgImage = 'lib-archive-house-bg-info.jpg';
       break;
-      default: // The House Museum
+      case 'Library and Archives': // track 2
+        this.locationContactNo = '+63(2) 893-15001 local 7101/7603 - +63(995) 427-0655 - +63(968) 411-1045';
+        this.locationEmail = 'info.services@house.gov.ph';
+        this.xAccount = 'HRepLAM';
+        this.infoBgImage = 'lib-bg-info.jpg';
+        this.tiktokAccount = 'HREPLibraryArchivesMuseum';
+      break;
+      default: // track 1
         this.locationContactNo = '+63(02) 886-31023 loc. 7649 / 7650';
         this.locationEmail = 'legislativemuseum@house.gov.ph';
         this.xAccount = 'thehouse.museum';

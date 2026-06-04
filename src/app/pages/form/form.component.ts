@@ -15,7 +15,8 @@ export class FormComponent implements OnInit {
   locationContactNo: string = '';
   locationEmail: string = '';
   xAccount: string = '';
-  fbAccount: string = '';
+  fbAccount: string = ''
+  tiktokAccount: string = '';
   visitForm!: FormGroup;
   submitted = false;
   currentFormComponent: Type<any> | null = null;
@@ -39,7 +40,7 @@ export class FormComponent implements OnInit {
         this.locationContactNo = '+63(2) 893-15001 local 7101/7603 - +63(995) 427-0655 - +63(968) 411-1045';
         this.locationEmail = 'info.services@house.gov.ph';
         this.xAccount = 'HRepLAM';
-        this.fbAccount = 'HREPLibraryArchivesMuseum';
+        this.tiktokAccount = 'HREPLibraryArchivesMuseum';
       break;
       default: // The House Museum
         this.locationContactNo = '+63(02) 886-31023 loc. 7649 / 7650';
