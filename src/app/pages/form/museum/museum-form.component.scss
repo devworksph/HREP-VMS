@@ -184,6 +184,17 @@ hr {
   }
 }
 
+.benchmarking-tour {
+  ol {
+    margin-top: 10px;
+    li {
+      margin-left: 20px;
+      margin-bottom: 10px;
+      padding-left: 5px;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .row, .row-3, .row-4 {
     grid-template-columns: 1fr;
