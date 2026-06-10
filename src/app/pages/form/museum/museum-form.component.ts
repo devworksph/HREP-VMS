@@ -151,17 +151,17 @@ export class MuseumFormComponent implements OnInit {
       this.visitForm.get('country')?.setValue('');
     });
 
-    const missingFields = Object.keys(this.visitForm.controls)
-      .filter(key => {
-        const control = this.visitForm.get(key);
+    // const missingFields = Object.keys(this.visitForm.controls)
+    //   .filter(key => {
+    //     const control = this.visitForm.get(key);
 
-        return (
-          control?.hasValidator(Validators.required) &&
-          control.hasError('required')
-        );
-      });
+    //     return (
+    //       control?.hasValidator(Validators.required) &&
+    //       control.hasError('required')
+    //     );
+    //   });
 
-    console.log('missingFields', missingFields);
+    // console.log('missingFields', missingFields);
   }
 
   get visitorDetails(): FormArray {
@@ -170,7 +170,7 @@ export class MuseumFormComponent implements OnInit {
 
   get isShowPurposeOfVisit() {
     const match = 
-      this.location === 'Library and Archives'
+      this.location === 'Library and Archives' || this.location === 'Library, Archives and The House'
 
     return match;
   }
