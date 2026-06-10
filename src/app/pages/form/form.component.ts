@@ -37,7 +37,7 @@ export class FormComponent implements OnInit {
         this.xAccount = 'thehouse.museum';
       break;
       case 'Library and Archives':
-        this.locationContactNo = '+63(2) 893-15001 local 7101/7603 - +63(995) 427-0655 - +63(968) 411-1045';
+        this.locationContactNo = '+63(2) 893-15001 local 7101/7603  +63(995) 427-0655  +63(968) 411-1045';
         this.locationEmail = 'info.services@house.gov.ph';
         this.xAccount = 'HRepLAM';
         this.tiktokAccount = 'HREPLibraryArchivesMuseum';
