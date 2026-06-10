@@ -1,6 +1,9 @@
 
 <div class="form-container">
-  <h3>Booking Form</h3>
+  <h3>
+    <span *ngIf="location !== 'Library and Archives'">Booking Form</span>
+    <span *ngIf="location == 'Library and Archives'">Registration Form</span>
+  </h3>
   <form
     *ngIf="!isFormSuccess; else formSuccessTemplate"
     [formGroup]="visitForm" (ngSubmit)="submit()">
