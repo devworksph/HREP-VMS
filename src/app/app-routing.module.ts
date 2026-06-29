@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { InfoComponent } from './pages/info/info.component';
 import { FormComponent } from './pages/form/form.component';
-import { MaintenanceComponent } from './pages/maintenance/maintenance.component';
 
 const routes: Routes = [
   {
@@ -21,13 +20,6 @@ const routes: Routes = [
   {
     path: 'form/:location',
     component: FormComponent,
-    data: {
-      hideHeader: true
-    }
-  },
-  {
-    path: 'maintenance',
-    component: MaintenanceComponent,
     data: {
       hideHeader: true
     }
