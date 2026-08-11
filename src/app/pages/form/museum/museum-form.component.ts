@@ -130,6 +130,7 @@ export class MuseumFormComponent implements OnInit {
       countryOfOrigin: [''],
       companyName: [''],
       otherLGU: [''],
+      otherVisitorType: [''],
       visitorDetails: this.fb.array([this.createVisitor()]),
       fileUploaded: ['', Validators.required]
     });
@@ -204,6 +205,10 @@ export class MuseumFormComponent implements OnInit {
     return this.visitForm.get('visitorType')?.value === 'Private Sector';
   }
 
+  get isOtherVisitorType() {
+    return this.visitForm.get('visitorType')?.value === 'Others';
+  }
+
   get f() { return this.visitForm.controls; }
 
   get paxCount(): number {
@@ -272,9 +277,10 @@ export class MuseumFormComponent implements OnInit {
     const continent = this.visitForm.get('continent');
     const country = this.visitForm.get('countryOfOrigin');
     const otherLgu = this.visitForm.get('otherLGU');
+    const otherVisitorType = this.visitForm.get('otherVisitorType');
 
     // Reset validators first
-    [level, schoolName, province, municipality, company, continent, country, otherLgu].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, continent, country, otherLgu, otherVisitorType].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
@@ -297,8 +303,11 @@ export class MuseumFormComponent implements OnInit {
     if (type === 'Other LGU') {
       otherLgu?.setValidators([Validators.required, notBlankValidator]);
     }
+    if (type === 'Others') {
+      otherVisitorType?.setValidators([Validators.required, notBlankValidator]);
+    }
 
-    [level, schoolName, province, municipality, company, country, otherLgu].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, country, otherLgu, otherVisitorType].forEach((ctrl) => {
       ctrl?.updateValueAndValidity();
     });
   }
@@ -428,6 +437,7 @@ export class MuseumFormComponent implements OnInit {
     }
     if (this.isPrivateSector && this.visitForm.get('companyName')?.invalid) missingFields.push('Company Name');
     if (this.isForeignVisitor && this.visitForm.get('countryOfOrigin')?.invalid) missingFields.push('Country of Origin');
+    if (this.isOtherVisitorType && this.visitForm.get('otherVisitorType')?.invalid) missingFields.push('Visitor Type (Others)');
 
     // Visitor Information (FormArray)
     this.visitorDetails.controls.forEach((visitor, index) => {
