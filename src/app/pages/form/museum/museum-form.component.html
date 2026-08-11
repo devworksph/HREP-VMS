@@ -133,6 +133,14 @@
           Country is required
         </div>
       </div>
+      <div *ngIf="isOtherVisitorType">
+        <label for="otherVisitorType">Please specify</label>
+        <input type="text" id="otherVisitorType" formControlName="otherVisitorType" />
+        <div class="error" *ngIf="visitForm.get('otherVisitorType')?.touched && visitForm.get('otherVisitorType')?.invalid">
+          <span *ngIf="visitForm.get('otherVisitorType')?.errors?.['required']">Please specify the visitor type</span>
+          <span *ngIf="visitForm.get('otherVisitorType')?.errors?.['whitespace']">Visitor type cannot be blank</span>
+        </div>
+      </div>
     </div>
     <div class="row" *ngIf="isShowPurposeOfVisit">
       <div>
