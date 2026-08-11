@@ -1,53 +1,54 @@
-<div class="forms">
+<div class="forms" *ngIf="location">
     <div class="logos">
         <a routerLink="/">
           <img
-            *ngIf="location == 'The Legislative Museum of the House of Representatives' || location == 'Library, Archives and The House'"
-            src="../assets/images/the-house-logo-white.png" 
+            *ngIf="location.showHouseLogo"
+            src="../assets/images/the-house-logo-white.png"
             alt="The House" />
           <img
-            *ngIf="location == 'Library and Archives' || location == 'Library, Archives and The House'"
+            *ngIf="location.showLibraryLogo"
             src="../assets/images/library-archives-the-house.svg"
             alt="Library and Archives" />
-          
+
         </a>
     </div>
     <museum-form
-        [location]="location"
-        [locationContactNo]="locationContactNo"
-        [locationEmail]="locationEmail"
+        [location]="location.displayName"
+        [slug]="location.slug"
+        [locationContactNo]="location.contactNo"
+        [locationEmail]="location.email"
     ></museum-form>
     <div class="footer">
         <span class="x">
           <i class="fa-brands fa-x-twitter"></i>
-          <a href="https://x.com/{{ xAccount }}" target="_blank">
-            &#64;{{ xAccount }}
+          <a href="https://x.com/{{ location.xAccount }}" target="_blank">
+            &#64;{{ location.xAccount }}
           </a>
         </span>
         <span class="email">
           <i class="fa-solid fa-envelope"></i>
-          <a href="mailto:{{ locationEmail }}">
-            {{ locationEmail }}
+          <a href="mailto:{{ location.email }}">
+            {{ location.email }}
           </a>
         </span>
         <span class="phone">
           <i class="fa-solid fa-phone"></i>
-          {{ locationContactNo }}
+          {{ location.contactNo }}
         </span>
         <span
-          *ngIf="tiktokAccount"
+          *ngIf="location.tiktokAccount"
           class="tiktok">
           <i class="fa-brands fa-tiktok"></i>
-          <a href="https://www.tiktok.com/@{{ tiktokAccount }}" target="_blank">
-            &#64;{{ tiktokAccount }}
+          <a href="https://www.tiktok.com/@{{ location.tiktokAccount }}" target="_blank">
+            &#64;{{ location.tiktokAccount }}
           </a>
         </span>
         <span
-          *ngIf="fbAccount"
+          *ngIf="location.fbAccount"
           class="facebook">
           <i class="fa-brands fa-facebook"></i>
-          <a href="https://www.facebook.com/{{ fbAccount }}" target="_blank">
-            &#64;{{ fbAccount }}
+          <a href="https://www.facebook.com/{{ location.fbAccount }}" target="_blank">
+            &#64;{{ location.fbAccount }}
           </a>
         </span>
     </div>

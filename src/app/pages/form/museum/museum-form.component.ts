@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient, HttpEventType } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { HttpClient, HttpEventType, HttpEvent } from '@angular/common/http';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, FormArray } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { VisitorService } from '@services/visitor.service';
 import { VisitorTypes, StudentTypes, PurposeOfVisit } from '@models/types.model';
-import { ILocation, IProvinceData, ContinentsAndCountries, PhPlaces } from '@models/locations.model';
+import { IProvinceData, ContinentsAndCountries, PhPlaces } from '@models/locations.model';
 import flatpickr from 'flatpickr';
 import { StringHelper } from '@helpers/string.helper';
 import { environment } from 'src/environments/environment';
+import { getLocationConfig, ILocationConfig, LocationSlug } from '@models/location.config';
 
 @Component({
   selector: 'museum-form',
@@ -15,14 +16,17 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./museum-form.component.scss']
 })
 export class MuseumFormComponent implements OnInit {
+  /** Exact display name expected by the backend's `locationType` field. */
   @Input() location: string = '';
+  @Input() slug: LocationSlug = 'museum';
   @Input() locationContactNo: string = '';
   @Input() locationEmail: string = '';
   @ViewChild('dateInput') dateInput!: ElementRef;
-  
+
+  locationConfig!: ILocationConfig;
   visitForm!: FormGroup;
   submitted = false;
-  maxVisitors = 25;
+  maxVisitors = 24;
   isMaxVisitorReached: boolean = false;
   visitorTypes = VisitorTypes;
   studentTypes = StudentTypes;
@@ -38,6 +42,7 @@ export class MuseumFormComponent implements OnInit {
   uploadedFileName: string = '';
   isFormSuccess: boolean = false;
   isLoading: boolean = false;
+  submitError: string = '';
   timeSlots: { label: string; value: string }[] = [];
   today: string = '';
   uploadMessage: any = {
@@ -47,6 +52,19 @@ export class MuseumFormComponent implements OnInit {
   uploadErrors: any = {
     image: '',
     file: ''
+  };
+  uploadProgress: any = {
+    image: 0,
+    file: 0
+  };
+  // Letters (incl. accented/Filipino characters), optionally joined by a
+  // single space, hyphen, apostrophe or period — rejects digits and
+  // whitespace-only input.
+  readonly namePattern = /^[a-zA-ZÀ-ÖØ-öø-ÿ]+(?:[ '\-.][a-zA-ZÀ-ÖØ-öø-ÿ]+)*$/;
+  private readonly maxUploadSizeBytes = 5 * 1024 * 1024;
+  private readonly allowedUploadTypes: { [key: string]: string[] } = {
+    image: ['image/jpeg', 'image/png'],
+    file: ['application/pdf']
   };
   ageRange = [
     { name: '7-18', value: '7 - 18'},
@@ -71,9 +89,14 @@ export class MuseumFormComponent implements OnInit {
 
     const disableUntil = new Date();
     disableUntil.setDate(today.getDate() + 4);
+
+    // Preferred Date can't be booked past the end of the current year.
+    const maxDate = new Date(today.getFullYear(), 11, 31);
+
     flatpickr(this.dateInput.nativeElement, {
       dateFormat: "l, F j, Y",
       minDate: today,
+      maxDate: maxDate,
       allowInput: false,
       disable: [
         {
@@ -91,6 +114,8 @@ export class MuseumFormComponent implements OnInit {
   }
   
   ngOnInit() {
+    this.locationConfig = getLocationConfig(this.slug) ?? getLocationConfig('museum')!;
+
     this.visitForm = this.fb.group({
       preferredSchedule: ['', Validators.required],
       preferredTime: [''],
@@ -110,10 +135,10 @@ export class MuseumFormComponent implements OnInit {
     });
     const preferredTime = this.visitForm.get('preferredTime');
 
-    if (this.location == 'Library and Archives') {
-      preferredTime?.clearValidators();
-    } else {
+    if (this.locationConfig.showPreferredTime) {
       preferredTime?.setValidators([Validators.required]);
+    } else {
+      preferredTime?.clearValidators();
     }
 
     preferredTime?.updateValueAndValidity();
@@ -123,16 +148,15 @@ export class MuseumFormComponent implements OnInit {
       this.setConditionalValidators(type);
     });
 
-    if (this.location === 'The House Museum and Library & Archives') {
+    if (this.locationConfig.showPurposeOfVisit) {
       this.visitForm.get('purposeOfVisit')?.valueChanges.subscribe((type) => {
         this.setPurposeOfVisitValidators(type);
       });
     }
-   
+
     this.validatePurposeOfVisit();
     this.generateTimeSlots();
     this.preparePhPlaces();
-    // this.countriesList();
 
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
@@ -150,18 +174,6 @@ export class MuseumFormComponent implements OnInit {
       // Reset country when continent changes
       this.visitForm.get('country')?.setValue('');
     });
-
-    // const missingFields = Object.keys(this.visitForm.controls)
-    //   .filter(key => {
-    //     const control = this.visitForm.get(key);
-
-    //     return (
-    //       control?.hasValidator(Validators.required) &&
-    //       control.hasError('required')
-    //     );
-    //   });
-
-    // console.log('missingFields', missingFields);
   }
 
   get visitorDetails(): FormArray {
@@ -169,10 +181,7 @@ export class MuseumFormComponent implements OnInit {
   }
 
   get isShowPurposeOfVisit() {
-    const match = 
-      this.location === 'Library and Archives' || this.location === 'Library, Archives and The House'
-
-    return match;
+    return this.locationConfig.showPurposeOfVisit;
   }
 
   get isStudent() {
@@ -203,9 +212,9 @@ export class MuseumFormComponent implements OnInit {
 
   createVisitor(): FormGroup {
     return this.fb.group({
-      firstName: ['', Validators.required],
-      middleName: [''],
-      lastName: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.pattern(this.namePattern)]],
+      middleName: ['', Validators.pattern(this.namePattern)],
+      lastName: ['', [Validators.required, Validators.pattern(this.namePattern)]],
       sex: ['', Validators.required],
       age: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -286,7 +295,7 @@ export class MuseumFormComponent implements OnInit {
       country?.setValidators(Validators.required);
     }
     if (type === 'Other LGU') {
-      otherLgu?.setValidators(Validators.required);
+      otherLgu?.setValidators([Validators.required, notBlankValidator]);
     }
 
     [level, schoolName, province, municipality, company, country, otherLgu].forEach((ctrl) => {
@@ -334,8 +343,8 @@ export class MuseumFormComponent implements OnInit {
 
   private validatePurposeOfVisit() {
     const control = this.visitForm.get('purposeOfVisit');
-    if (this.location === 'Library and Archives') {
-      control?.setValidators([Validators.required]);    
+    if (this.locationConfig.purposeOfVisitRequired) {
+      control?.setValidators([Validators.required]);
     } else {
       control?.clearValidators();
     }
@@ -352,6 +361,24 @@ export class MuseumFormComponent implements OnInit {
       return;
     }
 
+    this.uploadMessage[type] = '';
+    this.uploadErrors[type] = '';
+    this.uploadProgress[type] = 0;
+
+    const maxSizeLabel = `${this.maxUploadSizeBytes / (1024 * 1024)}MB`;
+    if (file.size > this.maxUploadSizeBytes) {
+      this.uploadErrors[type] = `File exceeds the maximum size of ${maxSizeLabel}.`;
+      event.target.value = '';
+      return;
+    }
+
+    if (!this.allowedUploadTypes[type].includes(file.type)) {
+      const formats = type === 'file' ? 'PDF' : 'JPG/PNG';
+      this.uploadErrors[type] = `Unsupported file type. Accepted formats: ${formats}.`;
+      event.target.value = '';
+      return;
+    }
+
     let endpoint = '/upload-id';
     if (type == 'file') {
       endpoint = '/upload-doc';
@@ -359,33 +386,34 @@ export class MuseumFormComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('file', file);
-    this.uploadMessage.image = null;
-    this.uploadErrors.image = null;
-    this.http.post<any>(`${environment.apiBaseUrl}${endpoint}`, formData)
-      .subscribe({
-        next: (res) => {
+    this.http.post<any>(`${environment.apiBaseUrl}${endpoint}`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).subscribe({
+      next: (event: HttpEvent<any>) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.uploadProgress[type] = Math.round((event.loaded / event.total) * 100);
+        } else if (event.type === HttpEventType.Response) {
+          const res = event.body;
           if (res.status) {
             this.uploadMessage[type] = res.file;
-            // store uploaded file in form
             this.visitForm.patchValue({ fileUploaded: res.file });
-            console.log('Upload success', res);
           } else {
             this.uploadErrors[type] = res.message;
           }
-        },
-        error: (err) => {
-          console.error('Upload error', err);
+          this.uploadProgress[type] = 0;
         }
-      });
-
-    this.visitForm.patchValue({ uploadedId: file });
-    this.visitForm.get('fileUploaded')?.updateValueAndValidity();
+      },
+      error: () => {
+        this.uploadErrors[type] = 'Upload failed. Please try again.';
+        this.uploadProgress[type] = 0;
+      }
+    });
   }
 
   getMissingFields(): string[] {
     const missingFields: string[] = [];
 
-    console.log('XX', this.visitForm.get('preferredTime')?.invalid);
     // Tour Schedule fields
     if (this.visitForm.get('preferredSchedule')?.invalid) missingFields.push('Preferred Schedule');
     if (this.visitForm.get('preferredTime')?.invalid) missingFields.push('Preferred Time');
@@ -416,7 +444,8 @@ export class MuseumFormComponent implements OnInit {
 
   submit() {
     this.submitted = true;
-    if (this.visitForm.invalid) return;
+    this.submitError = '';
+    if (this.visitForm.invalid || this.isLoading) return;
     const locationType = {
       "locationType": this.location
     }
@@ -428,19 +457,21 @@ export class MuseumFormComponent implements OnInit {
     this.isLoading = true;
     this.visitorService.createVisitor(visitFormData).subscribe(
       response => {
-        console.log('response', response);
+        this.isLoading = false;
         if (response.success == true) {
           this.isFormSuccess = true;
-          this.isLoading = false;
 
           this.cookieService.delete(
-            `visitor-consent-${this.location}`
+            `visitor-consent-${this.slug}`
           );
+        } else {
+          this.submitError = response.message || 'We could not submit your booking. Please try again.';
         }
       },
       error => {
         this.isFormSuccess = false;
         this.isLoading = false;
+        this.submitError = 'We could not submit your booking. Please check your connection and try again.';
       }
     );
   }
@@ -494,4 +525,13 @@ export class MuseumFormComponent implements OnInit {
 
     this.showPicker = false;
   }
+}
+
+/** Rejects a value that is present but contains only whitespace. */
+function notBlankValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (typeof value === 'string' && value.length > 0 && value.trim().length === 0) {
+    return { whitespace: true };
+  }
+  return null;
 }

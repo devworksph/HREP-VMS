@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CookieService } from 'ngx-cookie-service';
 import { VisitorService } from '@services/visitor.service';
-import { faXTwitter, faInstagram, faTiktok } from '@fortawesome/free-brands-svg-icons';
-import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { getLocationConfig, ILocationConfig, LocationSlug } from '@models/location.config';
 
 @Component({
   selector: 'app-info',
@@ -14,27 +12,25 @@ import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 })
 export class InfoComponent implements OnInit {
 
-  location!: string;
-  locationContactNo: string = '';
-  locationEmail: string = '';
-  xAccount: string = '';
-  fbAccount: string = '';
-  tiktokAccount: string = '';
-  reminders!: SafeHtml;
+  slug!: LocationSlug;
+  location!: ILocationConfig;
+  reminders: string = '';
+  remindersError: boolean = false;
   consentForm: FormGroup;
   submitted = false;
-  faXTwitter = faXTwitter;
-  faInstagram = faInstagram;
-  faEnvelope = faEnvelope;
-  faPhone = faPhone;
-  faTiktok = faTiktok;
-  infoBgImage: string = '';
+
+  privacyNoticeContent: string = '';
+  privacyNoticeLoading = false;
+  privacyNoticeError = false;
+  private privacyNoticeLoaded = false;
+
+  @ViewChild('consentError') consentError?: ElementRef<HTMLElement>;
+  @ViewChild('privacyDialog') privacyDialog?: ElementRef<HTMLDialogElement>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer,
     private cookieService: CookieService,
     private visitorService: VisitorService
   ) {
@@ -45,37 +41,26 @@ export class InfoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.location = this.route.snapshot.paramMap.get('location')!;
-    switch (this.location) {
-      case 'Library, Archives and The House': // track 3
-        this.locationContactNo = '+63(2) 893-15001 local 7101/7603  +63(995) 427-0655  +63(968) 411-1045';
-        this.locationEmail = 'info.services@house.gov.ph';
-        this.xAccount = 'HRepLAM';
-        this.tiktokAccount = 'HREPLibraryArchivesMuseum';
-        this.infoBgImage = 'lib-archive-house-bg-info.jpg';
-      break;
-      case 'Library and Archives': // track 2
-        this.locationContactNo = '+63(2) 893-15001 local 7101/7603  +63(995) 427-0655  +63(968) 411-1045';
-        this.locationEmail = 'info.services@house.gov.ph';
-        this.xAccount = 'HRepLAM';
-        this.infoBgImage = 'lib-bg-info.jpg';
-        this.tiktokAccount = 'HREPLibraryArchivesMuseum';
-      break;
-      default: // track 1
-        this.locationContactNo = '+63(02) 886-31023 loc. 7649 / 7650';
-        this.locationEmail = 'legislativemuseum@house.gov.ph';
-        this.xAccount = 'thehouse.museum';
-        this.infoBgImage = 'info-bg.jpg';
+    const slugParam = this.route.snapshot.paramMap.get('location');
+    const config = getLocationConfig(slugParam);
+
+    if (!config) {
+      this.router.navigate(['/']);
+      return;
     }
 
-    const params = {
-      location: this.location
-    };
-    this.visitorService.reminders(params).subscribe(
+    this.slug = config.slug;
+    this.location = config;
+
+    this.visitorService.reminders({ location: config.displayName }).subscribe(
       response => {
-        this.reminders = this.sanitizer.bypassSecurityTrustHtml(response.reminders);
+        // Bound via [innerHTML] below, so Angular's built-in sanitizer
+        // strips any unsafe markup before it reaches the DOM.
+        this.reminders = response.reminders;
       },
-      error => {}
+      error => {
+        this.remindersError = true;
+      }
     );
   }
 
@@ -83,12 +68,20 @@ export class InfoComponent implements OnInit {
     this.submitted = true;
 
     if (this.consentForm.invalid) {
+      // The error banner renders this tick; wait a frame so it exists
+      // before we try to scroll it into view.
+      setTimeout(() => {
+        this.consentError?.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
+        this.consentError?.nativeElement.focus({ preventScroll: true });
+      });
       return;
     }
 
-    // set the cookie
     this.cookieService.set(
-      `visitor-consent-${this.location}`,
+      `visitor-consent-${this.slug}`,
       'true',
       {
         expires: 1,
@@ -96,6 +89,51 @@ export class InfoComponent implements OnInit {
       }
     );
 
-    this.router.navigate(['/form', this.location]);
+    this.router.navigate(['/form', this.slug]);
+  }
+
+  openPrivacyNotice(event: Event) {
+    event.preventDefault();
+
+    if (!this.privacyNoticeLoaded && !this.privacyNoticeLoading) {
+      this.fetchPrivacyNotice();
+    }
+
+    // showModal() traps focus inside the dialog and restores it to this
+    // trigger element automatically when the dialog is closed.
+    this.privacyDialog?.nativeElement.showModal();
+  }
+
+  closePrivacyNotice() {
+    this.privacyDialog?.nativeElement.close();
+  }
+
+  onPrivacyDialogBackdropClick(event: MouseEvent) {
+    if (event.target === this.privacyDialog?.nativeElement) {
+      this.closePrivacyNotice();
+    }
+  }
+
+  retryPrivacyNotice() {
+    this.fetchPrivacyNotice();
+  }
+
+  private fetchPrivacyNotice() {
+    this.privacyNoticeLoading = true;
+    this.privacyNoticeError = false;
+
+    this.visitorService.privacyNotice().subscribe(
+      response => {
+        // Bound via [innerHTML] below, so Angular's built-in sanitizer
+        // strips any unsafe markup before it reaches the DOM.
+        this.privacyNoticeContent = response.privacy_policy;
+        this.privacyNoticeLoaded = true;
+        this.privacyNoticeLoading = false;
+      },
+      error => {
+        this.privacyNoticeError = true;
+        this.privacyNoticeLoading = false;
+      }
+    );
   }
 }
