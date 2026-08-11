@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocationSlug } from '@models/location.config';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +11,7 @@ export class HomeComponent {
 
   constructor(private router: Router) {}
 
-  goToInfo(location: string) {
-    this.router.navigate(['/info', location]);
+  goToInfo(slug: LocationSlug) {
+    this.router.navigate(['/info', slug]);
   }
 }

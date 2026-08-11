@@ -1,19 +1,16 @@
 
 <div class="form-container">
-  <h3>
-    <span *ngIf="location !== 'Library and Archives'">Booking Form</span>
-    <span *ngIf="location == 'Library and Archives'">Registration Form</span>
-  </h3>
+  <h3>{{ locationConfig.formTitle }}</h3>
   <form
     *ngIf="!isFormSuccess; else formSuccessTemplate"
     [formGroup]="visitForm" (ngSubmit)="submit()">
-    <h4 *ngIf="location !== 'Library and Archives'">Tour Schedule</h4>
-    <h4 *ngIf="location == 'Library and Archives'">Visit</h4>
+    <h4>{{ locationConfig.scheduleSectionTitle }}</h4>
     <div class="row">
       <div>
-        <label>Preferred Date</label>
+        <label for="preferredSchedule">Preferred Date</label>
         <input
           type="text"
+          id="preferredSchedule"
           #dateInput
           formControlName="preferredSchedule"
           class="date-input"
@@ -23,10 +20,10 @@
         </div>
       </div>
       <div
-        *ngIf="location !== 'Library and Archives'"
+        *ngIf="locationConfig.showPreferredTime"
         >
-        <label>Preferred Time</label>
-        <select formControlName="preferredTime">
+        <label for="preferredTime">Preferred Time</label>
+        <select id="preferredTime" formControlName="preferredTime">
           <option value="">Select Time Slot</option>
           <option *ngFor="let slot of timeSlots" [value]="slot.value">
             {{ slot.label }}
@@ -41,8 +38,8 @@
     <h4>Visitor Details</h4>
     <div class="row">
       <div>
-        <label>Select Visitor Type</label>
-        <select formControlName="visitorType">
+        <label for="visitorType">Select Visitor Type</label>
+        <select id="visitorType" formControlName="visitorType">
           <option
             *ngFor="let type of visitorTypes"
             [value]="type.value">
@@ -54,8 +51,8 @@
         </div>
       </div>
       <div *ngIf="isStudent">
-        <label>Type of Student</label>
-        <select formControlName="level">
+        <label for="level">Type of Student</label>
+        <select id="level" formControlName="level">
           <option
             *ngFor="let type of studentTypes"
             [value]="type.value">{{ type.name }}
@@ -65,15 +62,16 @@
           Student level is required
         </div>
 
-        <label>School Name</label>
-        <input type="text" formControlName="schoolName" />
+        <label for="schoolName">School Name</label>
+        <input type="text" id="schoolName" formControlName="schoolName" />
         <div class="error" *ngIf="visitForm.get('schoolName')?.touched && visitForm.get('schoolName')?.invalid">
           School Name is required
         </div>
       </div>
       <div *ngIf="isLGU">
-        <label>Select Province</label>
+        <label for="province">Select Province</label>
         <select
+          id="province"
           formControlName="province"
           (change)="onProvinceSelect()">
           <option
@@ -85,8 +83,9 @@
           Province is required
         </div>
 
-        <label>Select Municipality</label>
+        <label for="municipality">Select Municipality</label>
         <select
+          id="municipality"
           formControlName="municipality">
           <option
             *ngFor="let municipality of municipalities"
@@ -98,22 +97,23 @@
         </div>
       </div>
       <div *ngIf="isOtherLGU">
-        <label>Enter Agency Name</label>
-        <input type="text" formControlName="otherLGU" />
+        <label for="otherLGU">Enter Agency Name</label>
+        <input type="text" id="otherLGU" formControlName="otherLGU" />
         <div class="error" *ngIf="visitForm.get('otherLGU')?.touched && visitForm.get('otherLGU')?.invalid">
-          Other Government Agency is required
+          <span *ngIf="visitForm.get('otherLGU')?.errors?.['required']">Other Government Agency is required</span>
+          <span *ngIf="visitForm.get('otherLGU')?.errors?.['whitespace']">Other Government Agency cannot be blank</span>
         </div>
       </div>
       <div *ngIf="isPrivateSector">
-        <label>Company Name</label>
-        <input type="text" formControlName="companyName" />
+        <label for="companyName">Company Name</label>
+        <input type="text" id="companyName" formControlName="companyName" />
         <div class="error" *ngIf="visitForm.get('companyName')?.touched && visitForm.get('companyName')?.invalid">
           Company Name is required
         </div>
       </div>
       <div *ngIf="isForeignVisitor">
-        <label>Continents</label>
-         <select formControlName="continent">
+        <label for="continent">Continents</label>
+         <select id="continent" formControlName="continent">
           <option value="">-- Select Continent --</option>
           <option *ngFor="let continent of continents" [value]="continent">
             {{ continent }}
@@ -122,8 +122,8 @@
         <div class="error" *ngIf="visitForm.get('continent')?.touched && visitForm.get('continent')?.invalid">
           Continent is required
         </div>
-        <label>Select Country of Origin</label>
-        <select formControlName="countryOfOrigin">
+        <label for="countryOfOrigin">Select Country of Origin</label>
+        <select id="countryOfOrigin" formControlName="countryOfOrigin">
           <option value="">-- Select Country --</option>
           <option *ngFor="let country of filteredCountries" [value]="country">
             {{ country }}
@@ -136,8 +136,8 @@
     </div>
     <div class="row" *ngIf="isShowPurposeOfVisit">
       <div>
-        <label>Select Purpose of Visit</label>
-        <select formControlName="purposeOfVisit">
+        <label for="purposeOfVisit">Select Purpose of Visit</label>
+        <select id="purposeOfVisit" formControlName="purposeOfVisit">
           <option
             *ngFor="let type of purposeOfVisit"
             [value]="type.value">
@@ -174,15 +174,18 @@
             hidden
           />
           <div class="uploaded-file">Accepted format: PDF (Max: 5MB)</div>
-          <p class="uploaded-file" *ngIf="uploadMessage.file">File Uploaded: {{ uploadMessage.file }}</p>
-          <div class="error" *ngIf="uploadErrors.file && !uploadMessage.file">
+          <div class="upload-progress" *ngIf="uploadProgress.file > 0 && uploadProgress.file < 100" aria-live="polite">
+            Uploading… {{ uploadProgress.file }}%
+          </div>
+          <p class="uploaded-file" *ngIf="uploadMessage.file" aria-live="polite">File Uploaded: {{ uploadMessage.file }}</p>
+          <div class="error" *ngIf="uploadErrors.file && !uploadMessage.file" aria-live="polite">
             {{ uploadErrors.file }}
           </div>
         </div>
       </div>
       <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Others'">
-        <label>Others</label>
-        <input type="text" formControlName="purposeOfVisitOther" />
+        <label for="purposeOfVisitOther">Others</label>
+        <input type="text" id="purposeOfVisitOther" formControlName="purposeOfVisitOther" />
         <div class="error" *ngIf="visitForm.get('purposeOfVisitOther')?.touched && visitForm.get('purposeOfVisitOther')?.invalid">
           Other Purpose is required
         </div>
@@ -192,7 +195,7 @@
     <h4>Visitor Information</h4>
     <label>All fields are required</label>
     <p class="alert warning">Reminder: Additional Visitors may be added by clicking the plus (+) icon. A maximum of 25 visitors can be submitted per request.</p>
-    
+
     <div class="visitor-container">
       <div class="visitor-forms" formArrayName="visitorDetails">
         <div *ngFor="let visitor of visitorDetails.controls; let i=index"
@@ -203,24 +206,33 @@
           </div>
           <div class="row-3">
             <div>
-              <input formControlName="firstName" placeholder="First Name">
+              <label [for]="'firstName-' + i" class="sr-only">First Name</label>
+              <input [id]="'firstName-' + i" formControlName="firstName" placeholder="First Name">
               <div class="error" *ngIf="visitor.get('firstName')?.touched && visitor.get('firstName')?.invalid">
-                First Name is required
+                <span *ngIf="visitor.get('firstName')?.errors?.['required']">First Name is required</span>
+                <span *ngIf="visitor.get('firstName')?.errors?.['pattern']">First Name must contain letters only</span>
               </div>
             </div>
             <div>
-              <input formControlName="middleName" placeholder="Middle Name">
+              <label [for]="'middleName-' + i" class="sr-only">Middle Name</label>
+              <input [id]="'middleName-' + i" formControlName="middleName" placeholder="Middle Name">
+              <div class="error" *ngIf="visitor.get('middleName')?.touched && visitor.get('middleName')?.invalid">
+                <span *ngIf="visitor.get('middleName')?.errors?.['pattern']">Middle Name must contain letters only</span>
+              </div>
             </div>
             <div>
-              <input formControlName="lastName" placeholder="Last Name">
+              <label [for]="'lastName-' + i" class="sr-only">Last Name</label>
+              <input [id]="'lastName-' + i" formControlName="lastName" placeholder="Last Name">
               <div class="error" *ngIf="visitor.get('lastName')?.touched && visitor.get('lastName')?.invalid">
-                Last Name is required
+                <span *ngIf="visitor.get('lastName')?.errors?.['required']">Last Name is required</span>
+                <span *ngIf="visitor.get('lastName')?.errors?.['pattern']">Last Name must contain letters only</span>
               </div>
             </div>
           </div>
           <div class="row-4">
             <div>
-              <select formControlName="sex">
+              <label [for]="'sex-' + i" class="sr-only">Sex</label>
+              <select [id]="'sex-' + i" formControlName="sex">
                 <option value="" selected>Sex</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -230,7 +242,8 @@
               </div>
             </div>
             <div>
-              <select formControlName="age">
+              <label [for]="'age-' + i" class="sr-only">Age Range</label>
+              <select [id]="'age-' + i" formControlName="age">
                 <option value="" selected>Age Range</option>
                 <option
                   *ngFor="let type of ageRange"
@@ -239,19 +252,23 @@
                 </option>
               </select>
               <div class="error" *ngIf="visitor.get('age')?.touched && visitor.get('age')?.invalid">
-                <span *ngIf="visitor.get('age')?.errors?.['required']">Age is required</span>
-                <span *ngIf="visitor.get('age')?.errors?.['min']">Age must be at least 1</span>
+                <span *ngIf="visitor.get('age')?.errors?.['required']">Age Range is required</span>
               </div>
             </div>
             <div>
-              <input formControlName="email" placeholder="Email">
+              <label [for]="'email-' + i" class="sr-only">Email</label>
+              <input [id]="'email-' + i" type="email" formControlName="email" placeholder="Email">
               <div class="error" *ngIf="visitor.get('email')?.touched && visitor.get('email')?.invalid">
                 <span *ngIf="visitor.get('email')?.errors?.['required']">Email is required</span>
                 <span *ngIf="visitor.get('email')?.errors?.['email']">Invalid email format</span>
               </div>
             </div>
             <div>
+              <label [for]="'contact-' + i" class="sr-only">Contact</label>
               <input
+                [id]="'contact-' + i"
+                type="tel"
+                inputmode="numeric"
                 formControlName="contact"
                 placeholder="Contact"
                 (input)="formatContact(i)"
@@ -297,8 +314,9 @@
         <button
           type="button"
           class="add-btn"
+          aria-label="Add visitor"
           (click)="addVisitor()">
-          <span class="icon">+</span>
+          <span class="icon" aria-hidden="true">+</span>
         </button>
         <span class="mobile-text" (click)="addVisitor()">Add Visitor</span>
       </div>
@@ -308,7 +326,7 @@
     </div>
     <hr />
     <p>The main contact person for this visit must upload a valid government-issued ID. This is required for the issuance of House Pass.</p>
-    
+
     <div class="id-upload">
       <label for="govId" class="upload-btn">
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M288 109.3L288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-242.7-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352l128 0c0 35.3 28.7 64 64 64s64-28.7 64-64l128 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>
@@ -321,8 +339,11 @@
         hidden
       />
       <div class="uploaded-file">Accepted formats: JPG/PNG (Max: 5MB)</div>
-      <p class="uploaded-file" *ngIf="uploadMessage.image">File Uploaded: {{ uploadMessage.image }}</p>
-      <div class="error" *ngIf="uploadErrors.image && !uploadMessage.image">
+      <div class="upload-progress" *ngIf="uploadProgress.image > 0 && uploadProgress.image < 100" aria-live="polite">
+        Uploading… {{ uploadProgress.image }}%
+      </div>
+      <p class="uploaded-file" *ngIf="uploadMessage.image" aria-live="polite">File Uploaded: {{ uploadMessage.image }}</p>
+      <div class="error" *ngIf="uploadErrors.image && !uploadMessage.image" aria-live="polite">
         {{ uploadErrors.image }}
       </div>
       <div class="error" *ngIf="visitForm.get('fileUploaded')?.touched && visitForm.get('fileUploaded')?.invalid">
@@ -330,27 +351,32 @@
       </div>
     </div>
 
+    <div class="error submit-error" *ngIf="submitError" aria-live="assertive">
+      {{ submitError }}
+    </div>
+
     <button
-      type="submit" 
-      [disabled]="visitForm.invalid"
+      type="submit"
+      [disabled]="visitForm.invalid || isLoading"
       >
         <span *ngIf="!isLoading">Submit</span>
 
         <span *ngIf="isLoading" class="loading">
           <span class="spinner"></span> Submitting...
         </span>
-        
+
     </button>
   </form>
   <ng-template #formSuccessTemplate>
     <div class="success-message">
       <p>Mabuhay!</p><br />
       <p>
-        Thank you for choosing to visit {{ location }}. 
+        Thank you for choosing to visit {{ location }}.
         We have received your booking request. Please wait for a confirmation email with further instructions.</p>
       <p>
         For inquiries, you may contact us at {{ locationContactNo }} or email {{ locationEmail }}.
       </p>
     </div>
+    <p><a routerLink="/">Back to Homepage</a></p>
   </ng-template>
 </div>

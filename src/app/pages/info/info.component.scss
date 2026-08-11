@@ -1,19 +1,12 @@
 @import "variables";
-
-.full-layout {
-  padding: 0;
-}
-
-.main-content.full {
-  width: 100%;
-  height: 100vh;
-}
+@import "mixins";
 
 .container {
     display: flex;
     flex-direction: row;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
     /* LEFT SIDE */
@@ -26,6 +19,8 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 2;
+      overflow-y: auto;
+      @include themed-scrollbar(rgba($white-color, 0.45), rgba($white-color, 0.7));
     }
 
     .logo {
@@ -99,9 +94,11 @@
       background: linear-gradient(to right, #2f436c, transparent);
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: $bp-md) {
       .container {
         flex-direction: column;
+        height: auto;
+        overflow: visible;
 
         .logo {
           img {
@@ -111,6 +108,7 @@
       }
       .left {
         width: 100%;
+        overflow-y: visible;
       }
       .right {
         display: none;
@@ -143,7 +141,8 @@
     margin-top: 4px;
   }
 
-  .checkbox-row a {
+  .checkbox-row a,
+  .link-button {
     font-style: italic;
     text-decoration: underline;
   }
@@ -154,27 +153,163 @@
       }
 }
 
-// @media (max-width: 768px) {
-
-//   .form-container,
-//   .info-container {
-//     margin: 40px 20px;
-//     padding: 25px;
-//   }
-
-//   .info-container {
-//     h3 {
-//       font-size: 25px;
-//       line-height: 35px;
-//     }
-
-//   }
-// }
-
-@media (max-width: 768px) {
+@media (max-width: $bp-sm) {
   .footer {
     span {
       display: inline-block;
     }
+  }
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* PRIVACY NOTICE DIALOG */
+.privacy-dialog {
+  margin: auto;
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  width: min(600px, 90vw);
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+  /* Native <dialog> is hidden via the browser's own
+     `dialog:not([open]) { display: none }` rule — author CSS always beats
+     that regardless of specificity, so `display` here MUST stay scoped to
+     `[open]`, or the dialog renders inline in the page even when closed. */
+  &[open] {
+    display: flex;
+    flex-direction: column;
+    animation: privacy-dialog-in 0.18s ease-out;
+  }
+
+  &::backdrop {
+    background: rgba(8, 15, 32, 0.6);
+  }
+}
+
+@keyframes privacy-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.privacy-dialog-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: $info-bg-color;
+  color: $info-content;
+}
+
+.privacy-dialog-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid $buttonGray;
+
+  h3 {
+    font-family: "Andalus", sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    color: $info-title;
+    margin: 0;
+  }
+}
+
+.privacy-dialog-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: $buttonGray;
+  color: $black-color;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  &:hover {
+    background: $buttonBackground;
+  }
+}
+
+.privacy-dialog-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 20px 24px 28px;
+  overflow-y: auto;
+  text-align: left;
+  font-family: "Aeroport", sans-serif;
+  line-height: 1.6;
+  @include themed-scrollbar(rgba($info-content, 0.35), rgba($info-content, 0.55));
+
+  /* Restore basic spacing for whatever HTML the API returns — the global
+     reset strips all default margins, so headings/paragraphs/lists would
+     otherwise render as one dense, unreadable block.
+     ::ng-deep is required here: this content is injected via [innerHTML],
+     so it never receives Angular's _ngcontent scoping attribute, and a
+     normal emulated-encapsulation selector would never match it. */
+  ::ng-deep {
+    h2 {
+      font-family: "Andalus", sans-serif;
+      font-weight: 400;
+      color: $info-title;
+      line-height: 1.3;
+      margin: 20px 0 10px;
+    }
+
+    p, ul, ol {
+      margin: 0 0 14px;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    a {
+      color: $info-title;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+.privacy-dialog-loading {
+  color: $info-content;
+  opacity: 0.7;
+}
+
+@media (max-width: $bp-sm) {
+  .privacy-dialog {
+    width: 94vw;
+    max-height: 88vh;
   }
 }

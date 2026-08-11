@@ -1,15 +1,15 @@
-<div class="container">
+<div class="container" *ngIf="location">
   <div class="left">
     <div class="logo">
       <a routerLink="/">
         <img
-          *ngIf="location !== 'Library and Archives' "
-          class="the-house" 
+          *ngIf="location.showHouseLogo"
+          class="the-house"
           src="../../../assets/images/the-house-logo-white.png"
-          alt="The House" 
+          alt="The House"
         />
         <img
-          *ngIf="location == 'Library and Archives' || location == 'Library, Archives and The House'"
+          *ngIf="location.showLibraryLogo"
           class="lib-archives-the-house"
           src="../../../assets/images/library-archives-the-house.svg"
           alt="Library, Archives and The House"
@@ -19,14 +19,17 @@
     <form [formGroup]="consentForm">
       <div class="info-container">
         <h3>Notes and Reminders</h3>
-        <div [innerHTML]="reminders" class="reminders"></div>
+        <div [innerHTML]="reminders" class="reminders" aria-live="polite"></div>
+        <div class="error" *ngIf="remindersError">
+          Unable to load reminders right now. Please refresh the page.
+        </div>
         <div class="checkbox-group">
 
           <label class="checkbox-row">
             <input type="checkbox" formControlName="privacyNotice">
             <span>
               I have read and understood the
-              <a href="#">Data Privacy Notice</a>
+              <a class="link-button" (click)="openPrivacyNotice($event)">Data Privacy Notice</a>
             </span>
 
           </label>
@@ -45,7 +48,7 @@
           </label>
         </div>
 
-        <div class="error" *ngIf="submitted && consentForm.invalid">
+        <div class="error" #consentError *ngIf="submitted && consentForm.invalid" tabindex="-1" aria-live="assertive">
           Please read the privacy notice and provide your consent before proceeding.
         </div>
 
@@ -58,51 +61,81 @@
     <div class="footer">
         <span class="x">
           <i class="fa-brands fa-x-twitter"></i>
-          <a href="https://x.com/{{ xAccount }}" target="_blank">
-            &#64;{{ xAccount }}
+          <a href="https://x.com/{{ location.xAccount }}" target="_blank">
+            &#64;{{ location.xAccount }}
           </a>
         </span>
         <span class="email">
           <i class="fa-solid fa-envelope"></i>
-          <a href="mailto:{{ locationEmail }}">
-            {{ locationEmail }}
+          <a href="mailto:{{ location.email }}">
+            {{ location.email }}
           </a>
         </span>
         <span class="phone">
           <i class="fa-solid fa-phone"></i>
-          {{ locationContactNo }}
+          {{ location.contactNo }}
         </span>
         <span
-          *ngIf="tiktokAccount"
+          *ngIf="location.tiktokAccount"
           class="tiktok">
           <i class="fa-brands fa-tiktok"></i>
-          <a href="https://www.tiktok.com/@{{ tiktokAccount }}" target="_blank">
-            &#64;{{ tiktokAccount }}
+          <a href="https://www.tiktok.com/@{{ location.tiktokAccount }}" target="_blank">
+            &#64;{{ location.tiktokAccount }}
           </a>
         </span>
         <span
-          *ngIf="fbAccount"
+          *ngIf="location.fbAccount"
           class="facebook">
           <i class="fa-brands fa-facebook"></i>
-          <a href="https://www.facebook.com/{{ fbAccount }}" target="_blank">
-            &#64;{{ fbAccount }}
+          <a href="https://www.facebook.com/{{ location.fbAccount }}" target="_blank">
+            &#64;{{ location.fbAccount }}
           </a>
         </span>
     </div>
   </div>
   <div
     class="right"
-    style="background: url('../../../assets/images/{{ infoBgImage }}') no-repeat center/cover;"
+    style="background: url('../../../assets/images/{{ location.infoBgImage }}') no-repeat center/cover;"
     >
     <div class="footer">
         <img
-          *ngIf="location !== 'Library and Archives'" 
-          src="../assets/images/lib-archives.svg" alt="Logo 1" class="logo-1">
+          *ngIf="location.showHouseLogo"
+          src="../assets/images/lib-archives.svg" alt="Library, Archives and Museum logo" class="logo-1">
         <img
-          *ngIf="location == 'Library and Archives' || location == 'Library, Archives and The House'"
-          src="../assets/images/the-house-logo-blue.svg" alt="Logo 2"> 
+          *ngIf="location.showLibraryLogo"
+          src="../assets/images/the-house-logo-blue.svg" alt="The House of Representatives logo">
     </div>
   </div>
+
+  <dialog
+    #privacyDialog
+    class="privacy-dialog"
+    aria-labelledby="privacyDialogTitle"
+    (click)="onPrivacyDialogBackdropClick($event)">
+    <div class="privacy-dialog-content">
+      <div class="privacy-dialog-header">
+        <h3 id="privacyDialogTitle">Data Privacy Notice</h3>
+        <button
+          type="button"
+          class="privacy-dialog-close"
+          autofocus
+          aria-label="Close"
+          (click)="closePrivacyNotice()">
+          &times;
+        </button>
+      </div>
+      <div class="privacy-dialog-body">
+        <p class="privacy-dialog-loading" *ngIf="privacyNoticeLoading">Loading&hellip;</p>
+        <div class="error" *ngIf="privacyNoticeError">
+          Unable to load the Data Privacy Notice right now.
+          <button type="button" class="link-button" (click)="retryPrivacyNotice()">Try again</button>
+        </div>
+        <div
+          *ngIf="!privacyNoticeLoading && !privacyNoticeError"
+          [innerHTML]="privacyNoticeContent"
+          aria-live="polite">
+        </div>
+      </div>
+    </div>
+  </dialog>
 </div>
-
-

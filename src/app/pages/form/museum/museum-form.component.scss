@@ -54,6 +54,17 @@ input, select, .flatpickr-input {
   font-size: 13px;
 }
 
+.submit-error {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.upload-progress {
+  margin-top: 8px;
+  font-size: 12px;
+  color: $info-content;
+}
+
 // :host ::ng-deep .flatpickr-input {
 //   width: 100%;
 //   padding: 8px;
@@ -131,24 +142,6 @@ input[type="checkbox"] {
   }
 }
 
-.controls {
-  display:flex;
-  align-items:center;
-  gap:15px;
-  margin-top:10px;
-
-  .add-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-
-  .mobile-text {
-    display: none;
-  }
-}
-
 .no-of-pax {
   font-size: 18px;
   margin: 25px 0 15px;
@@ -174,6 +167,18 @@ hr {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
+
+  .add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .mobile-text {
+    display: none;
+  }
 }
 
 .success-message {
@@ -195,7 +200,7 @@ hr {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $bp-sm) {
   .row, .row-3, .row-4 {
     grid-template-columns: 1fr;
   }

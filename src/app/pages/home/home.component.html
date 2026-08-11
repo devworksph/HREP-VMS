@@ -1,32 +1,35 @@
 <div class="content">
   <div class="cards">
     <div class="card-wrapper">
-      <div
+      <button
+        type="button"
         class="card card-museum"
-        (click)="goToInfo('The Legislative Museum of the House of Representatives')">
-        <div class="title">
-          <span>The House</span><br /> 
+        (click)="goToInfo('museum')">
+        <span class="title">
+          <span>The House</span><br />
           The Legislative Museum of the House of Representatives
-        </div>
-      </div>
+        </span>
+      </button>
     </div>
     <div class="card-wrapper">
-      <div
+      <button
+        type="button"
         class="card card-library"
-        (click)="goToInfo('Library and Archives')">
-        <div class="title">
+        (click)="goToInfo('library')">
+        <span class="title">
           <span>Library and Archives</span>
-        </div>
-      </div>
+        </span>
+      </button>
     </div>
     <div class="card-wrapper">
-      <div
+      <button
+        type="button"
         class="card card-house-archives"
-        (click)="goToInfo('Library, Archives and The House')">
-        <div class="title">
+        (click)="goToInfo('combined')">
+        <span class="title">
           <span>Library, Archives and The House</span>
-        </div>
-      </div>
-    </div>  
+        </span>
+      </button>
+    </div>
   </div>
 </div>

@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { DateTime } from 'luxon';
 import { environment } from 'src/environments/environment';
-// import { environment } from '~environments/environment';
-// import { ILocation } from '~features/steps/model/locations.model';
-// import { ISchedule, IScheduleResponse } from '~features/steps/model/schedules.model';
-// import { IPrivacyPolicy } from '~features/steps/model/settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +18,9 @@ export class VisitorService {
 
   reminders(params: any): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/reminders`, { params });
+  }
+
+  privacyNotice(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/privacy-policy`);
   }
 }
