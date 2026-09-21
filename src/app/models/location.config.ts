@@ -17,7 +17,7 @@ export interface ILocationConfig {
    * How dates are limited by the schedules set up in the CMS:
    * 'capacity' - date + time slots with seat limits (unavailable / full dates, disabled full times)
    * 'dates'    - no time or capacity, but a date is unavailable when no schedule exists for it
-   * 'none'     - not tied to schedules
+   * 'none'     - not tied to schedules (no location uses this today)
    */
   scheduleMode: 'capacity' | 'dates' | 'none';
   showPurposeOfVisit: boolean;
@@ -71,7 +71,7 @@ export const LOCATIONS: Record<LocationSlug, ILocationConfig> = {
     formTitle: 'Booking Form',
     scheduleSectionTitle: 'Tour Schedule',
     showPreferredTime: true,
-    scheduleMode: 'none',
+    scheduleMode: 'capacity',
     showPurposeOfVisit: true,
     purposeOfVisitRequired: false,
     showHouseLogo: true,
