@@ -218,3 +218,47 @@ hr {
     }
   }
 }
+
+/* ALERT DIALOG (capacity / schedule required) */
+.alert-dialog {
+  margin: auto;
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  width: min(460px, 90vw);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+  // display must stay scoped to [open]: author CSS beats the browser's
+  // `dialog:not([open]) { display: none }` rule.
+  &[open] {
+    display: block;
+  }
+
+  &::backdrop {
+    background: rgba(8, 15, 32, 0.6);
+  }
+}
+
+.alert-dialog-content {
+  padding: 28px 28px 24px;
+  text-align: center;
+  background: $white-color;
+  color: $info-content;
+
+  h3 {
+    margin: 0 0 12px;
+    font-family: "Andalus", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    color: $error;
+  }
+
+  p {
+    margin: 0 0 22px;
+    line-height: 1.5;
+  }
+
+  button {
+    min-width: 120px;
+  }
+}
