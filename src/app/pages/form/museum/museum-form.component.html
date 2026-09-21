@@ -18,17 +18,25 @@
         <div class="error" *ngIf="visitForm.get('preferredSchedule')?.touched && visitForm.get('preferredSchedule')?.invalid">
           Preferred Date is required
         </div>
+        <div class="date-legend" aria-label="Calendar key">
+          <span class="legend-unavailable" *ngIf="locationConfig.scheduleMode !== 'none'">Unavailable</span>
+          <span class="legend-full" *ngIf="locationConfig.scheduleMode === 'capacity'">Full</span>
+          <span class="legend-holiday">Holiday</span>
+        </div>
       </div>
       <div
         *ngIf="locationConfig.showPreferredTime"
         >
         <label for="preferredTime">Preferred Time</label>
-        <select id="preferredTime" formControlName="preferredTime">
+        <select id="preferredTime" formControlName="preferredTime" [attr.disabled]="timeSlotsFull ? true : null">
           <option value="">Select Time Slot</option>
-          <option *ngFor="let slot of timeSlots" [value]="slot.value">
-            {{ slot.label }}
+          <option *ngFor="let slot of timeSlots" [value]="slot.value" [disabled]="slot.disabled">
+            {{ slot.label }}<ng-container *ngIf="slot.note"> &mdash; {{ slot.note }}</ng-container>
           </option>
         </select>
+        <div class="error" *ngIf="timeSlotsFull" aria-live="polite">
+          That date is fully booked. Please choose another date.
+        </div>
         <div class="error" *ngIf="visitForm.get('preferredTime')?.touched && visitForm.get('preferredTime')?.invalid">
           Preferred Time Slot is required
         </div>
@@ -317,6 +325,9 @@
           − Remove
           </button>
         </div>
+      </div>
+      <div class="error" *ngIf="visitorDetails.errors?.['duplicateVisitors'] as dups" aria-live="polite">
+        Duplicate entry: Visitor #{{ dups.join(', #') }} has the same name and email or contact number as an earlier visitor.
       </div>
       <div class="controls" *ngIf="!isMaxVisitorReached">
         <button
