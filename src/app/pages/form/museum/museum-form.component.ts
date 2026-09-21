@@ -262,9 +262,16 @@ export class MuseumFormComponent implements OnInit {
       continent: [''],
       countryOfOrigin: [''],
       companyName: [''],
+      institution: [''],
+      affiliation: ['', Validators.maxLength(255)],
       otherLGU: [''],
       otherVisitorType: [''],
       visitorDetails: this.fb.array([this.createVisitor()], { validators: duplicateVisitorsValidator }),
+      vehicle: this.fb.group({
+        plateNumber: ['', Validators.maxLength(50)],
+        carModel: ['', Validators.maxLength(100)],
+        color: ['', Validators.maxLength(50)]
+      }, { validators: vehicleAllOrNothingValidator }),
       fileUploaded: ['', Validators.required]
     });
     const preferredTime = this.visitForm.get('preferredTime');
@@ -339,7 +346,7 @@ export class MuseumFormComponent implements OnInit {
   }
 
   get isOtherVisitorType() {
-    return this.visitForm.get('visitorType')?.value === 'Others';
+    return this.visitForm.get('visitorType')?.value === 'Other';
   }
 
   get f() { return this.visitForm.controls; }
@@ -429,13 +436,14 @@ export class MuseumFormComponent implements OnInit {
     const province = this.visitForm.get('province');
     const municipality = this.visitForm.get('municipality');
     const company = this.visitForm.get('companyName');
+    const institution = this.visitForm.get('institution');
     const continent = this.visitForm.get('continent');
     const country = this.visitForm.get('countryOfOrigin');
     const otherLgu = this.visitForm.get('otherLGU');
     const otherVisitorType = this.visitForm.get('otherVisitorType');
 
     // Reset validators first
-    [level, schoolName, province, municipality, company, continent, country, otherLgu, otherVisitorType].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, institution, continent, country, otherLgu, otherVisitorType].forEach((ctrl) => {
       ctrl?.clearValidators();
       ctrl?.updateValueAndValidity();
     });
@@ -452,17 +460,18 @@ export class MuseumFormComponent implements OnInit {
       company?.setValidators(Validators.required);
     }
     if (type === 'Foreign Visitor') {
+      institution?.setValidators([Validators.required, notBlankValidator]);
       continent?.setValidators(Validators.required);
       country?.setValidators(Validators.required);
     }
     if (type === 'Other LGU') {
       otherLgu?.setValidators([Validators.required, notBlankValidator]);
     }
-    if (type === 'Others') {
+    if (type === 'Other') {
       otherVisitorType?.setValidators([Validators.required, notBlankValidator]);
     }
 
-    [level, schoolName, province, municipality, company, country, otherLgu, otherVisitorType].forEach((ctrl) => {
+    [level, schoolName, province, municipality, company, institution, country, otherLgu, otherVisitorType].forEach((ctrl) => {
       ctrl?.updateValueAndValidity();
     });
   }
@@ -597,8 +606,11 @@ export class MuseumFormComponent implements OnInit {
       if (this.visitForm.get('municipality')?.invalid) missingFields.push('Municipality');
     }
     if (this.isPrivateSector && this.visitForm.get('companyName')?.invalid) missingFields.push('Company Name');
+    if (this.isForeignVisitor && this.visitForm.get('institution')?.invalid) missingFields.push('Institution');
     if (this.isForeignVisitor && this.visitForm.get('countryOfOrigin')?.invalid) missingFields.push('Country of Origin');
-    if (this.isOtherVisitorType && this.visitForm.get('otherVisitorType')?.invalid) missingFields.push('Visitor Type (Others)');
+    if (this.isOtherVisitorType && this.visitForm.get('otherVisitorType')?.invalid) missingFields.push('Visitor Type (Other)');
+
+    if (this.visitForm.get('vehicle')?.invalid) missingFields.push('Vehicle Information (complete all three fields or leave them blank)');
 
     // Visitor Information (FormArray)
     this.visitorDetails.controls.forEach((visitor, index) => {
@@ -719,6 +731,15 @@ export class MuseumFormComponent implements OnInit {
 
     this.showPicker = false;
   }
+}
+
+/** Vehicle details are optional, but once any field has content all three are required. */
+function vehicleAllOrNothingValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value as { plateNumber?: string; carModel?: string; color?: string };
+  const filled = [value.plateNumber, value.carModel, value.color]
+    .filter(field => (field ?? '').trim().length > 0).length;
+
+  return filled === 0 || filled === 3 ? null : { vehicleIncomplete: true };
 }
 
 /** Flags visitors sharing the same name and the same email or contact number. */

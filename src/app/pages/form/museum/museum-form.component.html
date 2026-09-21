@@ -120,6 +120,12 @@
         </div>
       </div>
       <div *ngIf="isForeignVisitor">
+        <label for="institution">Institution</label>
+        <input type="text" id="institution" formControlName="institution" maxlength="255" />
+        <div class="error" *ngIf="visitForm.get('institution')?.touched && visitForm.get('institution')?.invalid">
+          <span *ngIf="visitForm.get('institution')?.errors?.['required']">Institution is required</span>
+          <span *ngIf="visitForm.get('institution')?.errors?.['whitespace']">Institution cannot be blank</span>
+        </div>
         <label for="continent">Continents</label>
          <select id="continent" formControlName="continent">
           <option value="">-- Select Continent --</option>
@@ -148,6 +154,8 @@
           <span *ngIf="visitForm.get('otherVisitorType')?.errors?.['required']">Please specify the visitor type</span>
           <span *ngIf="visitForm.get('otherVisitorType')?.errors?.['whitespace']">Visitor type cannot be blank</span>
         </div>
+        <label for="affiliation">Affiliation (optional)</label>
+        <input type="text" id="affiliation" formControlName="affiliation" maxlength="255" />
       </div>
     </div>
     <div class="row" *ngIf="isShowPurposeOfVisit">
@@ -199,8 +207,8 @@
           </div>
         </div>
       </div>
-      <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Others'">
-        <label for="purposeOfVisitOther">Others</label>
+      <div *ngIf="visitForm.get('purposeOfVisit')?.value === 'Other'">
+        <label for="purposeOfVisitOther">Other</label>
         <input type="text" id="purposeOfVisitOther" formControlName="purposeOfVisitOther" />
         <div class="error" *ngIf="visitForm.get('purposeOfVisitOther')?.touched && visitForm.get('purposeOfVisitOther')?.invalid">
           Other Purpose is required
@@ -210,7 +218,7 @@
 
     <h4>Visitor Information</h4>
     <label>All fields are required</label>
-    <p class="alert warning">Reminder: Additional Visitors may be added by clicking the plus (+) icon. A maximum of 25 visitors can be submitted per request.</p>
+    <p class="alert warning">A maximum of 25 visitors can be submitted per request.</p>
 
     <div class="visitor-container">
       <div class="visitor-forms" formArrayName="visitorDetails">
@@ -342,6 +350,26 @@
     </div>
     <div class="no-of-pax">Number of {{ paxCount <= 1 ? 'Guest' : 'Guests' }}:
       <span class="badge">{{ paxCount }}</span>
+    </div>
+    <hr />
+    <h4>Vehicle Information <small>(optional)</small></h4>
+    <p>If you are bringing a vehicle, provide all three details. Leave all of them blank if not.</p>
+    <div class="row" formGroupName="vehicle">
+      <div>
+        <label for="plateNumber">Plate Number</label>
+        <input type="text" id="plateNumber" formControlName="plateNumber" maxlength="50" autocomplete="off" />
+      </div>
+      <div>
+        <label for="carModel">Car Model</label>
+        <input type="text" id="carModel" formControlName="carModel" maxlength="100" autocomplete="off" />
+      </div>
+      <div>
+        <label for="carColor">Color</label>
+        <input type="text" id="carColor" formControlName="color" maxlength="50" autocomplete="off" />
+      </div>
+    </div>
+    <div class="error" *ngIf="visitForm.get('vehicle')?.errors?.['vehicleIncomplete'] && (visitForm.get('vehicle')?.dirty || submitted)" aria-live="polite">
+      Please fill in the Plate Number, Car Model and Color, or leave all three blank.
     </div>
     <hr />
     <p>The main contact person for this visit must upload a valid government-issued ID. This is required for the issuance of House Pass.</p>
