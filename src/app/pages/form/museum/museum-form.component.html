@@ -426,4 +426,18 @@
     </div>
     <p><a routerLink="/">Back to Homepage</a></p>
   </ng-template>
+
+  <dialog
+    #capacityDialog
+    class="alert-dialog"
+    role="alertdialog"
+    aria-labelledby="alertDialogTitle"
+    aria-describedby="alertDialogMessage"
+    (click)="onAlertBackdropClick($event)">
+    <div class="alert-dialog-content">
+      <h3 id="alertDialogTitle">{{ alertTitle }}</h3>
+      <p id="alertDialogMessage">{{ alertMessage }}</p>
+      <button type="button" autofocus (click)="closeAlert()">OK</button>
+    </div>
+  </dialog>
 </div>

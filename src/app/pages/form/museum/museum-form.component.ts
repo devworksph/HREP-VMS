@@ -24,6 +24,7 @@ export class MuseumFormComponent implements OnInit {
   @Input() locationContactNo: string = '';
   @Input() locationEmail: string = '';
   @ViewChild('dateInput') dateInput!: ElementRef;
+  @ViewChild('capacityDialog') capacityDialog?: ElementRef<HTMLDialogElement>;
 
   locationConfig!: ILocationConfig;
   visitForm!: FormGroup;
@@ -78,6 +79,10 @@ export class MuseumFormComponent implements OnInit {
   formattedDate = '';
   // True when the chosen date has no seat left in any slot: the whole time dropdown is disabled.
   timeSlotsFull = false;
+  alertTitle = '';
+  alertMessage = '';
+  // Seats left per time-slot start hour on the chosen date (museum-style slots only).
+  private slotRemaining = new Map<number, number>();
   private picker?: FlatpickrInstance;
   private disabledDateRules: any[] = [];
   private closedDates = new Map<string, { kind: 'holiday' | 'unavailable' | 'full'; label: string }>();
@@ -189,6 +194,7 @@ export class MuseumFormComponent implements OnInit {
   // dropdown. Capacity is per slot per date, so this reloads on every date change.
   private onDateChosen(date?: Date) {
     this.timeSlotsFull = false;
+    this.slotRemaining = new Map();
     if (!date || !this.locationConfig.showPreferredTime || this.locationConfig.scheduleMode !== 'capacity') {
       return;
     }
@@ -201,6 +207,7 @@ export class MuseumFormComponent implements OnInit {
         }
 
         const remainingByHour = new Map(response.slots.map(s => [s.hour, s.remaining]));
+        this.slotRemaining = remainingByHour;
         this.timeSlots.forEach(slot => {
           const remaining = remainingByHour.get(slot.hour);
           slot.disabled = !remaining || remaining <= 0;
@@ -211,6 +218,8 @@ export class MuseumFormComponent implements OnInit {
         if (chosen?.disabled) {
           this.visitForm.get('preferredTime')?.setValue('');
         }
+
+        this.visitForm.updateValueAndValidity();
 
         // Someone took the last seats after the calendar loaded: mark the date
         // full there too (this clears the pick), then lock the time dropdown.
@@ -274,6 +283,7 @@ export class MuseumFormComponent implements OnInit {
       }, { validators: vehicleAllOrNothingValidator }),
       fileUploaded: ['', Validators.required]
     });
+    this.visitForm.setValidators(() => this.capacityMessage ? { capacityExceeded: true } : null);
     const preferredTime = this.visitForm.get('preferredTime');
 
     if (this.locationConfig.showPreferredTime) {
@@ -355,6 +365,19 @@ export class MuseumFormComponent implements OnInit {
     return this.visitorDetails.length >= this.maxVisitors;
   }
 
+  /** Shown when the group is bigger than the seats left in the chosen slot; also disables Submit. */
+  get capacityMessage(): string {
+    const time = this.visitForm?.get('preferredTime')?.value;
+    const slot = this.timeSlots.find(s => s.value === time);
+    const remaining = slot ? this.slotRemaining.get(slot.hour) : undefined;
+
+    if (remaining === undefined || this.paxCount <= remaining) {
+      return '';
+    }
+
+    return `That time slot only has ${remaining} seat(s) left on that date, but this booking has ${this.paxCount} visitor(s). Please choose another slot or reduce the group size.`;
+  }
+
   get paxCount(): number {
     return this.visitorDetails.length;
   }
@@ -399,7 +422,48 @@ export class MuseumFormComponent implements OnInit {
       return;
     }
 
+    // Seats depend on the date and time slot, so both must be chosen first.
+    const missing: string[] = [];
+    const preferredSchedule = this.visitForm.get('preferredSchedule');
+    const preferredTime = this.visitForm.get('preferredTime');
+    if (!preferredSchedule?.value) {
+      missing.push('preferred date');
+    }
+    if (this.locationConfig.showPreferredTime && !preferredTime?.value) {
+      missing.push('preferred time');
+    }
+    if (missing.length) {
+      preferredSchedule?.markAsTouched();
+      preferredTime?.markAsTouched();
+      this.showAlert('Choose your schedule first', `Please choose your ${missing.join(' and ')} before adding visitors.`);
+      return;
+    }
+
     this.visitorDetails.push(this.createVisitor());
+
+    const message = this.capacityMessage;
+    if (message) {
+      this.showAlert('Not enough seats', message);
+    }
+  }
+
+  private showAlert(title: string, message: string) {
+    this.alertTitle = title;
+    this.alertMessage = message;
+    const dialog = this.capacityDialog?.nativeElement;
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+    }
+  }
+
+  closeAlert() {
+    this.capacityDialog?.nativeElement.close();
+  }
+
+  onAlertBackdropClick(event: MouseEvent) {
+    if (event.target === this.capacityDialog?.nativeElement) {
+      this.closeAlert();
+    }
   }
 
   removeVisitor(index: number) {
