@@ -197,3 +197,253 @@ form {
     font-size: 25px;
   }
 }
+// ===== BOOKING CALENDAR (flatpickr) =====
+.flatpickr-calendar {
+  font-family: "Aeroport", sans-serif;
+  width: 320px;
+  padding-bottom: 8px;
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(39, 56, 99, 0.25);
+  overflow: hidden;
+
+  // The little pointer arrow clashes with the rounded header.
+  &::before,
+  &::after {
+    display: none;
+  }
+
+  .flatpickr-months {
+    align-items: center;
+    background: $primary-color;
+    padding: 6px 4px;
+
+    .flatpickr-month {
+      height: 44px;
+      color: $white-color;
+      fill: $white-color;
+    }
+
+    .flatpickr-current-month {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: $white-color;
+
+      .flatpickr-monthDropdown-months,
+      input.cur-year {
+        color: $white-color;
+        font-weight: 600;
+      }
+
+      .flatpickr-monthDropdown-months {
+        background: transparent;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.12);
+        }
+
+        option {
+          background: $primary-color;
+          color: $white-color;
+        }
+      }
+
+      .numInputWrapper:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .numInputWrapper span.arrowUp:after {
+        border-bottom-color: $white-color;
+      }
+
+      .numInputWrapper span.arrowDown:after {
+        border-top-color: $white-color;
+      }
+    }
+
+    .flatpickr-prev-month,
+    .flatpickr-next-month {
+      top: 6px;
+      height: 44px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      color: $white-color;
+      fill: $white-color;
+      transition: opacity 0.2s;
+
+      svg {
+        width: 12px;
+        height: 12px;
+        fill: $white-color;
+      }
+
+      &:hover svg {
+        fill: $gold1;
+      }
+
+      &.flatpickr-disabled {
+        opacity: 0.35;
+      }
+    }
+  }
+
+  .flatpickr-weekdays {
+    height: 34px;
+    background: $secondary-color;
+  }
+
+  span.flatpickr-weekday {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $primary-color;
+    background: transparent;
+  }
+
+  .flatpickr-innerContainer,
+  .flatpickr-rContainer,
+  .flatpickr-days {
+    width: 100%;
+  }
+
+  .dayContainer {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 6px 8px 0;
+  }
+
+  .flatpickr-day {
+    height: 40px;
+    line-height: 40px;
+    margin: 2px 0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    color: $primary-color;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover,
+    &:focus {
+      background: $secondary-color;
+      border-color: $gold1;
+    }
+
+    &.today {
+      border-color: $gold1;
+
+      &:hover {
+        background: $secondary-color;
+      }
+    }
+
+    &.selected,
+    &.selected:hover,
+    &.selected:focus {
+      background: $primary-color;
+      border-color: $primary-color;
+      color: $white-color;
+      box-shadow: 0 3px 8px rgba(39, 56, 99, 0.35);
+    }
+
+    &.prevMonthDay,
+    &.nextMonthDay {
+      font-weight: 400;
+      color: rgba(39, 56, 99, 0.35);
+    }
+
+    &.flatpickr-disabled,
+    &.flatpickr-disabled:hover,
+    &.notAllowed,
+    &.notAllowed:hover {
+      background: transparent;
+      border-color: transparent;
+      font-weight: 400;
+      color: rgba(39, 56, 99, 0.3);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.flatpickr-input {
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(39, 56, 99, 0.15);
+    outline: none;
+  }
+}
+
+// Closed dates (all unselectable): holiday = amber, no schedule = grey, full = red.
+.flatpickr-calendar .flatpickr-day.holiday,
+.flatpickr-calendar .flatpickr-day.holiday:hover {
+  background: #fff3cd;
+  border-color: #ffe08a;
+  color: #7a5200 !important;
+  font-weight: 700;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.flatpickr-calendar .flatpickr-day.day-unavailable,
+.flatpickr-calendar .flatpickr-day.day-unavailable:hover {
+  background: #e3e5e8;
+  border-color: #e3e5e8;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
+
+.flatpickr-calendar .flatpickr-day.day-full,
+.flatpickr-calendar .flatpickr-day.day-full:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #ffffff !important;
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+.date-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 6px;
+  font-size: 12px;
+
+  span::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 2px;
+    vertical-align: -1px;
+  }
+
+  .legend-unavailable::before { background: #e3e5e8; border: 1px solid #b8bcc2; }
+  .legend-full::before { background: #dc3545; }
+  .legend-holiday::before { background: #fff3cd; border: 1px solid #e0b93a; }
+}
+
+// Weekends aren't bookable, so the picker shows Monday-Friday only:
+// hide the Sunday/Saturday headers and day cells and split the row in five.
+.flatpickr-calendar.no-weekends {
+  .flatpickr-weekday:first-child,
+  .flatpickr-weekday:last-child,
+  .flatpickr-day.weekend-day {
+    display: none;
+  }
+
+  .flatpickr-day {
+    flex-basis: calc(20% - 0px);
+    max-width: 20%;
+    width: 20%;
+  }
+}

@@ -6,8 +6,10 @@ import { VisitorService } from '@services/visitor.service';
 import { VisitorTypes, StudentTypes, PurposeOfVisit } from '@models/types.model';
 import { IProvinceData, ContinentsAndCountries, PhPlaces } from '@models/locations.model';
 import flatpickr from 'flatpickr';
+import type { Instance as FlatpickrInstance } from 'flatpickr/dist/types/instance';
 import { StringHelper } from '@helpers/string.helper';
 import { environment } from 'src/environments/environment';
+import { UploadResponse } from '@models/api.model';
 import { getLocationConfig, ILocationConfig, LocationSlug } from '@models/location.config';
 
 @Component({
@@ -26,8 +28,7 @@ export class MuseumFormComponent implements OnInit {
   locationConfig!: ILocationConfig;
   visitForm!: FormGroup;
   submitted = false;
-  maxVisitors = 24;
-  isMaxVisitorReached: boolean = false;
+  maxVisitors = 25;
   visitorTypes = VisitorTypes;
   studentTypes = StudentTypes;
   purposeOfVisit = PurposeOfVisit;
@@ -43,7 +44,7 @@ export class MuseumFormComponent implements OnInit {
   isFormSuccess: boolean = false;
   isLoading: boolean = false;
   submitError: string = '';
-  timeSlots: { label: string; value: string }[] = [];
+  timeSlots: { label: string; value: string; hour: number; disabled: boolean; note: string }[] = [];
   today: string = '';
   uploadMessage: any = {
     image: '',
@@ -61,11 +62,12 @@ export class MuseumFormComponent implements OnInit {
   // single space, hyphen, apostrophe or period — rejects digits and
   // whitespace-only input.
   readonly namePattern = /^[a-zA-ZÀ-ÖØ-öø-ÿ]+(?:[ '\-.][a-zA-ZÀ-ÖØ-öø-ÿ]+)*$/;
-  private readonly maxUploadSizeBytes = 5 * 1024 * 1024;
+  private readonly maxUploadSizeBytes = 5 * 1024 * 1024; // keep in sync with api Vms.php max_size (5120 KB)
   private readonly allowedUploadTypes: { [key: string]: string[] } = {
     image: ['image/jpeg', 'image/png'],
     file: ['application/pdf']
   };
+  private readonly seniorAgeRange = '60 - Above';
   ageRange = [
     { name: '7-18', value: '7 - 18'},
     { name: '19-35', value: '19 - 35'},
@@ -74,6 +76,11 @@ export class MuseumFormComponent implements OnInit {
   ];
   showPicker = false;
   formattedDate = '';
+  // True when the chosen date has no seat left in any slot: the whole time dropdown is disabled.
+  timeSlotsFull = false;
+  private picker?: FlatpickrInstance;
+  private disabledDateRules: any[] = [];
+  private closedDates = new Map<string, { kind: 'holiday' | 'unavailable' | 'full'; label: string }>();
 
   constructor(
     private fb: FormBuilder,
@@ -93,26 +100,152 @@ export class MuseumFormComponent implements OnInit {
     // Preferred Date can't be booked past the end of the current year.
     const maxDate = new Date(today.getFullYear(), 11, 31);
 
-    flatpickr(this.dateInput.nativeElement, {
+    this.disabledDateRules = [
+      {
+        from: today,
+        to: disableUntil
+      },
+      function(date: Date) {
+        return (date.getDay() === 0 || date.getDay() === 6);
+      }
+    ];
+
+    this.picker = flatpickr(this.dateInput.nativeElement, {
       dateFormat: "l, F j, Y",
       minDate: today,
       maxDate: maxDate,
       allowInput: false,
-      disable: [
-        {
-          from: today,
-          to: disableUntil
-        },
-        function(date) {
-          return (date.getDay() === 0 || date.getDay() === 6);
+      disable: this.disabledDateRules,
+      onChange: dates => this.onDateChosen(dates[0]),
+      onReady: (_dates, _str, fp) => {
+        fp.calendarContainer.classList.add('no-weekends');
+      },
+      onDayCreate: (_dates, _str, _fp, dayElem) => {
+        const weekday = dayElem.dateObj.getDay();
+        if (weekday === 0 || weekday === 6) {
+          dayElem.classList.add('weekend-day');
         }
-      ],
+
+        const closed = this.closedDates.get(this.toIsoDate(dayElem.dateObj));
+        if (closed) {
+          dayElem.title = closed.label;
+          dayElem.classList.add(closed.kind === 'holiday' ? 'holiday' : `day-${closed.kind}`);
+        }
+      },
       onClose: () => {
         this.visitForm.get('preferredSchedule')?.markAsTouched();
       }
     });
+
+    this.loadHolidays();
+    if (this.locationConfig.scheduleMode !== 'none') {
+      this.loadAvailability();
+    }
   }
-  
+
+  private toIsoDate(date: Date): string {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
+  }
+
+  // Holidays and availability arrive after the picker exists. The API still
+  // rejects these dates server-side, so a failed load only costs the marking.
+  private loadHolidays() {
+    this.visitorService.holidays().subscribe({
+      next: response => {
+        (response.holidays ?? []).forEach(h =>
+          this.closedDates.set(h.date, { kind: 'holiday', label: `Holiday: ${h.name}` }));
+        this.applyClosedDates();
+      },
+      error: () => {}
+    });
+  }
+
+  private loadAvailability() {
+    this.visitorService.availability(this.slug).subscribe({
+      next: response => {
+        if (!response.enforced) {
+          return;
+        }
+        // A holiday keeps its own marking if a date is both.
+        (response.unavailable ?? []).forEach(date => {
+          if (!this.closedDates.has(date)) {
+            this.closedDates.set(date, { kind: 'unavailable', label: 'Unavailable: no schedule for this date' });
+          }
+        });
+        (response.full ?? []).forEach(date => {
+          if (!this.closedDates.has(date)) {
+            this.closedDates.set(date, { kind: 'full', label: 'Full: no slots left on this date' });
+          }
+        });
+        this.applyClosedDates();
+      },
+      error: () => {}
+    });
+  }
+
+  // Slots with no seats left on the chosen date are disabled in the time
+  // dropdown. Capacity is per slot per date, so this reloads on every date change.
+  private onDateChosen(date?: Date) {
+    this.timeSlotsFull = false;
+    if (!date || !this.locationConfig.showPreferredTime || this.locationConfig.scheduleMode !== 'capacity') {
+      return;
+    }
+
+    this.visitorService.slots(this.slug, this.toIsoDate(date)).subscribe({
+      next: response => {
+        if (!response.enforced) {
+          this.timeSlots.forEach(slot => { slot.disabled = false; slot.note = ''; });
+          return;
+        }
+
+        const remainingByHour = new Map(response.slots.map(s => [s.hour, s.remaining]));
+        this.timeSlots.forEach(slot => {
+          const remaining = remainingByHour.get(slot.hour);
+          slot.disabled = !remaining || remaining <= 0;
+          slot.note = remaining === undefined ? 'Not available' : (remaining <= 0 ? 'Full' : '');
+        });
+
+        const chosen = this.timeSlots.find(slot => slot.value === this.visitForm.get('preferredTime')?.value);
+        if (chosen?.disabled) {
+          this.visitForm.get('preferredTime')?.setValue('');
+        }
+
+        // Someone took the last seats after the calendar loaded: mark the date
+        // full there too (this clears the pick), then lock the time dropdown.
+        if (this.timeSlots.length && this.timeSlots.every(slot => slot.disabled)) {
+          const iso = this.toIsoDate(date);
+          if (!this.closedDates.has(iso)) {
+            this.closedDates.set(iso, { kind: 'full', label: 'Full: no slots left on this date' });
+          }
+          this.applyClosedDates();
+          this.visitForm.get('preferredTime')?.setValue('');
+          this.timeSlotsFull = true;
+        }
+      },
+      error: () => {}
+    });
+  }
+
+  private applyClosedDates() {
+    // Date objects, not strings: flatpickr would parse "YYYY-MM-DD" strings
+    // with the picker's own "l, F j, Y" format and silently not match.
+    const closed = Array.from(this.closedDates.keys()).map(iso => {
+      const [year, month, day] = iso.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    });
+
+    this.picker?.set('disable', [...this.disabledDateRules, ...closed]);
+    this.picker?.redraw();
+
+    const chosen = this.picker?.selectedDates[0];
+    if (chosen && this.closedDates.has(this.toIsoDate(chosen))) {
+      this.picker?.clear();
+      this.visitForm.get('preferredSchedule')?.setValue('');
+    }
+  }
+
   ngOnInit() {
     this.locationConfig = getLocationConfig(this.slug) ?? getLocationConfig('museum')!;
 
@@ -131,7 +264,7 @@ export class MuseumFormComponent implements OnInit {
       companyName: [''],
       otherLGU: [''],
       otherVisitorType: [''],
-      visitorDetails: this.fb.array([this.createVisitor()]),
+      visitorDetails: this.fb.array([this.createVisitor()], { validators: duplicateVisitorsValidator }),
       fileUploaded: ['', Validators.required]
     });
     const preferredTime = this.visitForm.get('preferredTime');
@@ -211,12 +344,16 @@ export class MuseumFormComponent implements OnInit {
 
   get f() { return this.visitForm.controls; }
 
+  get isMaxVisitorReached(): boolean {
+    return this.visitorDetails.length >= this.maxVisitors;
+  }
+
   get paxCount(): number {
     return this.visitorDetails.length;
   }
 
   createVisitor(): FormGroup {
-    return this.fb.group({
+    const visitor = this.fb.group({
       firstName: ['', [Validators.required, Validators.pattern(this.namePattern)]],
       middleName: ['', Validators.pattern(this.namePattern)],
       lastName: ['', [Validators.required, Validators.pattern(this.namePattern)]],
@@ -232,12 +369,27 @@ export class MuseumFormComponent implements OnInit {
       seniorCitizen: [false],
       indigenousPeople: [false]
     });
+
+    const age = visitor.get('age')!;
+    const senior = visitor.get('seniorCitizen')!;
+    const isSeniorAge = () => age.value === this.seniorAgeRange;
+
+    age.valueChanges.subscribe(() => {
+      senior.setValue(isSeniorAge(), { emitEvent: false });
+    });
+    // Senior status is derived from the age range, so it can't be unticked.
+    senior.valueChanges.subscribe(checked => {
+      if (isSeniorAge() && !checked) {
+        senior.setValue(true, { emitEvent: false });
+      }
+    });
+
+    return visitor;
   }
 
   addVisitor() {
-    this.isMaxVisitorReached = false;
-    if (this.visitorDetails.length >= this.maxVisitors) {
-      this.isMaxVisitorReached = true;
+    if (this.isMaxVisitorReached) {
+      return;
     }
 
     this.visitorDetails.push(this.createVisitor());
@@ -257,7 +409,10 @@ export class MuseumFormComponent implements OnInit {
 
       this.timeSlots.push({
         label: `${start} - ${end}`,
-        value: `${start} - ${end}` // backend-friendly value
+        value: `${start} - ${end}`, // backend-friendly value
+        hour,
+        disabled: false,
+        note: ''
       });
     }
   }
@@ -395,20 +550,26 @@ export class MuseumFormComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('file', file);
-    this.http.post<any>(`${environment.apiBaseUrl}${endpoint}`, formData, {
+    this.http.post<UploadResponse>(`${environment.apiBaseUrl}${endpoint}`, formData, {
       reportProgress: true,
       observe: 'events'
     }).subscribe({
-      next: (event: HttpEvent<any>) => {
+      next: (event: HttpEvent<UploadResponse>) => {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.uploadProgress[type] = Math.round((event.loaded / event.total) * 100);
         } else if (event.type === HttpEventType.Response) {
-          const res = event.body;
+          const res = event.body!;
           if (res.status) {
-            this.uploadMessage[type] = res.file;
-            this.visitForm.patchValue({ fileUploaded: res.file });
+            this.uploadMessage[type] = res.file ?? '';
+            // Only the ID image ('image') maps to the form's `fileUploaded`
+            // control — the backend reads that field exclusively as the
+            // government-ID scan path. The benchmarking letter ('file')
+            // has no corresponding backend field, so it must not overwrite it.
+            if (type === 'image') {
+              this.visitForm.patchValue({ fileUploaded: res.file ?? '' });
+            }
           } else {
-            this.uploadErrors[type] = res.message;
+            this.uploadErrors[type] = res.message ?? 'Upload failed. Please try again.';
           }
           this.uploadProgress[type] = 0;
         }
@@ -457,7 +618,8 @@ export class MuseumFormComponent implements OnInit {
     this.submitError = '';
     if (this.visitForm.invalid || this.isLoading) return;
     const locationType = {
-      "locationType": this.location
+      "locationType": this.location,
+      "locationSlug": this.slug
     }
     const visitFormData = {
       ...locationType,
@@ -481,9 +643,31 @@ export class MuseumFormComponent implements OnInit {
       error => {
         this.isFormSuccess = false;
         this.isLoading = false;
-        this.submitError = 'We could not submit your booking. Please check your connection and try again.';
+        this.submitError = this.extractSubmitErrorMessage(error);
       }
     );
+  }
+
+  /**
+   * A non-2xx response (e.g. server-side form_validation failures, which
+   * return {status:false, errors:{...}}) is routed to the error callback,
+   * not the success one — so it must be unpacked here or its detail is lost.
+   */
+  private extractSubmitErrorMessage(error: any): string {
+    const body = error?.error;
+
+    if (body && body.errors && typeof body.errors === 'object') {
+      const messages = Object.values(body.errors).filter(Boolean) as string[];
+      if (messages.length) {
+        return messages.join(' ');
+      }
+    }
+
+    if (body && typeof body.message === 'string' && body.message) {
+      return body.message;
+    }
+
+    return 'We could not submit your booking. Please check your connection and try again.';
   }
 
   formatContact(index: number): void {
@@ -535,6 +719,25 @@ export class MuseumFormComponent implements OnInit {
 
     this.showPicker = false;
   }
+}
+
+/** Flags visitors sharing the same name and the same email or contact number. */
+function duplicateVisitorsValidator(control: AbstractControl): ValidationErrors | null {
+  const people = (control.value as any[]).map(v => ({
+    name: `${v.firstName ?? ''}|${v.middleName ?? ''}|${v.lastName ?? ''}`.trim().toLowerCase(),
+    email: (v.email ?? '').trim().toLowerCase(),
+    contact: (v.contact ?? '').replace(/\D/g, '')
+  }));
+  const duplicates: number[] = [];
+
+  people.forEach((p, i) => {
+    if (!p.name.replace(/\|/g, '')) return;
+    const dupOfEarlier = people.slice(0, i).some(o =>
+      o.name === p.name && ((p.email && o.email === p.email) || (p.contact && o.contact === p.contact)));
+    if (dupOfEarlier) duplicates.push(i + 1);
+  });
+
+  return duplicates.length ? { duplicateVisitors: duplicates } : null;
 }
 
 /** Rejects a value that is present but contains only whitespace. */
